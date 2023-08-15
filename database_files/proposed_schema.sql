@@ -1,38 +1,34 @@
 -- Checklist
+
 CREATE TABLE checklist (
-    checklist_id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    grocery_name VARCHAR(255) NOT NULL,
+    id SERIAL PRIMARY KEY,
+    item_name VARCHAR(50) UNIQUE NOT NULL,
     quantity INTEGER NOT NULL,
-    unit_id INTEGER NOT NULL,
-    category_id INTEGER NOT NULL,
-    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    purchased BOOLEAN DEFAULT FALSE,
-    UNIQUE (grocery_name, checklist_id),
-    FOREIGN KEY (unit_id) REFERENCES unit(unit_id),
-    FOREIGN KEY (category_id) REFERENCES categories(category_id)
+    unit_id INTEGER NOT NULL REFERENCES unit(id) ON UPDATE RESTRICT,
+    category_id INTEGER NOT NULL REFERENCES categories(id) ON UPDATE CASCADE,
+    date_added DATE DEFAULT CURRENT_DATE,
+    purchased BOOLEAN DEFAULT FALSE
 );
 
 -- Categories
 CREATE TABLE categories (
-    category_id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    category_name VARCHAR(50) NOT NULL UNIQUE
+    id SERIAL PRIMARY KEY,
+    category_name VARCHAR(50) UNIQUE NOT NULL
 );
 
 -- Units
 CREATE TABLE unit (
-    unit_id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    unit_name VARCHAR(50) NOT NULL UNIQUE
+    id SERIAL PRIMARY KEY,
+    unit_name VARCHAR(50) UNIQUE NOT NULL
 );
 
 -- Inventory 
 CREATE TABLE inventory (
-    inventory_id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    item_name VARCHAR(255) NOT NULL UNIQUE,
+    id SERIAL PRIMARY KEY,
+    item_name VARCHAR(50) UNIQUE NOT NULL,
     quantity INTEGER NOT NULL,
-    unit_id INTEGER NOT NULL,
-    category_id INTEGER NOT NULL,
-    FOREIGN KEY (unit_id) REFERENCES unit(unit_id),
-    FOREIGN KEY (category_id) REFERENCES categories(category_id)
+    unit_id INTEGER NOT NULL REFERENCES unit(id) ON UPDATE RESTRICT,
+    category_id INTEGER NOT NULL REFERENCES categories(id) ON UPDATE CASCADE
 );
 
 
@@ -46,30 +42,34 @@ Project kitchenInventory {
 }
 
 Table checklist {
-  checklist_id integer [primary key, increment]
-  grocery_name varchar(255) [not null]
+  id serial [primary key]
+  item_name varchar(50) [unique, not null]
   quantity integer [not null]
-  unit_id integer [not null, ref: > unit.unit_id]
-  category_id integer [not null, ref: > categories.category_id]
-  timestamp timestamp [default: `current_timestamp`]
+  unit_id integer [not null, ref: > unit.id]
+  category_id integer [not null, ref: > categories.id]
+  date_added date [default: `current_date`]
   purchased boolean [default: false]
-  unique g_uniq_grocery_name (grocery_name, checklist_id)
 }
 
 Table categories {
-  category_id integer [primary key, increment]
-  category_name varchar(50) [not null, unique]
+  id serial [primary key]
+  category_name varchar(50) [unique, not null]
 }
 
 Table unit {
-  unit_id integer [primary key, increment] 
-  unit_name varchar(50) [not null, unique]
+  id serial [primary key] 
+  unit_name varchar(50) [unique, not null]
 }
 
 Table inventory {
-  inventory_id integer [primary key, increment]
-  item_name varchar(255) [unique, not null]
+  id serial [primary key]
+  item_name varchar(50) [unique, not null]
   quantity integer [not null]
-  unit_id integer [not null, ref: > unit.unit_id]
-  category_id integer [not null, ref: > categories.category_id] 
+  unit_id integer [not null, ref: > unit.id]
+  category_id integer [not null, ref: > categories.id] 
 }
+
+
+
+
+-- To insert the next value of the sequence into the serial column, specify that the serial column should be assigned its default value. This can be done either by excluding the column from the list of columns in the INSERT statement, or through the use of the DEFAULT key word.
