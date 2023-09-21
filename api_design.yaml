@@ -1,0 +1,271 @@
+openapi: 3.0.3
+info:
+  title: Kitchen App
+  version: 1.0.0
+  description: An application for managing your kitchen inventory
+paths:
+  /checklist:
+    summary: Get all items on the checklist
+    description: >-
+      Retrieves all the items on the checklist from the Checklist table in the
+      database
+    get:
+      summary: 'Retrieves all the items in the checklist '
+      description: ''
+      operationId: get_checklist
+      responses:
+        200:
+          description: Successful response with checklist items.
+          content:
+            application/json:
+              example:
+                checklist_items:
+                  value: {
+                    "items": [
+                      {
+                        "checklist_id": 1,
+                        "grocery_name": "Apples",
+                        "quantity": 3,
+                        "unit": "Each",
+                        "purchased": false
+                      },
+                      {
+                        "checklist_id": 2,
+                        "grocery_name": "Bread",
+                        "quantity": 2,
+                        "unit": "Loaf",
+                        "purchased": false
+                      },
+                      {
+                        "checklist_id": 3,
+                        "grocery_name": "Milk",
+                        "quantity": 1,
+                        "unit": "Gallon",
+                        "purchased": false
+                      },
+                      // Additional checklist items go here...
+                    ]
+                  }
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    description: List of checklist items.
+                    items:
+                      type: object
+                      properties:
+                        checklist_id:
+                          type: integer
+                          description: The unique identifier for the checklist item.
+                        grocery_name:
+                          type: string
+                          description: The name of the grocery item.
+                        quantity:
+                          type: integer
+                          description: The quantity of the grocery item.
+                        unit:
+                          type: string
+                          description: The unit of measurement for the grocery item.
+                        purchased:
+                          type: boolean
+                          description: Indicates if the item has been purchased (always set to false for this example).
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: A description of the error that occurred.
+      tags:
+        - Get Checklist
+  /checklist/add:
+    summary: Adds an item to the Checklist
+    description: Sends a new item to be included in the Checklist table in the database
+    post:
+      summary: 'Adds a new item to the checklist '
+      description: ''
+      operationId: add_to_checklist
+      requestBody:
+        description: New checklist item data
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                item_name:
+                  type: string
+                  description: The name of the grocery item
+                quantity:
+                  type: integer
+                  description: The quantity of the grocery item
+                unit_id:
+                  type: integer
+                  description: The ID of the unit of measurement
+                category_id:
+                  type: integer
+                  description: The ID of the item category
+            example:
+              item_name: "Apples"
+              quantity: 3
+              unit_id: 1
+              category_id: 2
+      responses:
+        201:
+          description: Successful response with the newly created checklist item.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  checklist_id:
+                    type: integer
+                    description: The unique identifier for the checklist item.
+                  grocery_name:
+                    type: string
+                    description: The name of the grocery item.
+                  quantity:
+                    type: integer
+                    description: The quantity of the grocery item.
+                  unit:
+                    type: string
+                    description: The unit of measurement for the grocery item.
+                  purchased:
+                    type: boolean
+                    description: Indicates if the item has been purchased (always set to false for this example).
+              example:
+                checklist_id: 4
+                grocery_name: "Apples"
+                quantity: 3
+                unit: "Each"
+                purchased: false
+      tags:
+        - Add to Checklist
+  /checklist/update/{checklistID}:
+    summary: Updates an item in the checklist
+    description: Updates an existing item by ID from the Checklist table in the database
+    parameters:
+      - name: checklistID
+        in: path
+        description: The id of the checklist item.
+        required: true
+        schema:
+          type: string
+    put:
+      summary: Updates an item in the checklist
+      description: ''
+      operationId: update_checklist_item
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Update Checklist item
+  /checklist/delete/{checklistID}:
+    summary: Deletes an item from the Checklist
+    description: Deletes an existing item by ID from the Checklist table in the database
+    parameters:
+      - name: checklistID
+        in: path
+        description: The id of the checklist item.
+        required: true
+        schema:
+          type: string
+    delete:
+      summary: Deletes an item from the checklist
+      description: ''
+      operationId: delete_checklist_item
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Delete Checklist item
+  /inventory:
+    summary: Gets all items in the inventory
+    description: Retrieves all the items in the Inventory table in the database
+    get:
+      summary: Retrieves all the items in the inventory
+      description: ''
+      operationId: get_inventory
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Get Inventory
+  /inventory/{category}:
+    summary: Gets all items in a specific category of the inventory
+    description: >-
+      Retrieves all the items in the specified category of the Inventory table
+      in the database
+    parameters:
+      - name: category
+        in: path
+        description: A sub-category in the inventory.
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Retrieves all the items in a specified category of the inventory
+      description: ''
+      operationId: get_inventory_category
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Get Inventory category
+  /inventory/add:
+    summary: Adds an item to the Inventory
+    description: >-
+      Adds a new item to be included in the Inventory table in the database,
+      either through being ticked off in the checklist, or manually in the
+      inventory
+    post:
+      summary: Adds a new item to the inventory
+      description: ''
+      operationId: add_to_inventory
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Add to Inventory
+  /inventory/update/{inventoryID}:
+    summary: Updates an item in the Inventory
+    description: Updates an existing item by ID from the Inventory table in the database
+    parameters:
+      - name: inventoryID
+        in: path
+        description: The id of the inventory item.
+        required: true
+        schema:
+          type: string
+    put:
+      summary: Updates an existing item in the inventory
+      description: ''
+      operationId: update_inventory_item
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Update Inventory item
+  /inventory/delete/{inventoryID}:
+    summary: Deletes an item from the Inventory
+    description: Deletes an existing item by ID from the Inventory table in the database
+    parameters:
+      - name: inventoryID
+        in: path
+        description: The id of the inventory item.
+        required: true
+        schema:
+          type: string
+    delete:
+      summary: Delete an existing item from the inventory
+      description: ''
+      operationId: delete_inventory_item
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Delete Inventory item
