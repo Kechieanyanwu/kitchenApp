@@ -19,14 +19,14 @@ Checklist Functionality
 - CREATE (add) an item to the Checklist
 - DELETE (check off) an item from the Checklist 
 - READ all items in the Checklist
-- UPDATE an item in the checklist
+- PUT (UPDATE) an item in the checklist / perhaps patch? 
 
 Inventory Functionality
 - CREATE (add) an item via Checklist
 - CREATE (add) an item via Inventory
 - DELETE an item via Inventory
-- UPDATE an item via checklist (e.g. if purchasing an additional item)
-- UPDATE an item via Inventory (e.g. if chaning amount in inventory)
+- PUT (UPDATE) an item via checklist (e.g. if purchasing an additional item) perhaps patch? 
+- PUT (UPDATE) an item via Inventory (e.g. if chaning amount in inventory) perhaps patch? 
 - READ entire inventory 
 - READ inventory by category 
 
@@ -43,3 +43,6 @@ Possible future functionality:
 https://developer.edamam.com/food-database-api-demo
 https://fdc.nal.usda.gov/api-guide.html
 https://rapidapi.com/collection/nutrition
+
+import { petStoreOas3Def } from "../default-definitions"
+const CONTENT_KEY = "swagger-editor-content"

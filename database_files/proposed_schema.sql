@@ -1,12 +1,11 @@
 -- Checklist
-
+-- to take out timestamp / date added
 CREATE TABLE checklist (
     id SERIAL PRIMARY KEY,
     item_name VARCHAR(50) UNIQUE NOT NULL,
     quantity INTEGER NOT NULL,
     unit_id INTEGER NOT NULL REFERENCES unit(id) ON UPDATE RESTRICT,
     category_id INTEGER NOT NULL REFERENCES categories(id) ON UPDATE CASCADE,
-    date_added DATE DEFAULT CURRENT_DATE,
     purchased BOOLEAN DEFAULT FALSE
 );
 
@@ -47,7 +46,6 @@ Table checklist {
   quantity integer [not null]
   unit_id integer [not null, ref: > unit.id]
   category_id integer [not null, ref: > categories.id]
-  date_added date [default: `current_date`]
   purchased boolean [default: false]
 }
 

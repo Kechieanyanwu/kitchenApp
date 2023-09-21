@@ -1,0 +1,18 @@
+---
+# API endpoints
+Checklist Functionality:
+ - CREATE (add) an item to the Checklist
+ - DELETE (check off) an item from the Checklist 
+ - GET all items in the Checklist
+ - PUT (UPDATE) an item in the checklist / perhaps patch? 
+
+Inventory Functionality:
+ - CREATE (add) an item via Checklist
+ - CREATE (add) an item via Inventory
+ - DELETE an item via Inventory
+ - PUT (UPDATE) an item via checklist (e.g. if purchasing an additional item) perhaps patch? 
+ - PUT (UPDATE) an item via Inventory (e.g. if chaning amount in inventory) perhaps patch? 
+ - READ entire inventory 
+ - READ inventory by category 
+
+...
