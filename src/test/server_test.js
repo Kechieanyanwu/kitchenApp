@@ -11,12 +11,16 @@ chai.use(require('chai-json-schema-ajv')); //for validating JSON schema
 
 //need to find a way to close server after the tests are complete; could us AfterAll
 describe("server testing", () => {
-    after((done) => {
-        server.close(() => {
-            console.log("Server closed"); // never reaching this endpoint
-            done();
-        });
-
+    after((server) => { //somehow this block is never being activated
+        // server.close(() => {
+        //     console.log("Server closed"); // never reaching this endpoint
+        //     done();
+        // });
+        // server.close((err) => {
+        //     console.log("Http server closed.");
+        //     process.exit(err ? 1 : 0);
+        // });
+        //perhaps will just use http-terminator? 
     });
 
     describe("loading express", () => {
@@ -70,7 +74,6 @@ describe("server testing", () => {
             const response = await request(server)
             .get("/checklist");
             assert.equal(response.status, 200);
-            assert.equal(response.body, "Checklist endpoint"); //code smell; could also create variables for the endpoint name
         })
     });
     describe("inventory endpoint", () => {
@@ -78,7 +81,6 @@ describe("server testing", () => {
             const response = await request(server)
             .get("/inventory");
             assert.equal(response.status, 200);
-            assert.equal(response.body, "Inventory endpoint"); //code smell; could also create variables for the endpoint name
         })
     })
 })

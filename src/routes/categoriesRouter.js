@@ -1,23 +1,12 @@
 const express = require('express');
 const categoriesRouter = express();
+const { getAllCategories } = require("../controllers/categories.controller");
 
 
 categoriesRouter.get("/", (req, res) => {
-    res.status(200).json(categoriesArray) //using TDD so will 
+    const categoriesArray = getAllCategories();
+    res.status(200).json(categoriesArray)
 });
-
-
-
-
-const categoriesArray = [{ //might be better to also move this to the model file and export 
-    id: 1,
-    category_name: "Fruit"
-},
-{
-    id: 2,
-    category_name: "Grains"
-},
-];
 
 
 
