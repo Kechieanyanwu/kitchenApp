@@ -3,15 +3,13 @@ const assert = chai.assert;
 const should = chai.should(); //have to actually call the function 
 const expect = chai.expect;
 const request = require("supertest");
-const {app, server} = require("../server"); //where you imported
+const {app, server} = require("../server"); //where I last imported
 const { after } = require('node:test');
 
-chai.use(require('chai-json-schema-ajv'));
+chai.use(require('chai-json-schema-ajv')); //for validating JSON schema 
 
 
-//QUESTIONS FOR CHIDI: 
-    //HOW CAN I CLOSE A SERVER AFTER THE TESTS ARE COMPLETE? 
-    //need to find a way to close server after the tests are complete; could us AfterAll
+//need to find a way to close server after the tests are complete; could us AfterAll
 describe("server testing", () => {
     after((done) => {
         server.close(() => {
@@ -30,28 +28,7 @@ describe("server testing", () => {
         });
     
     });
-    /* a lot of repetition below, is it better to lump like
-    describe('Shopping List', function() {
-  it('should list items on GET', function(done) {
-chai.request(app)
-  .get('/items')
-  .end(function(err, res) {
-    res.should.have.status(200);
-    res.should.be.json; // jshint ignore:line
-    res.body.should.be.a('array');
-    res.body.should.have.length(3);
-    res.body[0].should.be.a('object');
-    res.body[0].should.have.property('id');
-    res.body[0].should.have.property('name');
-    res.body[0].id.should.be.a('number');
-    res.body[0].name.should.be.a('string');
-    res.body[0].name.should.equal('Broad beans');
-    res.body[1].name.should.equal('Tomatoes');
-    res.body[2].name.should.equal('Peppers');
-    done();
-  });
-   });
-   */
+
      
     describe("categories endpoint", () => {
         it("routes correctly", async () => { // is there a better way of checking that it routes there? Or should I not? 
@@ -61,28 +38,31 @@ chai.request(app)
         });
         describe("GET Categories", () => {
             it("sends a 200 request on good request", async () => {
-            const response = await request(server)
-            .get("/categories");
-            assert.equal(response.status, 200);
+                const response = await request(server)
+                .get("/categories");
+                assert.equal(response.status, 200);
             });
             it("sends JSON response with correct schema", async() => { // test that it sends the JSON with the right shape 
-            const response = await request(server)
-            .get("/categories");
-            assert.equal(response.status, 200);            
-            assert.jsonSchema(response.body, categoriesSchema);
-            // expect(response.body).to.have.property("id");
-            // expect(response.body).to.have.property("category_name");
-
+                const response = await request(server)
+                .get("/categories");
+                assert.equal(response.status, 200);            
+                assert.jsonSchema(response.body, categoriesSchema);
             });
-            it("has the correct fields in the JSON response body", async () => { //do i need this? Feels like a duplicate of previous test
-                // expect(response).to.have.property("id");
-                // expect(response).to.have.property("category_name");
-                // shape is category id and category_name
-                // so possibly start by sending dummy data, then will build out database connections later 
-            });
+            it("has only two properties", async () => {
+                const response = await request(server)
+                .get("/categories");
+                assert.equal(response.status, 200);
+                const responseBody = Array.isArray(response.body) ? response.body : [response.body];
+                responseBody.forEach((item) => {
+                    assert.equal(Object.keys(item).length, 2)
+                })
+            })
+            /*
             it("sends no data when the table is empty", async () => {
-            // should I test that it sends no data when nothing in table?
-            })            
+            How should I test that it sends no data when nothing in table?
+            Might be something to do when I mock database 
+            })
+            */            
         })
     });
     describe("checklist endpoint", () => {
@@ -118,5 +98,28 @@ const categoriesSchema = {
 };
 
 /* Questions
-1. How to show expected vs actual. 
+1. How to show expected vs actual in failing tests all the time when not using Assert to check . 
+2. is it better to lump like
+     describe('Shopping List', function() {
+  it('should list items on GET', function(done) {
+chai.request(app)
+  .get('/items')
+  .end(function(err, res) {
+    res.should.have.status(200);
+    res.should.be.json; // jshint ignore:line
+    res.body.should.be.a('array');
+    res.body.should.have.length(3);
+    res.body[0].should.be.a('object');
+    res.body[0].should.have.property('id');
+    res.body[0].should.have.property('name');
+    res.body[0].id.should.be.a('number');
+    res.body[0].name.should.be.a('string');
+    res.body[0].name.should.equal('Broad beans');
+    res.body[1].name.should.equal('Tomatoes');
+    res.body[2].name.should.equal('Peppers');
+    done();
+  });
+   });
+3. How can I close a server after tests are complete
+4. Is the right way to build out all the endpoints together, or focus on one per time? 
 */
