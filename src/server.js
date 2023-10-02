@@ -1,17 +1,24 @@
 const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 4002
-const categoriesRouter = require('./routes/categoriesRouter') //last thing you imported
+const categoriesRouter = require('./routes/categoriesRouter') 
+const checklistRouter = require('./routes/checklistRouter')
+const inventoryRouter = require('./routes/inventoryRouter') //last thing you imported
 
 app.get("/", (req, res) => {
     res.status(200).json("Hello World")
 });
 
 app.use("/categories", categoriesRouter);
+app.use("/checklist", checklistRouter);
+app.use("/inventory", inventoryRouter);
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => { //added in server variable
     console.log(`Kitchen App is listening on port ${PORT}`)
 });
 
 
-module.exports = app; // Export the Express app 
+module.exports = { //exported new server variable
+    app,
+    server,
+}; // Export the Express app 
