@@ -22,3 +22,6 @@ As a summary, my Kitchenventory database schema includes the following tables:
 - The unit_id and category_id columns reference the primary keys in the unit and categories tables, respectively.
 
 I have established the relationships between the tables through the foreign keys, in order to ensure data integrity and proper data referencing.
+
+
+TO UPDATE
