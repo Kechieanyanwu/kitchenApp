@@ -1,3 +1,6 @@
+const { getAllFromDatabase } = require("../models/categoriesModel");
+const { pool } = require("../models/dbConfig"); 
+
 const testCategories = [{ //might be better to also move this to the model file and export 
     id: 1,
     category_name: "Fruit"
@@ -8,16 +11,12 @@ const testCategories = [{ //might be better to also move this to the model file 
 },
 ];
 
-const getAllCategories = () => {
-    // const testCategories = getAllFromDatabase();
-    return testCategories  //using TDD so improving
-    // maybe getAllFromDatabase
+const getAllCategories = async () => {
+    const categories = await getAllFromDatabase(pool);
+    return categories  //using TDD so improving
+    // will include error handling 
 }
 
-// Steps for tomorrow
-    // Set up database 
-    // Will now start interacting with model file
-    // Setting up the database, and including tables
 
 
 module.exports = { getAllCategories };

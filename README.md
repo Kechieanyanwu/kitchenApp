@@ -17,3 +17,14 @@ Process
     - Set up the kitchenapp database
     - Created a db config file for permissions and exported into categoriesModel file 
     - Currently deciding between mocking the database, or testing the actual connection then mocking
+    - Successfully mocked a pool and implemented the test of the function. Will now have to update the implementation so other tests pass again
+
+
+My types of testing:
+- Data-less tests
+    - testing parts of my code not relying on my database
+- Mocked Database tests
+    - testing parts of my code that interact with databases, e.g. a function to get data
+    - will create a mock database to test that the function interacts as expected with this database
+
+

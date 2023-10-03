@@ -1,11 +1,13 @@
-const Pool = require('pg').Pool;
-const pool = new Pool({ //in production environment will put config details in separate file
+const {Pool} = require('pg');
+
+const config = {
     user: 'nkechianyanwu',
     host: 'localhost',
     database: 'kitchenapp',
     password: '',
     port: 5432
-});
+};
+const pool = new Pool(config);
 
 
 module.exports = { pool };

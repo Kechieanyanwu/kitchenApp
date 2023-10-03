@@ -5,6 +5,7 @@ const expect = chai.expect;
 const request = require("supertest");
 const {app, server} = require("../server"); //where I last imported
 const { after } = require('node:test');
+const { getAllFromDatabase } = require('../models/categoriesModel');
 
 chai.use(require('chai-json-schema-ajv')); //for validating JSON schema 
 
@@ -85,15 +86,36 @@ describe("server testing", () => {
     })
 });
 
-describe('database testing', () => {
-    describe('categories table', () => {
-        it('returns all categories on GET', async () => {
-            const response = await request(server)
-            .get("/categories");
-            assert.equal(response.status, 200);
+describe('database function testing', () => {
+    describe('categories model', () => {
+        describe("getAllFromDatabase", () => { //might just make this a general function tbh. Let's see
+            it('returns data from a successful db query', async () => {
+   
+                const mockCategoriesList = [
+                    { id: 1, category_name: "Dairy"},
+                    { id: 2, category_name: "Grains"}                    
+                ]
+                
+                //mock connection pool 
+                const mockPool = {
+                    connect: async () => {
+                        return {
+                            query: async () => {
+                                return {rows: mockCategoriesList}
+                            },
+                            release: () => {} // mocks the release method of a pool
+                        }
+                    }
+                }
+                //pass the mockPool to getAllFromDatabase
+                const response = await getAllFromDatabase(mockPool) //update to pools
+                assert.deepEqual(response, mockCategoriesList);
+            })
         })
+
     })
 })
+
 
 
 // good design would be to put this in the models file and export. Later
