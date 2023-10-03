@@ -83,6 +83,16 @@ describe("server testing", () => {
             assert.equal(response.status, 200);
         })
     })
+});
+
+describe('database testing', () => {
+    describe('categories table', () => {
+        it('returns all categories on GET', async () => {
+            const response = await request(server)
+            .get("/categories");
+            assert.equal(response.status, 200);
+        })
+    })
 })
 
 
