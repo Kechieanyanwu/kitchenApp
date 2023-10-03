@@ -9,6 +9,7 @@ const testCategories = [{ //might be better to also move this to the model file 
 ];
 
 const getAllCategories = () => {
+    // const testCategories = getAllFromDatabase();
     return testCategories  //using TDD so improving
     // maybe getAllFromDatabase
 }

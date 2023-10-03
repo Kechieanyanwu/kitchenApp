@@ -1,5 +1,5 @@
 -- Checklist
--- to take out timestamp / date added
+
 CREATE TABLE checklist (
     id SERIAL PRIMARY KEY,
     item_name VARCHAR(50) UNIQUE NOT NULL,
