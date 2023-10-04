@@ -10,11 +10,11 @@ I could just add the table name as a parameter in future
 const getAllFromDatabase = async (pool) => { 
     const client = await pool.connect();
     const result = await client.query(
-    'SELECT * FROM categories'
+        'SELECT * FROM categories'
     );
     const categories = result.rows;
     client.release();
-
+    // console.log("Categories from Database function is: ", categories); //test
     return categories; // a test to check that whatever comes back from quesry is returned
 
 }

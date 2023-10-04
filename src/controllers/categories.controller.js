@@ -1,7 +1,7 @@
 const { getAllFromDatabase } = require("../models/categoriesModel");
 const { pool } = require("../models/dbConfig"); 
 
-const testCategories = [{ //might be better to also move this to the model file and export 
+const testCategories = [{ //test
     id: 1,
     category_name: "Fruit"
 },
