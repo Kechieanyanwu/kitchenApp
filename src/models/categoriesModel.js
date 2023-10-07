@@ -8,15 +8,20 @@ i'll most likely end up replicating this function across all tables,
 I could just add the table name as a parameter in future
 */
 const getAllFromDatabase = async (pool) => { 
-    const client = await pool.connect();
-    const result = await client.query(
-        'SELECT * FROM categories'
-    );
+    const client = await pool.connect();  
+    var result;
+    try {
+        result = await client.query(
+            'SELECT * FROM categories'
+        );
+    } catch (error) {
+        // console.log("Error: ", error) //test
+        return error; //how to handle specific types of errors? Probably in future iteration
+    };
     const categories = result.rows;
     client.release();
     // console.log("Categories from Database function is: ", categories); //test
-    return categories; // a test to check that whatever comes back from quesry is returned
-
+    return categories; 
 }
 
 module.exports = { getAllFromDatabase };
