@@ -1,13 +1,15 @@
 const chai = require('chai');
 const assert = chai.assert;
-const should = chai.should(); //have to actually call the function 
+const should = chai.should(); //have to actually call the function
 const expect = chai.expect;
 const request = require("supertest");
 const {app, server} = require("../server"); //where I last imported
 const { after } = require('node:test');
 const { getAllFromDatabase } = require('../models/categoriesModel');
 
-chai.use(require('chai-json-schema-ajv')); //for validating JSON schema 
+chai.use(require('chai-json-schema-ajv')); //for validating JSON schema
+const chaiAsPromised = require("chai-as-promised");
+chai.use(require('chai-as-promised'));
 
 
 //need to find a way to close server after the tests are complete; could us AfterAll
@@ -21,7 +23,7 @@ describe("server testing", () => {
         //     console.log("Http server closed.");
         //     process.exit(err ? 1 : 0);
         // });
-        //perhaps will just use http-terminator? 
+        //perhaps will just use http-terminator?
     });
 
     describe("loading express", () => {
@@ -31,12 +33,12 @@ describe("server testing", () => {
             assert.equal(response.status, 200);
             assert.equal(response.body, "Hello World");
         });
-    
+
     });
 
-     
+
     describe("categories endpoint", () => {
-        it("routes correctly", async () => { // is there a better way of checking that it routes there? Or should I not? 
+        it("routes correctly", async () => { // is there a better way of checking that it routes there? Or should I not?
             const response = await request(server)
             .get("/categories");
             assert.equal(response.status, 200);
@@ -47,10 +49,10 @@ describe("server testing", () => {
                 .get("/categories");
                 assert.equal(response.status, 200);
             });
-            it("sends JSON response with correct schema", async() => { // test that it sends the JSON with the right shape 
+            it("sends JSON response with correct schema", async() => { // test that it sends the JSON with the right shape
                 const response = await request(server)
                 .get("/categories");
-                assert.equal(response.status, 200);            
+                assert.equal(response.status, 200);
                 assert.jsonSchema(response.body, categoriesSchema);
             });
             it("has only two properties", async () => {
@@ -65,9 +67,9 @@ describe("server testing", () => {
             /*
             it("sends no data when the table is empty", async () => {
             How should I test that it sends no data when nothing in table?
-            Might be something to do when I mock database 
+            Might be something to do when I mock database
             })
-            */            
+            */
         })
     });
     describe("checklist endpoint", () => {
@@ -90,13 +92,13 @@ describe('database function testing', () => {
     describe('categories model', () => {
         describe("getAllFromDatabase", () => { //might just make this a general function tbh. Let's see
             it('returns data from a successful db query', async () => {
-   
+
                 const mockCategoriesList = [
                     { id: 1, category_name: "Dairy"},
-                    { id: 2, category_name: "Grains"}                    
+                    { id: 2, category_name: "Grains"}
                 ]
-                
-                //mock connection pool 
+
+                //mock connection pool
                 const mockPool = {
                     connect: async () => {
                         return {
@@ -110,12 +112,12 @@ describe('database function testing', () => {
                 //pass the mockPool to getAllFromDatabase
                 const response = await getAllFromDatabase(mockPool) //update to pools
                 assert.deepEqual(response, mockCategoriesList);
-                // do I need to assert no error returned? 
+                // do I need to assert no error returned?
             });
             it("returns an error correctly", async () => { //possibly can change to throwing errors, as I will be having error handling and not error returning
                 const mockError = new Error('test error'); // Used for our mock DB to throw
-                
-                //code smell. Seems like I can abstract this 
+
+                //code smell. Seems like I can abstract this
                 const mockPool = {
                     connect: async () => {
                         return {
@@ -127,11 +129,9 @@ describe('database function testing', () => {
                     }
                 }
                 // WIP FOR THROWING AN ERROR
-                assert.throws(async () => {
-                    const response = await getAllFromDatabase(mockPool)
-                }, mockError) //if i comment out, everything passes. 
-                
-                //IF RETURNING AN ERROR BELOW WORKS: 
+                await assert.isRejected(getAllFromDatabase(mockPool), mockError);
+
+                //IF RETURNING AN ERROR BELOW WORKS:
 
                 // const response = await getAllFromDatabase(mockPool);
 
@@ -159,7 +159,7 @@ const categoriesSchema = {
 };
 
 /* Questions
-1. How to show expected vs actual in failing tests all the time when not using Assert to check . 
+1. How to show expected vs actual in failing tests all the time when not using Assert to check .
 2. is it better to lump like
      describe('Shopping List', function() {
   it('should list items on GET', function(done) {
@@ -182,5 +182,5 @@ chai.request(app)
   });
    });
 3. How can I close a server after tests are complete
-4. Is the right way to build out all the endpoints together, or focus on one per time? 
+4. Is the right way to build out all the endpoints together, or focus on one per time?
 */
