@@ -16,7 +16,10 @@ const getAllFromDatabase = async (pool) => {
         );
     } catch (error) {
         // console.log("Error: ", error) //test
-        return error; //how to handle specific types of errors? Probably in future iteration
+        throw error; //how to handle specific types of errors? Probably in future iteration
+
+        // IF RETURNING AN ERROR, BELOW
+        // return error; //how to handle specific types of errors? Probably in future iteration
     };
     const categories = result.rows;
     client.release();
@@ -27,8 +30,9 @@ const getAllFromDatabase = async (pool) => {
 module.exports = { getAllFromDatabase };
 
 
-// Old note to consolidate in readme process. Ignore below
-/*noticing that what I currently have isnt dependency injection since I actuall pass in db.config
-How do I avoid this? I think I will only describe the function and dependency here and 
-implement in the controller section. 
+/*
+Question is how to handle errors? Am i to handle from the very first thing, client.query? Do I test from getAllFromDatabase
+or from the controller file?
+Do i not handle errors here at all? I.e. am I testing result handling too early (see line 115 in server_test)
+Should I instead test a higher function, that an error comes all the way through? 
 */
