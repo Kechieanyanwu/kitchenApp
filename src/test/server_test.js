@@ -112,7 +112,7 @@ describe('database function testing', () => {
                 assert.deepEqual(response, mockCategoriesList);
                 // do I need to assert no error returned? 
             });
-            it("returns an error correctly", async () => {
+            it("returns an error correctly", async () => { //possibly can change to throwing errors, as I will be having error handling and not error returning
                 const mockError = new Error('test error'); // Used for our mock DB to throw
                 
                 //code smell. Seems like I can abstract this 
@@ -126,9 +126,17 @@ describe('database function testing', () => {
                         }
                     }
                 }
-                const response = await getAllFromDatabase(mockPool);
-                assert.instanceOf(response, Error); // make sure this is of type error, can change to specific error types if I create them
-                assert.equal(response, mockError); // expect resposne to match mockError
+                // WIP FOR THROWING AN ERROR
+                assert.throws(async () => {
+                    const response = await getAllFromDatabase(mockPool)
+                }, mockError) //if i comment out, everything passes. 
+                
+                //IF RETURNING AN ERROR BELOW WORKS: 
+
+                // const response = await getAllFromDatabase(mockPool);
+
+                // assert.instanceOf(response, Error); // make sure this is of type error, can change to specific error types if I create them
+                // assert.equal(response, mockError); // expect resposne to match mockError
             });
         })
 
