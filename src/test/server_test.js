@@ -110,7 +110,26 @@ describe('database function testing', () => {
                 //pass the mockPool to getAllFromDatabase
                 const response = await getAllFromDatabase(mockPool) //update to pools
                 assert.deepEqual(response, mockCategoriesList);
-            })
+                // do I need to assert no error returned? 
+            });
+            it("returns an error correctly", async () => {
+                const mockError = new Error('test error'); // Used for our mock DB to throw
+                
+                //code smell. Seems like I can abstract this 
+                const mockPool = {
+                    connect: async () => {
+                        return {
+                            query: async () => {
+                                throw mockError // simulating a request resulting in an error
+                            },
+                            release: () => {} // mocks the release method of a pool
+                        }
+                    }
+                }
+                const response = await getAllFromDatabase(mockPool);
+                assert.instanceOf(response, Error); // make sure this is of type error, can change to specific error types if I create them
+                assert.equal(response, mockError); // expect resposne to match mockError
+            });
         })
 
     })
