@@ -44,7 +44,7 @@ describe("server testing", () => {
             assert.equal(response.status, 200);
         });
         describe("GET Categories", () => {
-            it("sends a 200 request on good request", async () => {
+            it("sends a 200 code on good request", async () => {
                 const response = await request(server)
                 .get("/categories");
                 assert.equal(response.status, 200);
@@ -73,10 +73,16 @@ describe("server testing", () => {
         })
     });
     describe("checklist endpoint", () => {
-        it("routes correctly", async () => {
+        it("sends a 200 code on a good request", async () => {
             const response = await request(server)
             .get("/checklist");
             assert.equal(response.status, 200);
+        });
+        it("sends JSON response with correct schema", async () => {
+            const response = await request(server)
+            .get("/checklist");
+            assert.jsonSchema(response.body, checklistSchema); //create checklist schema
+
         })
     });
     describe("inventory endpoint", () => {
@@ -91,7 +97,7 @@ describe("server testing", () => {
 describe('database function testing', () => {
     describe('categories model', () => {
         describe("getAllFromDatabase", () => { //might just make this a general function tbh. Let's see
-            it('returns data from a successful db query', async () => {
+            it('returns a list of categories from a successful db query', async () => {
 
                 const mockCategoriesList = [
                     { id: 1, category_name: "Dairy"},
@@ -110,11 +116,11 @@ describe('database function testing', () => {
                     }
                 }
                 //pass the mockPool to getAllFromDatabase
-                const response = await getAllFromDatabase(mockPool) //update to pools
+                const response = await getAllFromDatabase(mockPool) 
                 assert.deepEqual(response, mockCategoriesList);
-                // do I need to assert no error returned?
+                // do I need to assert no error returned? e.g. assert isNotRejected
             });
-            it("returns an error correctly", async () => { //possibly can change to throwing errors, as I will be having error handling and not error returning
+            it("returns an error correctly", async () => { 
                 const mockError = new Error('test error'); // Used for our mock DB to throw
 
                 //code smell. Seems like I can abstract this
@@ -128,18 +134,37 @@ describe('database function testing', () => {
                         }
                     }
                 }
-                // WIP FOR THROWING AN ERROR
+
                 await assert.isRejected(getAllFromDatabase(mockPool), mockError);
-
-                //IF RETURNING AN ERROR BELOW WORKS:
-
-                // const response = await getAllFromDatabase(mockPool);
-
-                // assert.instanceOf(response, Error); // make sure this is of type error, can change to specific error types if I create them
-                // assert.equal(response, mockError); // expect resposne to match mockError
             });
         })
+    })
+    describe("checklist model", () => {
+        describe("getAllFromDatabase", () => {
+            // it("returns the checklist items from a successful query", async () => {
+            //     const mockChecklist = [ //returns a list of checklist items
+            //         { id: 1, item_name: "milk", quantity: 1, category_id: 1, purchased: false},
+            //         { id: 2, item_name: "berries", quantity: 3, category_id: 2, purchased: false}
+            //     ]
 
+            //     //mock connection pool
+            //     const mockPool = {
+            //         connect: async () => {
+            //             return {
+            //                 query: async () => {
+            //                     return {rows: mockChecklist}
+            //                 },
+            //                 release: () => {} // mocks the release method of a pool
+            //             }
+            //         }
+            //     }
+            //     //pass the mockPool to getAllFromDatabase
+            //     const response = await getAllFromDatabase(mockPool) 
+            //     assert.deepEqual(response, mockChecklist);
+            //     // do I need to assert no error returned?
+
+            // })
+        })
     })
 })
 
@@ -158,6 +183,20 @@ const categoriesSchema = {
     },
 };
 
+const checklistSchema = {
+    type: "array",
+    items: {
+        type: "object",
+        properties: {
+            id: {type: "number"},
+            item_name: {type: "string"},
+            quantity: {type: "number"},
+            category_id: {type: "number"},
+            purchased: {type: "boolean"}
+        },
+        required: ["id", "item_name", "quantity", "category_id", "purchased"],
+    }
+}
 /* Questions
 1. How to show expected vs actual in failing tests all the time when not using Assert to check .
 2. is it better to lump like
