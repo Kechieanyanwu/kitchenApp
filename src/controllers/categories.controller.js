@@ -1,18 +1,10 @@
-const { getAllFromDatabase } = require("../models/categoriesModel");
+const { getAllFromDatabase } = require("../models/model");
 const { pool } = require("../models/dbConfig"); 
 
-const testCategories = [{ //test
-    id: 1,
-    category_name: "Fruit"
-},
-{
-    id: 2,
-    category_name: "Grains"
-},
-];
+
 
 const getAllCategories = async () => {
-    const categories = await getAllFromDatabase(pool);
+    const categories = await getAllFromDatabase(pool, "categories");
     return categories  //using TDD so improving
     // will include error handling 
 }
