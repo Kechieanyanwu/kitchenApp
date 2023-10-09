@@ -1,15 +1,18 @@
 const chai = require('chai');
+const chaiAsPromised = require("chai-as-promised");
 const assert = chai.assert;
-const should = chai.should(); //have to actually call the function
+const should = chai.should(); //note, you have to actually call the function
 const expect = chai.expect;
 const request = require("supertest");
-const {app, server} = require("../server"); //where I last imported
+const {app, server} = require("../server"); 
 const { after } = require('node:test');
-const { getAllFromDatabase } = require('../models/categoriesModel');
+const { getAllFromDatabase, 
+        categoriesSchema, 
+        checklistSchema, 
+        inventorySchema } = require('../models/model'); //where I last imported
 
 chai.use(require('chai-json-schema-ajv')); //for validating JSON schema
-const chaiAsPromised = require("chai-as-promised");
-chai.use(require('chai-as-promised'));
+chai.use(require('chai-as-promised')); //extends chai to handle promises 
 
 
 //need to find a way to close server after the tests are complete; could us AfterAll
@@ -36,87 +39,66 @@ describe("server testing", () => {
 
     });
 
+    describe("Endpoint testing", () => {
+        const endpoints = [
+            {
+                name: "Categories",
+                path: "/categories",
+                schema: categoriesSchema,
+            },
+            {
+                name: "Checklist",
+                path: "/checklist",
+                schema: checklistSchema,
+            },
+            {
+                name: "Inventory",
+                path: "/inventory",
+                schema: inventorySchema,
+            },
+        ];
 
-    describe("categories endpoint", () => {
-        it("routes correctly", async () => { // is there a better way of checking that it routes there? Or should I not?
-            const response = await request(server)
-            .get("/categories");
-            assert.equal(response.status, 200);
-        });
-        describe("GET Categories", () => {
-            it("sends a 200 code on good request", async () => {
-                const response = await request(server)
-                .get("/categories");
-                assert.equal(response.status, 200);
+        for (const endpoint of endpoints) {
+            describe(`${endpoint.name} endpoint`, () => {
+                describe(`GET ${endpoint.name}`, () => {
+                    it("sends a 200 code on a good request" , async () => {
+                        const response = await request(server).get(endpoint.path);
+                        assert.equal(response.status, 200);
+                    });
+                    it("sends JSON response with correct schema", async () => {
+                        const response = await request(server).get(endpoint.path);
+                        assert.jsonSchema(response.body, endpoint.schema);
+                    });
+                });
             });
-            it("sends JSON response with correct schema", async() => { // test that it sends the JSON with the right shape
-                const response = await request(server)
-                .get("/categories");
-                assert.equal(response.status, 200);
-                assert.jsonSchema(response.body, categoriesSchema);
-            });
-            it("has only two properties", async () => {
-                const response = await request(server)
-                .get("/categories");
-                assert.equal(response.status, 200);
-                const responseBody = Array.isArray(response.body) ? response.body : [response.body];
-                responseBody.forEach((item) => {
-                    assert.equal(Object.keys(item).length, 2)
-                })
-            })
-            /*
-            it("sends no data when the table is empty", async () => {
-            How should I test that it sends no data when nothing in table?
-            Might be something to do when I mock database
-            })
-            */
-        })
-    });
-    describe("checklist endpoint", () => {
-        it("sends a 200 code on a good request", async () => {
-            const response = await request(server)
-            .get("/checklist");
-            assert.equal(response.status, 200);
-        });
-        it("sends JSON response with correct schema", async () => {
-            const response = await request(server)
-            .get("/checklist");
-            assert.jsonSchema(response.body, checklistSchema); //create checklist schema
-
-        })
-    });
-    describe("inventory endpoint", () => {
-        it("routes correctly", async () => {
-            const response = await request(server)
-            .get("/inventory");
-            assert.equal(response.status, 200);
-        })
+        }
     })
 });
 
 describe('database function testing', () => {
-    describe('categories model', () => {
-        describe("getAllFromDatabase", () => { //might just make this a general function tbh. Let's see
-            it('returns a list of categories from a successful db query', async () => {
-
+    describe("general model", () => {
+        describe("getAllFromDatabase" ,() => {
+            it("returns all items from a successful db query", async () => {
                 const mockCategoriesList = [
                     { id: 1, category_name: "Dairy"},
                     { id: 2, category_name: "Grains"}
                 ]
-
+    
                 //mock connection pool
                 const mockPool = {
                     connect: async () => {
                         return {
-                            query: async () => {
+                            query: async () => { //could add if statement for the particular table
                                 return {rows: mockCategoriesList}
                             },
                             release: () => {} // mocks the release method of a pool
                         }
                     }
                 }
+                //could use a for loop and run a test using Table driven testing 
+    
                 //pass the mockPool to getAllFromDatabase
-                const response = await getAllFromDatabase(mockPool) 
+                const response = await getAllFromDatabase(mockPool, "categories") //abstract away all names
                 assert.deepEqual(response, mockCategoriesList);
                 // do I need to assert no error returned? e.g. assert isNotRejected
             });
@@ -135,68 +117,27 @@ describe('database function testing', () => {
                     }
                 }
 
-                await assert.isRejected(getAllFromDatabase(mockPool), mockError);
+                await assert.isRejected(getAllFromDatabase(mockPool, "categories"), mockError);
             });
+            
         })
     })
-    describe("checklist model", () => {
-        describe("getAllFromDatabase", () => {
-            // it("returns the checklist items from a successful query", async () => {
-            //     const mockChecklist = [ //returns a list of checklist items
-            //         { id: 1, item_name: "milk", quantity: 1, category_id: 1, purchased: false},
-            //         { id: 2, item_name: "berries", quantity: 3, category_id: 2, purchased: false}
-            //     ]
+    describe('categories model', () => {
+        describe("getAllCategories", () => { 
 
-            //     //mock connection pool
-            //     const mockPool = {
-            //         connect: async () => {
-            //             return {
-            //                 query: async () => {
-            //                     return {rows: mockChecklist}
-            //                 },
-            //                 release: () => {} // mocks the release method of a pool
-            //             }
-            //         }
-            //     }
-            //     //pass the mockPool to getAllFromDatabase
-            //     const response = await getAllFromDatabase(mockPool) 
-            //     assert.deepEqual(response, mockChecklist);
-            //     // do I need to assert no error returned?
-
-            // })
         })
     })
+    // describe("checklist model", () => {
+    //     describe("getAllChecklist", () => {
+ 
+    //     })
+    // })
 })
 
 
 
-// good design would be to put this in the models file and export. Later
-const categoriesSchema = {
-    type: "array",
-    items: {
-        type: "object",
-        properties: {
-            id: {type: "number"},
-            category_name: {type: "string"},
-        },
-        required: ["id", "category_name"],
-    },
-};
 
-const checklistSchema = {
-    type: "array",
-    items: {
-        type: "object",
-        properties: {
-            id: {type: "number"},
-            item_name: {type: "string"},
-            quantity: {type: "number"},
-            category_id: {type: "number"},
-            purchased: {type: "boolean"}
-        },
-        required: ["id", "item_name", "quantity", "category_id", "purchased"],
-    }
-}
+
 /* Questions
 1. How to show expected vs actual in failing tests all the time when not using Assert to check .
 2. is it better to lump like

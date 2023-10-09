@@ -1,11 +1,12 @@
-const { getAllFromDatabase } = require("../models/checklistModel")
+const { getAllFromDatabase } = require("../models/model")
 const { pool } = require("../models/dbConfig") //our database pool 
 
 const getAllChecklist = async () => {
-    const checklist = await getAllFromDatabase(pool);
+    const checklist = await getAllFromDatabase(pool, "checklist");
     return checklist;
+
     //to include error handling when testing this endpoint
-    //i.e. include try catch loop here for thrown errorsa
+    //i.e. include try catch loop here for thrown errors
 
 }
 
