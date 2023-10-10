@@ -7,10 +7,11 @@ const expect = chai.expect;
 const request = require("supertest");
 const {app, server} = require("../server"); 
 const { after } = require('node:test');
-const { getAllFromDatabase, 
-        categoriesSchema, 
-        checklistSchema, 
-        inventorySchema } = require('../models/model'); //where I last imported
+const model = require('../models/model'); //general import as you can't destructure when stubbing with sinon
+const getAllFromDatabase = model.getAllFromDatabase;
+const categoriesSchema = model.categoriesSchema;
+const checklistSchema = model.checklistSchema;
+const inventorySchema = model.inventorySchema;
 const { getAllItems } = require('../controllers/controller');
 
 chai.use(require('chai-json-schema-ajv')); //for validating JSON schema
@@ -131,20 +132,17 @@ describe('database function testing', () => {
                     ]
 
                     //create a sinon stub for getAllFromDatabase
-                    const getAllFromDatabaseStub = sinon.stub().resolves(mockItems); //async functions resolve
-
-                    //replace the real getAllFromDatabase with the stub
-                    const originalGetAllFromDatabase = require('../models/model');
-                    sinon.stub(originalGetAllFromDatabase, 'getAllFromDatabase').callsFake(getAllFromDatabaseStub);
-
-                    //call the function to be tested 
-                    const items = await getAllItems(dummyTable); //make an await here 
+                    const getAllFromDatabaseStub = sinon.stub(model, 'getAllFromDatabase');
+                    getAllFromDatabaseStub.resolves(mockItems);
+                    
+                    //call the function to be tested which will use the stubbed function
+                    const items = await getAllItems(dummyTable);
                     
                     //assert that items match the mocked data  
                     assert.deepEqual(items, mockItems); //what I want to assert
 
                     //restore the original function to avoid affecting other tests
-                    originalGetAllFromDatabase.getAllFromDatabase.restore();
+                    getAllFromDatabaseStub.restore();
                 })
             })
             //next step is to handle errors;
