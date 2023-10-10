@@ -1,5 +1,4 @@
 const chai = require('chai');
-const chaiAsPromised = require("chai-as-promised");
 const sinon = require('sinon');
 const assert = chai.assert;
 const should = chai.should(); //note, you have to actually call the function
@@ -21,7 +20,7 @@ chai.use(require('chai-as-promised')); //extends chai to handle promises
 
 
 //need to find a way to close server after the tests are complete; could us AfterAll
-describe("server testing", () => {
+describe("Server testing", () => {
     after((server) => { //somehow this block is never being activated
         // server.close(() => {
         //     console.log("Server closed"); // never reaching this endpoint
@@ -80,8 +79,8 @@ describe("server testing", () => {
     })
 });
 
-describe('database function testing', () => {
-    describe("general model", () => {
+describe('Database Function tests', () => {
+    describe("General Database functions", () => {
         describe("getAllFromDatabase" ,() => {
             it("returns all items from a successful db query", async () => {
                 const mockCategoriesList = [
@@ -122,77 +121,74 @@ describe('database function testing', () => {
             
         })
     })
-    describe('Controller Function tests', () => {
-        describe("General Controller functions", () => {
-            describe("GetAllItems", () => {
-                let getAllFromDatabaseStub;
-                const dummyTable = "checklist"; //feels a little bit like coupling as test knows about checklist. Could fix this by putting validation at higher levels of the code e.g. route validation
-                const mockItems = [
-                    { id: 1, category_name: "Dairy"},
-                    { id: 2, category_name: "Grains"}
-                ]
+})
 
-                beforeEach(function () {
-                    //create a sinon stub for getAllFromDatabase
-                    getAllFromDatabaseStub = sinon.stub(model, 'getAllFromDatabase');
-                })
-                afterEach(function () {
-                    //restore the original function to avoid affecting other tests
-                    getAllFromDatabaseStub.restore();
-                });
+describe('Controller Function tests', () => {
+    describe("General Controller functions", () => {
+        describe("GetAllItems", () => {
+            let getAllFromDatabaseStub;
+            const dummyTable = "checklist"; //feels a little bit like coupling as test knows about checklist. Could fix this by putting validation at higher levels of the code e.g. route validation
+            const mockItems = [
+                { id: 1, category_name: "Dairy"},
+                { id: 2, category_name: "Grains"}
+            ]
 
-                it("returns all items correctly", async () => {
-                    //sinon stub for getAllFromDatabase that resolves with the items 
-                    getAllFromDatabaseStub.resolves(mockItems);
-                    
-                    //call the function to be tested which will use the stubbed function
-                    const items = await getAllItems(dummyTable);
-                    
-                    assert.deepEqual(items, mockItems); //assert that items match the mocked data  
-                    await assert.isFulfilled(getAllItems(dummyTable)); //asserting no error occurred
-                });
-
-                it("handles an error from the db correctly", async () => {
-                    //set up
-                    const mockError = new Error('test error');
-
-                    //sinon stub for getAllFromDatabase that throws an error
-                    getAllFromDatabaseStub.throws(mockError);
-
-                    //assert the promise is rejected and the mock error thrown
-                    await assert.isRejected(getAllItems(dummyTable), mockError);
-                });
-
-                it("throws an error if no table name is specified", async () => {
-                    //setup 
-                    const emptyTable = "";
-                
-                    //sinon stub for getAllFromDatabase that resolves with the items 
-                    getAllFromDatabaseStub.resolves(mockItems);
-                   
-                    //assert the promise is rejected and the appropriate error thrown
-                    await assert.isRejected(getAllItems(emptyTable), noTableError);
-                });
-
-                it("throws an error when a non-existent table is specified", async () => {
-                    //setup 
-                    const nonExistentTable = "banana";
-                
-                    //sinon stub for getAllFromDatabase that resolves with the items  
-                    getAllFromDatabaseStub.resolves(mockItems);
-                   
-                    //assert the promise is rejected and the appropriate error thrown
-                    await assert.isRejected(getAllItems(nonExistentTable), nonExistentTableError);
-                });
+            beforeEach(function () {
+                //create a sinon stub for getAllFromDatabase
+                getAllFromDatabaseStub = sinon.stub(model, 'getAllFromDatabase');
             })
+            afterEach(function () {
+                //restore the original function to avoid affecting other tests
+                getAllFromDatabaseStub.restore();
+            });
+
+            it("returns all items correctly", async () => {
+                //sinon stub for getAllFromDatabase that resolves with the items 
+                getAllFromDatabaseStub.resolves(mockItems);
+                
+                //call the function to be tested which will use the stubbed function
+                const items = await getAllItems(dummyTable);
+                
+                assert.deepEqual(items, mockItems); //assert that items match the mocked data  
+                await assert.isFulfilled(getAllItems(dummyTable)); //asserting no error occurred
+            });
+
+            it("handles an error from the db correctly", async () => {
+                //set up
+                const mockError = new Error('test error');
+
+                //sinon stub for getAllFromDatabase that throws an error
+                getAllFromDatabaseStub.throws(mockError);
+
+                //assert the promise is rejected and the mock error thrown
+                await assert.isRejected(getAllItems(dummyTable), mockError);
+            });
+
+            it("throws an error if no table name is specified", async () => {
+                //setup 
+                const emptyTable = "";
+            
+                //sinon stub for getAllFromDatabase that resolves with the items 
+                getAllFromDatabaseStub.resolves(mockItems);
+                
+                //assert the promise is rejected and the appropriate error thrown
+                await assert.isRejected(getAllItems(emptyTable), noTableError);
+            });
+
+            it("throws an error when a non-existent table is specified", async () => {
+                //setup 
+                const nonExistentTable = "banana";
+            
+                //sinon stub for getAllFromDatabase that resolves with the items  
+                getAllFromDatabaseStub.resolves(mockItems);
+                
+                //assert the promise is rejected and the appropriate error thrown
+                await assert.isRejected(getAllItems(nonExistentTable), nonExistentTableError);
+            });
         })
     })
-    // describe("checklist model", () => {
-    //     describe("getAllChecklist", () => {
- 
-    //     })
-    // })
 })
+
 
 
 
