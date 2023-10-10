@@ -1,9 +1,11 @@
 const express = require('express');
-const { getAllFromInventory } = require('../controllers/inventory.controller');
 const inventoryRouter = express();
+const { getAllItems } = require('../controllers/controller');
+const { tableName } = require('../models/model');
+
 
 inventoryRouter.get("/", async (req, res) => {
-    const inventoryArray = await getAllFromInventory();
+    const inventoryArray = await getAllItems(tableName.inventory);
     res.status(200).json(inventoryArray)
 });
 
