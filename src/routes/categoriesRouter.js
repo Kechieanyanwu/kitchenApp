@@ -1,11 +1,11 @@
 const express = require('express');
 const categoriesRouter = express();
 const { getAllItems } = require('../controllers/controller');
-const { tableName } = require('../models/model');
+const { tableNames } = require('../models/model');
 
 
 categoriesRouter.get("/", async (req, res) => {
-    const categoriesArray = await getAllItems(tableName.categories);
+    const categoriesArray = await getAllItems(tableNames.categories);
     res.status(200).json(categoriesArray)
 });
 
