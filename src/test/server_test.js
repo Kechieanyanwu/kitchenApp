@@ -1,5 +1,6 @@
 const chai = require('chai');
 const chaiAsPromised = require("chai-as-promised");
+const sinon = require('sinon');
 const assert = chai.assert;
 const should = chai.should(); //note, you have to actually call the function
 const expect = chai.expect;
@@ -10,6 +11,7 @@ const { getAllFromDatabase,
         categoriesSchema, 
         checklistSchema, 
         inventorySchema } = require('../models/model'); //where I last imported
+const { getAllItems } = require('../controllers/controller');
 
 chai.use(require('chai-json-schema-ajv')); //for validating JSON schema
 chai.use(require('chai-as-promised')); //extends chai to handle promises 
@@ -83,24 +85,20 @@ describe('database function testing', () => {
                     { id: 1, category_name: "Dairy"},
                     { id: 2, category_name: "Grains"}
                 ]
-    
                 //mock connection pool
                 const mockPool = {
                     connect: async () => {
                         return {
-                            query: async () => { //could add if statement for the particular table
+                            query: async () => {
                                 return {rows: mockCategoriesList}
                             },
                             release: () => {} // mocks the release method of a pool
                         }
                     }
                 }
-                //could use a for loop and run a test using Table driven testing 
-    
-                //pass the mockPool to getAllFromDatabase
                 const response = await getAllFromDatabase(mockPool, "categories") //abstract away all names
                 assert.deepEqual(response, mockCategoriesList);
-                // do I need to assert no error returned? e.g. assert isNotRejected
+                await assert.isFulfilled(getAllFromDatabase(mockPool, "categories")); //asserting no error occurred
             });
             it("returns an error correctly", async () => { 
                 const mockError = new Error('test error'); // Used for our mock DB to throw
@@ -116,15 +114,40 @@ describe('database function testing', () => {
                         }
                     }
                 }
-
                 await assert.isRejected(getAllFromDatabase(mockPool, "categories"), mockError);
             });
             
         })
     })
-    describe('categories model', () => {
-        describe("getAllCategories", () => { 
+    describe('Controller Function tests', () => {
+        describe("General Controller functions", () => {
+            describe("GetAllItems", () => {
+                it("returns all items correctly", async () => { //is an async function so wil think 
+                    //set up dummy tables and mock items
+                    const dummyTable = "random";
+                    const mockItems = [
+                        { id: 1, category_name: "Dairy"},
+                        { id: 2, category_name: "Grains"}
+                    ]
 
+                    //create a sinon stub for getAllFromDatabase
+                    const getAllFromDatabaseStub = sinon.stub().resolves(mockItems); //async functions resolve
+
+                    //replace the real getAllFromDatabase with the stub
+                    const originalGetAllFromDatabase = require('../models/model');
+                    sinon.stub(originalGetAllFromDatabase, 'getAllFromDatabase').callsFake(getAllFromDatabaseStub);
+
+                    //call the function to be tested 
+                    const items = await getAllItems(dummyTable); //make an await here 
+                    
+                    //assert that items match the mocked data  
+                    assert.deepEqual(items, mockItems); //what I want to assert
+
+                    //restore the original function to avoid affecting other tests
+                    originalGetAllFromDatabase.getAllFromDatabase.restore();
+                })
+            })
+            //next step is to handle errors;
         })
     })
     // describe("checklist model", () => {

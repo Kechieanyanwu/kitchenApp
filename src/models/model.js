@@ -58,9 +58,16 @@ const inventorySchema = {
     },
 };
 
+const tableName = {
+    categories: "categories",
+    checklist: "checklist",
+    inventory: "inventory"
+}
+
 module.exports = { 
     getAllFromDatabase,
     categoriesSchema,
     checklistSchema,
     inventorySchema,
+    tableName,
 };
