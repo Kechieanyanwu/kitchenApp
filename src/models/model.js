@@ -58,7 +58,7 @@ const inventorySchema = {
     },
 };
 
-const tableName = {
+const tableNames = {
     categories: "categories",
     checklist: "checklist",
     inventory: "inventory"
@@ -69,5 +69,5 @@ module.exports = {
     categoriesSchema,
     checklistSchema,
     inventorySchema,
-    tableName,
+    tableNames,
 };
