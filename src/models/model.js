@@ -6,7 +6,6 @@ const getAllFromDatabase = async (pool, tableName) => {
     try {
         result = await client.query(query);
     } catch (error) {
-        //throw it back to the calling function 
         client.release()
         throw error; //how to handle specific types of errors? Probably in future iteration
     };
