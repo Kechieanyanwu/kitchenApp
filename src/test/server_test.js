@@ -43,7 +43,7 @@ describe("Server testing", () => {
 
     });
 
-    describe("Endpoint testing", () => {
+    describe("Get Endpoint testing", () => {
         const endpoints = [
             {
                 name: "Categories",
@@ -78,6 +78,31 @@ describe("Server testing", () => {
         }
     })
 });
+//to come back to this after get specific item. Do i need to send a get request when updating? So the form is populated?
+describe("POST endpoint testing", () => {
+    describe("POST /Categories", () => {
+        it("responds with 201 to a valid request body", async () => {
+            const response = await request(server)
+            .post("/categories") //perhaps set header / content type etc
+            .send({"category_name": "Dairy"});
+            assert.equal(response.status, 201);
+        })
+        it("rejects an empty request body", async () => {
+            const response = await request(server)
+            .post("/categories")
+            .send();
+                
+            assert.equal(response.status, 400); //should throw a bad request error if no body is sent
+        });
+        it("rejects a request body with an incorrect schema", async () => {
+            const response = await request(server)
+            .post("/categories") 
+            .send({"inventory": "Dairy"});
+
+            assert.equal(response.status, 400); //should throw bad request error
+        })
+    })
+})
 
 describe('Database Function tests', () => {
     describe("General Database functions", () => {
@@ -164,7 +189,7 @@ describe('Controller Function tests', () => {
                 await assert.isRejected(getAllItems(dummyTable), mockError);
             });
 
-            it("throws an error if no table name is specified", async () => {
+            it("throws an error if no table name is specified", async () => { //validating this here because it isnt an input from the client. This makes sure backend works!
                 //setup 
                 const emptyTable = "";
             
@@ -175,7 +200,7 @@ describe('Controller Function tests', () => {
                 await assert.isRejected(getAllItems(emptyTable), noTableError);
             });
 
-            it("throws an error when a non-existent table is specified", async () => {
+            it("throws an error when a non-existent table is specified", async () => { //validating this here because it isnt an input from the client. This makes sure backend works!
                 //setup 
                 const nonExistentTable = "banana";
             
@@ -218,5 +243,4 @@ chai.request(app)
   });
    });
 3. How can I close a server after tests are complete
-4. Is the right way to build out all the endpoints together, or focus on one per time?
 */
