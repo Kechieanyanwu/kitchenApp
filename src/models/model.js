@@ -16,6 +16,17 @@ const getAllFromDatabase = async (pool, tableName) => {
     return queryResult; 
 }
 
+
+//CURRENTLY WIP 
+const addToDatabase = async (pool, tableName, newItem) => {
+    const client = await pool.connect();  
+    var result;
+    //for field in new item, append to a string, with "," between each 
+    const query = 'INSERT INTO ' + tableName + `()`;
+}
+
+
+
 const categoriesSchema = {
     type: "array",
     items: {

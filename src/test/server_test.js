@@ -206,7 +206,11 @@ describe('Database Function tests', () => {
                 }
                 await assert.isRejected(getAllFromDatabase(mockPool, "categories"), mockError);
             });
-            
+        });
+        describe("addToDatabase", () => {
+            it("adds the new item to the table", async () => {
+                // 
+            })
         })
     })
 })
