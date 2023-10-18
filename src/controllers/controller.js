@@ -5,24 +5,40 @@ const { tableNames } = require("../models/model");
 const noTableError = new Error("no table specified");
 const nonExistentTableError = new Error("table does not exist");
 
-const getAllItems = async (tableName) => {
-    //throw error if no table name is specified
-    if (tableName === "" || tableName === undefined) { 
+const validateTableName = (tableName) => {
+    if (tableName === "" || tableName === undefined) {      //throw error if no table name is specified
         throw noTableError;
-    };
-
-    //validate that table name exists 
-    if (tableNames.hasOwnProperty(tableName)) {
-        var items;
-        try {
-            items = await model.getAllFromDatabase(pool, tableName); //you can't destructure imported modules with sinon stubs
-        } catch (error) {
-            throw error;
-        }
-        return items 
     } else {
-        throw nonExistentTableError;
+        if (tableNames.hasOwnProperty(tableName)) {     //validate that table name exists 
+            return true;
+        } else {
+            throw nonExistentTableError;
+        }
     }
+}
+
+const getAllItems = async (tableName) => {
+    try {
+        const tableExists = validateTableName(tableName);
+    } catch (err) {
+        throw err;
+    }
+
+    var items;
+    try {
+        items = await model.getAllFromDatabase(pool, tableName); //you can't destructure imported modules with sinon stubs
+    } catch (error) {
+        throw error;
+    }
+    return items
+}
+
+
+//CURRENTLY WIP 
+const addNewItem = async(tableName, newItem) => {
+    //takes request object item
+    //separates the object into the fields and the values
+    //builds the new item query and sends to add to database
 }
 
 const validateNewGroceryItem = (req, res, next) => { //include validateCategoryID soon

@@ -21,7 +21,9 @@ categoriesRouter.get("/", async (req, res, next) => {
 //get specific item
 
 
-categoriesRouter.post("/", jsonParser, validateNewCategory, (req, res, next) => {
+categoriesRouter.post("/", jsonParser, validateNewCategory, async (req, res, next) => {
+    //to add try catch loop
+    // const response = await addNewItem(categories, req.body) //it is inside addNewItem that we transform to query to be sent
     res.status(201).send("Request processed successfully"); //add logic 
     //modify to send created item? 
 })
