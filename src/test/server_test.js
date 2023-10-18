@@ -80,28 +80,109 @@ describe("Server testing", () => {
 });
 //to come back to this after get specific item. Do i need to send a get request when updating? So the form is populated?
 describe("POST endpoint testing", () => {
-    describe("POST /Categories", () => {
-        it("responds with 201 to a valid request body", async () => {
-            const response = await request(server)
-            .post("/categories") //perhaps set header / content type etc
-            .send({"category_name": "Dairy"});
-            assert.equal(response.status, 201);
-        })
-        it("rejects an empty request body", async () => {
-            const response = await request(server)
-            .post("/categories")
-            .send();
-                
-            assert.equal(response.status, 400); //should throw a bad request error if no body is sent
+    const testCases = [
+        {
+          description: "responds with 201 to a valid request body",
+          route: "/categories",
+          requestBody: { "category_name": "Dairy" },
+          expectedStatus: 201,
+        },
+        {
+          description: "rejects an empty request body",
+          route: "/categories",
+          requestBody: undefined,
+          expectedStatus: 400,
+        },
+        {
+          description: "rejects a request body with an incorrect schema",
+          route: "/categories",
+          requestBody: { "inventory": "Dairy" },
+          expectedStatus: 400,
+        },
+        {
+          description: "responds with 201 to a valid request body",
+          route: "/checklist",
+          requestBody: {
+            "item_name": "Milk",
+            "quantity": 2,
+            "category_id": 3,
+          },
+          expectedStatus: 201,
+        },
+        {
+          description: "rejects an empty request body",
+          route: "/checklist",
+          requestBody: undefined,
+          expectedStatus: 400,
+        },
+        {
+          description: "rejects a request body with an incorrect schema",
+          route: "/checklist",
+          requestBody: { "inventory": "Dairy" },
+          expectedStatus: 400,
+        },
+      ];
+      
+      testCases.forEach((testCase) => {
+        describe("POST endpoint testing", () => {
+          const { description, route, requestBody, expectedStatus } = testCase;
+      
+          it(description, async () => {
+            const response = await request(server).post(route).send(requestBody);
+            assert.equal(response.status, expectedStatus);
+          });
         });
-        it("rejects a request body with an incorrect schema", async () => {
-            const response = await request(server)
-            .post("/categories") 
-            .send({"inventory": "Dairy"});
+      });
+      
+    // describe("POST /Categories", () => {
+    //     it("responds with 201 to a valid request body", async () => {
+    //         const response = await request(server)
+    //         .post("/categories") //perhaps set header / content type etc
+    //         .send({"category_name": "Dairy"});
+    //         assert.equal(response.status, 201);
+    //     })
+    //     it("rejects an empty request body", async () => {
+    //         const response = await request(server)
+    //         .post("/categories")
+    //         .send();
+                
+    //         assert.equal(response.status, 400); //should throw a bad request error if no body is sent
+    //     });
+    //     it("rejects a request body with an incorrect schema", async () => {
+    //         const response = await request(server)
+    //         .post("/categories") 
+    //         .send({"inventory": "Dairy"});
 
-            assert.equal(response.status, 400); //should throw bad request error
-        })
-    })
+    //         assert.equal(response.status, 400); //should throw bad request error
+    //     })
+    // });
+    // describe("POST /checklist", () => {
+    //     it("responds with 201 to a valid request body", async () => {
+    //         const response = await request(server) //uh-oh! Code smell!
+    //         .post("/checklist")
+    //         .send({ //can abstract this away
+    //             "item_name": "Milk",
+    //             "quantity": 2, 
+    //             "category_id": 3, //only these three because id auto increments and purchased defaults to false
+    //             });
+            
+    //         assert.equal(response.status, 201);
+    //     });
+    //     it("rejects an empty request body", async () => {
+    //         const response = await request(server)
+    //         .post("/checklist")
+    //         .send();
+            
+    //         assert.equal(response.status, 400);
+    //     });
+    //     it("rejects a request body with an incorrect schema", async () => {
+    //         const response = await request(server)
+    //         .post("/checklist") 
+    //         .send({"inventory": "Dairy"});
+
+    //         assert.equal(response.status, 400); //should throw bad request error
+    //     });
+    // })
 })
 
 describe('Database Function tests', () => {
@@ -214,7 +295,9 @@ describe('Controller Function tests', () => {
     })
 })
 
-
+//include describe block for validate functions
+//it rejects invalid category item 
+    //could be a getCategory function to validate 
 
 
 
