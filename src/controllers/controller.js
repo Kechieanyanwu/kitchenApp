@@ -29,6 +29,22 @@ const getAllItems = async (tableName) => {
     return items
 }
 
+//currently WIP 
+const buildNewItem = (requestBody) => {
+    //initialize an empty object
+    var newItem = {}; 
+    
+    //loop through each key in the requestBody and build the newItem object
+     for (const key in requestBody) {
+        //build the field names for newItem, separated by commas
+        newItem.columns = newItem.columns ? `${newItem.columns}, ${key}` : key;
+
+        //build the values for newItem, separated by commas and enclosed in single quotes if a string
+        const value = typeof requestBody[key] === "string" ? `'${requestBody[key]}'` : requestBody[key];
+        newItem.values = newItem.values ? `${newItem.values}, ${value}` : value;
+        } 
+    return newItem;
+}
 
 
 
@@ -36,12 +52,15 @@ const getAllItems = async (tableName) => {
 
 //CURRENTLY WIP 
 const addNewItem = async(tableName, requestBody) => {
+    //transformation of the request body - to turn into another function 
+        //separates the object into the fields and the values
+        //builds the new item query and sends to add to database
+        //saves this to object called newItem
+    // const newItem = buildNewItem(requestBody);
 
-    //takes request object item
-    //separates the object into the fields and the values
-    //builds the new item query and sends to add to database
+    // calling addToDB with the new item
     // try {
-    //const response = await addToDatabase(pool, tableName, newItemQuery)
+    //const addedItem = await addToDatabase(pool, tableName, newItem)
     // } catch (err) {
     //     throw err;
     // }
@@ -110,6 +129,7 @@ module.exports = {
     nonExistentTableError,
     validateNewGroceryItem,
     validateNewCategory,
+    buildNewItem,
  };
 
  // const validateTableName = (tableName) => {
