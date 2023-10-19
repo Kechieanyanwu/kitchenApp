@@ -84,6 +84,8 @@ describe("GET Endpoint testing", () => {
 })
 
 //to come back to this after get specific item. Do i need to send a get request when updating? So the form is populated?
+
+//might need to include test for what the response is
 describe("POST endpoint testing", () => {
     const endpoints = [
         {
@@ -94,6 +96,7 @@ describe("POST endpoint testing", () => {
                 description: "responds with 201 to a valid request body",
                 requestBody: { "category_name": "Dairy" },
                 expectedStatus: 201,
+                //expectedResponse: {"id": 1, "category_name": "Dairy"}
             },
             {
                 description: "rejects an empty request body",
@@ -313,29 +316,8 @@ describe('Controller Function tests', () => {
                 //assert the promise is rejected and the mock error thrown
                 await assert.isRejected(getAllItems(dummyTable), mockError);
             });
-
-            it("throws an error if no table name is specified", async () => { //validating this here because it isnt an input from the client. This makes sure backend works!
-                //setup 
-                const emptyTable = "";
-            
-                //sinon stub for getAllFromDatabase that resolves with the items 
-                getAllFromDatabaseStub.resolves(mockItems);
-                
-                //assert the promise is rejected and the appropriate error thrown
-                await assert.isRejected(getAllItems(emptyTable), noTableError);
-            });
-
-            it("throws an error when a non-existent table is specified", async () => { //validating this here because it isnt an input from the client. This makes sure backend works!
-                //setup 
-                const nonExistentTable = "banana";
-            
-                //sinon stub for getAllFromDatabase that resolves with the items  
-                getAllFromDatabaseStub.resolves(mockItems);
-                
-                //assert the promise is rejected and the appropriate error thrown
-                await assert.isRejected(getAllItems(nonExistentTable), nonExistentTableError);
-            });
         });
+
         describe("buildNewItem", () => { //havent exported yet
             it("transforms a request object into a new item object", () => {
                 const requestBody = {
@@ -354,6 +336,7 @@ describe('Controller Function tests', () => {
 
             })
         });
+
         describe("addNewItem", () => {
             let addToDatabaseStub;
             const dummyTable = "checklist"; //feels a little bit like coupling as test knows about checklist. Could fix this by putting validation at higher levels of the code e.g. route validation
@@ -388,17 +371,8 @@ describe('Controller Function tests', () => {
                 //assert the promise is rejected and the mock error thrown
                 await assert.isRejected(addNewItem(dummyTable, mockRequestBody), mockError);
             });
-            it("throws an error if no table name is specified", async () => { //validating this here because it isnt an input from the client. This makes sure backend works!
-                //setup 
-                const emptyTable = "";
-            
-                //sinon stub for addToDatabase that resolves with the mockNewItem 
-                addToDatabaseStub.resolves(mockNewItem);
-                
-                //assert the promise is rejected and the appropriate error thrown
-                await assert.isRejected(addNewItem(emptyTable, mockRequestBody), noTableError);
-            });
         });
+
         describe("validateTableName", () => {
             it("throws an error if no table name is specified", () => {
                 const emptyTable = "";

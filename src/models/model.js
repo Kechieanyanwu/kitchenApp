@@ -26,6 +26,7 @@ const addToDatabase = async (pool, tableName, newItem) => {
     //for field in new item, append to a string, with "," between each 
     const query = `INSERT INTO ${tableName} (${newItem.columns}) VALUES (${newItem.values}) RETURNING *`;
     
+    console.log("before try look in add to db"); //test
     try {
         addedItem = await client.query(query);
     } catch (error) {

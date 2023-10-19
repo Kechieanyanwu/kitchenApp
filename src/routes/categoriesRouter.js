@@ -1,7 +1,8 @@
 const express = require('express');
 const categoriesRouter = express();
 const { getAllItems,
-        validateNewCategory } = require('../controllers/controller');
+        validateNewCategory, 
+        addNewItem} = require('../controllers/controller');
 const { tableNames } = require('../models/model');
 const bodyParser = require("body-parser");
 
@@ -22,10 +23,15 @@ categoriesRouter.get("/", async (req, res, next) => {
 
 
 categoriesRouter.post("/", jsonParser, validateNewCategory, async (req, res, next) => {
-    //to add try catch loop
-    // const response = await addNewItem(categories, req.body) //it is inside addNewItem that we transform to query to be sent
-    res.status(201).send("Request processed successfully"); //add logic 
-    //modify to send created item? 
+    var response;
+    // console.log(req.body); //test
+    // try {
+    //     response = await addNewItem(tableNames.categories, req.body);
+    // } catch (err) {
+    //     err.status = 500;
+    //     next(err);
+    // }
+    res.status(201).send(response); 
 })
 
 

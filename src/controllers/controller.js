@@ -5,17 +5,6 @@ const { tableNames } = require("../models/model");
 const noTableError = new Error("no table specified");
 const nonExistentTableError = new Error("table does not exist");
 
-const validateTableName = (tableName) => {
-    if (tableName === "" || tableName === undefined) {      //throw error if no table name is specified
-        throw noTableError;
-    } else {
-        if (tableNames.hasOwnProperty(tableName)) {     //validate that table name exists 
-            return;
-        } else {
-            throw nonExistentTableError;
-        }
-    }
-}
 
 const getAllItems = async (tableName) => {
     validateTableName(tableName);
@@ -29,7 +18,27 @@ const getAllItems = async (tableName) => {
     return items
 }
 
-//currently WIP 
+
+
+
+const addNewItem = async(tableName, requestBody) => {
+    console.log("reached addNewItem"); //test
+    validateTableName(tableName);
+
+    const newItem = buildNewItem(requestBody);
+    var addedItem;
+    
+    // calling addToDB with the new item
+    try {
+        addedItem = await model.addToDatabase(pool, tableName, newItem)
+    } catch (err) {
+        throw err;
+    }
+
+    return addedItem
+}
+
+
 const buildNewItem = (requestBody) => {
     //initialize an empty object
     var newItem = {}; 
@@ -46,26 +55,6 @@ const buildNewItem = (requestBody) => {
     return newItem;
 }
 
-
-
-
-
-//CURRENTLY WIP 
-const addNewItem = async(tableName, requestBody) => {
-    validateTableName(tableName);
-
-    const newItem = buildNewItem(requestBody);
-    var addedItem;
-    
-    // calling addToDB with the new item
-    try {
-        addedItem = await model.addToDatabase(pool, tableName, newItem)
-    } catch (err) {
-        throw err;
-    }
-
-    return addedItem
-}
 
 const validateNewGroceryItem = (req, res, next) => { //include validateCategoryID soon
     if (JSON.stringify(req.body) == "{}") {
@@ -121,6 +110,18 @@ const validateNewCategory = (req, res, next) => {
 
     }
 };
+
+const validateTableName = (tableName) => {
+    if (tableName === "" || tableName === undefined) {      //throw error if no table name is specified
+        throw noTableError;
+    } else {
+        if (tableNames.hasOwnProperty(tableName)) {     //validate that table name exists 
+            return;
+        } else {
+            throw nonExistentTableError;
+        }
+    }
+}
 
 
 module.exports = { 
