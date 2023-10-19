@@ -1,4 +1,5 @@
 const getAllFromDatabase = async (pool, tableName) => {
+    // console.log("getAllFromDatabase function"); //test
     const client = await pool.connect();  
     var result;
     const query = 'SELECT * FROM ' + tableName;
@@ -17,12 +18,23 @@ const getAllFromDatabase = async (pool, tableName) => {
 }
 
 
-//CURRENTLY WIP 
+// CURRENTLY WIP 
 const addToDatabase = async (pool, tableName, newItem) => {
+    console.log("reached addToDatabase"); //test
     const client = await pool.connect();  
-    var result;
+    var addedItem;
     //for field in new item, append to a string, with "," between each 
-    const query = 'INSERT INTO ' + tableName + `()`;
+    const query = `INSERT INTO ${tableName} (${newItem.columns}) VALUES (${newItem.values}) RETURNING *`;
+    
+    try {
+        addedItem = await client.query(query);
+    } catch (error) {
+        client.release()
+        throw error; //how to handle specific types of errors? Probably in future iteration
+    };
+    client.release();
+    return addedItem; 
+    // return { id: 3, category_name: "Vegetables" }
 }
 
 
@@ -76,6 +88,7 @@ const tableNames = {
 
 module.exports = { 
     getAllFromDatabase,
+    addToDatabase,
     categoriesSchema,
     checklistSchema,
     inventorySchema,

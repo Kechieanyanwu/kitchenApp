@@ -6,11 +6,14 @@ const expect = chai.expect;
 const request = require("supertest");
 const {app, server} = require("../server"); 
 const { after } = require('node:test');
+
 const model = require('../models/model'); //general import as you can't destructure when stubbing with sinon
 const getAllFromDatabase = model.getAllFromDatabase;
+const addToDatabase = model.addToDatabase;
 const categoriesSchema = model.categoriesSchema;
 const checklistSchema = model.checklistSchema;
 const inventorySchema = model.inventorySchema;
+
 const { getAllItems,
         noTableError,
         nonExistentTableError } = require('../controllers/controller');
@@ -209,7 +212,60 @@ describe('Database Function tests', () => {
         });
         describe("addToDatabase", () => {
             it("adds the new item to the table", async () => {
-                // 
+                // have mock database as javascript object
+                const mockDatabase = {
+                    categories: [
+                        { id: 1, category_name: "Dairy" },
+                        { id: 2, category_name: "Grains" }
+                    ],
+                    checklist: [],
+                    inventory: [],
+                };
+
+                // mock data for item i want to add. Not testing transformation but simply adding a new item
+                const testItem = { id: 3, category_name: "Vegetables" };
+
+                //mock connection pool which adds to table
+                const mockPool = {
+                    connect: async () => {
+                        return {
+                            query: async (query) => {
+                                // Extract the table name from the query
+                                const tableName = query.split('INTO ')[1].split(' ')[0];
+                                // Mock the addition of the new item to the respective table in mockDatabase
+                                mockDatabase[tableName].push(testItem);
+                                // return the last added item
+                                return mockDatabase[tableName][mockDatabase[tableName].length - 1];
+                            },
+                            release: () => {} // mocks the release method of a pool
+                        }
+                    }
+                }
+                //run function 
+                const addedItem = await addToDatabase(mockPool, "checklist", testItem)
+                //verify that item is now in database 
+                assert.deepEqual(addedItem, testItem);
+            });
+            it("throws an error correctly", async () => {
+                // mock data for new item 
+                const testItem = { id: 3, category_name: "Vegetables" };
+
+                const mockError = new Error('test error'); // Used for our mock DB to throw
+
+                const mockPool = {
+                    connect: async () => {
+                        return {
+                            query: async (query) => {
+                                throw mockError; //simulating a request resulting in an error
+                            },
+                            release: () => {} // mocks the release method of a pool
+                        }
+                    }
+                }
+                // const addedItem = await (addToDatabase(mockPool, "categories", testItem), mockError)
+                await assert.isRejected(addToDatabase(mockPool, "categories", testItem), mockError);
+                //this is passing without me checking that it handles errors
+                //might have to check this in the higher level i.e. addNewItem in controller
             })
         })
     })
@@ -277,7 +333,7 @@ describe('Controller Function tests', () => {
                 //assert the promise is rejected and the appropriate error thrown
                 await assert.isRejected(getAllItems(nonExistentTable), nonExistentTableError);
             });
-        })
+        });
     })
 })
 
