@@ -52,19 +52,19 @@ const buildNewItem = (requestBody) => {
 
 //CURRENTLY WIP 
 const addNewItem = async(tableName, requestBody) => {
-    //transformation of the request body - to turn into another function 
-        //separates the object into the fields and the values
-        //builds the new item query and sends to add to database
-        //saves this to object called newItem
-    // const newItem = buildNewItem(requestBody);
+    validateTableName(tableName);
 
+    const newItem = buildNewItem(requestBody);
+    var addedItem;
+    
     // calling addToDB with the new item
-    // try {
-    //const addedItem = await addToDatabase(pool, tableName, newItem)
-    // } catch (err) {
-    //     throw err;
-    // }
+    try {
+        addedItem = await model.addToDatabase(pool, tableName, newItem)
+    } catch (err) {
+        throw err;
+    }
 
+    return addedItem
 }
 
 const validateNewGroceryItem = (req, res, next) => { //include validateCategoryID soon
@@ -129,7 +129,9 @@ module.exports = {
     nonExistentTableError,
     validateNewGroceryItem,
     validateNewCategory,
+    validateTableName,
     buildNewItem,
+    addNewItem,
  };
 
  // const validateTableName = (tableName) => {
