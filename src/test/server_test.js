@@ -16,7 +16,8 @@ const inventorySchema = model.inventorySchema;
 
 const { getAllItems,
         noTableError,
-        nonExistentTableError } = require('../controllers/controller');
+        nonExistentTableError, 
+        buildNewItem} = require('../controllers/controller');
 
 chai.use(require('chai-json-schema-ajv')); //for validating JSON schema
 chai.use(require('chai-as-promised')); //extends chai to handle promises 
@@ -334,6 +335,24 @@ describe('Controller Function tests', () => {
                 await assert.isRejected(getAllItems(nonExistentTable), nonExistentTableError);
             });
         });
+        describe("buildNewItem", () => { //havent exported yet
+            it("transforms a request object into a new item object", () => {
+                const requestBody = {
+                    "item_name": "Milk",
+                    "quantity": 2,
+                    "category_id": 3,
+                  };
+                const expectedNewItem = {
+                    columns: "item_name, quantity, category_id",
+                    values: "'Milk', 2, 3"
+                };
+                
+                //run function and check we get the right object
+                const result = buildNewItem(requestBody);
+                assert.deepEqual(result, expectedNewItem);
+
+            })
+        })
     })
 })
 
