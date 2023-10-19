@@ -10,7 +10,7 @@ const validateTableName = (tableName) => {
         throw noTableError;
     } else {
         if (tableNames.hasOwnProperty(tableName)) {     //validate that table name exists 
-            return true;
+            return;
         } else {
             throw nonExistentTableError;
         }
@@ -18,11 +18,7 @@ const validateTableName = (tableName) => {
 }
 
 const getAllItems = async (tableName) => {
-    try {
-        const tableExists = validateTableName(tableName);
-    } catch (err) {
-        throw err;
-    }
+    validateTableName(tableName);
 
     var items;
     try {
@@ -34,11 +30,22 @@ const getAllItems = async (tableName) => {
 }
 
 
+
+
+
+
 //CURRENTLY WIP 
-const addNewItem = async(tableName, newItem) => {
+const addNewItem = async(tableName, requestBody) => {
+
     //takes request object item
     //separates the object into the fields and the values
     //builds the new item query and sends to add to database
+    // try {
+    //const response = await addToDatabase(pool, tableName, newItemQuery)
+    // } catch (err) {
+    //     throw err;
+    // }
+
 }
 
 const validateNewGroceryItem = (req, res, next) => { //include validateCategoryID soon
@@ -104,3 +111,31 @@ module.exports = {
     validateNewGroceryItem,
     validateNewCategory,
  };
+
+ // const validateTableName = (tableName) => {
+//     if (tableName === "" || tableName === undefined) {      //throw error if no table name is specified
+//         throw noTableError;
+//     } else {
+//         if (tableNames.hasOwnProperty(tableName)) {     //validate that table name exists 
+//             return true;
+//         } else {
+//             throw nonExistentTableError;
+//         }
+//     }
+// }
+
+// const getAllItems = async (tableName) => {
+//     try {
+//         const tableExists = validateTableName(tableName);
+//     } catch (err) {
+//         throw err;
+//     }
+
+//     var items;
+//     try {
+//         items = await model.getAllFromDatabase(pool, tableName); //you can't destructure imported modules with sinon stubs
+//     } catch (error) {
+//         throw error;
+//     }
+//     return items
+// }
