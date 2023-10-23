@@ -22,7 +22,6 @@ const getAllItems = async (tableName) => {
 
 
 const addNewItem = async(tableName, requestBody) => {
-    console.log("reached addNewItem"); //test
     validateTableName(tableName);
 
     const newItem = buildNewItem(requestBody);

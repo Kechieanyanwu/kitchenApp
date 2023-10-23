@@ -25,20 +25,10 @@ chai.use(require('chai-json-schema-ajv')); //for validating JSON schema
 chai.use(require('chai-as-promised')); //extends chai to handle promises 
 
 
-//need to find a way to close server after the tests are complete; could us AfterAll
-describe("Server testing", () => {
-    after((server) => { //somehow this block is never being activated
-        // server.close(() => {
-        //     console.log("Server closed"); // never reaching this endpoint
-        //     done();
-        // });
-        // server.close((err) => {
-        //     console.log("Http server closed.");
-        //     process.exit(err ? 1 : 0);
-        // });
-        //perhaps will just use http-terminator?
-    });
+describe("KitchenApp testing", function () {
+    after(server.close()); //this takes TOO LONG to close. Why? 
 
+describe("Server testing", () => {
     describe("loading express", () => {
         it("responds to /", async function testslash() {
             const response = await request(server)
@@ -50,130 +40,162 @@ describe("Server testing", () => {
     });
 });
 
-describe("GET Endpoint testing", () => {
-    const endpoints = [
-        {
-            name: "Categories",
-            path: "/categories",
-            schema: categoriesSchema,
-        },
-        {
-            name: "Checklist",
-            path: "/checklist",
-            schema: checklistSchema,
-        },
-        {
-            name: "Inventory",
-            path: "/inventory",
-            schema: inventorySchema,
-        },
-    ];
+/*
+Chidi, 
+My endpoint tests suddenly seem to be more of integration tests than unit tests. 
 
-    for (const endpoint of endpoints) {
-        describe(`GET ${endpoint.name}`, () => {
-            it("sends a 200 code on a good request" , async () => {
-                const response = await request(server).get(endpoint.path);
-                assert.equal(response.status, 200);
-            });
-            it("sends JSON response with correct schema", async () => {
-                const response = await request(server).get(endpoint.path);
-                assert.jsonSchema(response.body, endpoint.schema);
-            });
-        });
-    }
-})
+I am trying to update the post endpoints logic (e.g. in categoriesRouter) with the correct implementation 
+that calls the addNewItem and addToDatabase functions, and I've just realised that my current endpoint tests are actually sending these values to the database. 
+If you look at my Post endpoint tests and my categoriesRouter file, it seems that the only reason why they currently aren't changing the database is that I haven't implemented the call to the addNewItem function. 
 
-//to come back to this after get specific item. Do i need to send a get request when updating? So the form is populated?
+I believe that in order to keep these tests correct, they must not affect my actual database. I have one idea on how to go about this: 
+    1) Mock database. Pro: The tests won't affect my actual database. Con: I feel its too early for this to take place in the development process. It also seems to be more complicated than necessary.
 
-//might need to include test for what the response is
-describe("POST endpoint testing", () => {
-    const endpoints = [
-        {
-          name: "Categories",
-          route: "/categories",
-          testCases: [
+I'd love your opinion on this. How should I think about testing my endpoints without making it an integration test? Am I thinking about this in the right way? Is there something I'm not yet aware of?
+
+*/
+
+
+describe("Endpoint testing", () => {
+    describe("GET Endpoint testing", () => { 
+        //this is more of an integration test than a unit test. How to modify so it doesnt directly modify my db? 
+        const endpoints = [
             {
-                description: "responds with 201 to a valid request body",
-                requestBody: { "category_name": "Dairy" },
-                expectedStatus: 201,
-                //expectedResponse: {"id": 1, "category_name": "Dairy"}
+                name: "Categories",
+                path: "/categories",
+                schema: categoriesSchema,
             },
             {
-                description: "rejects an empty request body",
-                requestBody: undefined,
-                expectedStatus: 400,
-            }, 
+                name: "Checklist",
+                path: "/checklist",
+                schema: checklistSchema,
+            },
             {
-                description: "rejects a request body with an incorrect schema",
-                requestBody: { "inventory": "Dairy" },
-                expectedStatus: 400,
-            }
-            ]
-        },
-        {
-            name: "Checklist",
-            route: "/checklist",
-            testCases: [
-              {
-                description: "responds with 201 to a valid request body",  
-                requestBody: {
-                    "item_name": "Milk",
-                    "quantity": 2,
-                    "category_id": 3,
+                name: "Inventory",
+                path: "/inventory",
+                schema: inventorySchema,
+            },
+        ];
+    
+        for (const endpoint of endpoints) {
+            describe(`${endpoint.name}`, () => {
+                it("sends a 200 code on a good request" , async () => {
+                    const response = await request(server).get(endpoint.path);
+                    assert.equal(response.status, 200);
+                });
+                it("sends JSON response with correct schema", async () => {
+                    const response = await request(server).get(endpoint.path);
+                    assert.jsonSchema(response.body, endpoint.schema);
+                });
+            });
+        }
+    })
+    
+    //to come back to this after get specific item. Do i need to send a get request when updating? So the form is populated?
+    
+    //might need to include test for what the response is
+    describe("POST endpoint testing", () => {
+        const endpoints = [
+            {
+              name: "Categories",
+              route: "/categories",
+              testCases: [
+                {//what I dont want is for my test to actually populate my database. I just want it to check that the response is correct, so 
+                    description: "responds with 201 to a valid request body",
+                    requestBody: { "category_name": "Dairy" },
+                    expectedStatus: 201,
+                    // expectedResponse: {"id": 1, "category_name": "Dairy"}
+                    //somehow will modify expected response to have ID and category name keys, and the category name must be dairy 
+                    // is including validation for expectedstatus too coupled? 
+                },
+                {
+                    description: "rejects an empty request body",
+                    requestBody: undefined,
+                    expectedStatus: 400,
+                    //do I need to include a response here? For consistency, maybe. To ask Chidi 
+                }, 
+                {
+                    description: "rejects a request body with an incorrect schema",
+                    requestBody: { "inventory": "Dairy" },
+                    expectedStatus: 400,
+                }
+                ]
+            },
+            {
+                name: "Checklist",
+                route: "/checklist",
+                testCases: [
+                  {
+                    description: "responds with 201 to a valid request body",  
+                    requestBody: {
+                        "item_name": "Milk",
+                        "quantity": 2,
+                        "category_id": 3,
+                      },
+                    expectedStatus: 201,
                   },
-                expectedStatus: 201,
-              },
-              {
-                description: "rejects an empty request body",  
-                requestBody: undefined,
-                expectedStatus: 400,
-              }, 
-              {
-                description: "rejects a request body with an incorrect schema",
-                requestBody: { "inventory": "Dairy" },
-                expectedStatus: 400,
-              },
-              ]
-          },
-          {
-            name: "Inventory",
-            route: "/inventory",
-            testCases: [
-              {
-                description: "responds with 201 to a valid request body",  
-                requestBody: {
-                    "item_name": "Bread",
-                    "quantity": 2,
-                    "category_id": 3,
+                  {
+                    description: "rejects an empty request body",  
+                    requestBody: undefined,
+                    expectedStatus: 400,
+                  }, 
+                  {
+                    description: "rejects a request body with an incorrect schema",
+                    requestBody: { "inventory": "Dairy" },
+                    expectedStatus: 400,
                   },
-                expectedStatus: 201,
+                  ]
               },
               {
-                description: "rejects an empty request body",  
-                requestBody: undefined,
-                expectedStatus: 400,
-              }, 
-              {
-                description: "rejects a request body with an incorrect schema",
-                requestBody: { "inventory": "Dairy" },
-                expectedStatus: 400,
+                name: "Inventory",
+                route: "/inventory",
+                testCases: [
+                  {
+                    description: "responds with 201 to a valid request body",  
+                    requestBody: {
+                        "item_name": "Bread",
+                        "quantity": 2,
+                        "category_id": 3,
+                      },
+                    expectedStatus: 201,
+                  },
+                  {
+                    description: "rejects an empty request body",  
+                    requestBody: undefined,
+                    expectedStatus: 400,
+                  }, 
+                  {
+                    description: "rejects a request body with an incorrect schema",
+                    requestBody: { "inventory": "Dairy" },
+                    expectedStatus: 400,
+                  },
+                  ]
               },
-              ]
-          },
-      ];
-      
-    endpoints.forEach((endpoint) => {
-        describe(`POST ${endpoint.name}`, () => {
-            endpoint.testCases.forEach((testCase) => {
-                const { description, requestBody, expectedStatus } = testCase
-                it(description, async() => {
-                    const response = await request(server).post(endpoint.route).send(requestBody);
-                    assert.equal(response.status, expectedStatus);
+          ];
+          
+        endpoints.forEach((endpoint) => {
+            describe(`${endpoint.name}`, () => {
+                endpoint.testCases.forEach((testCase) => {
+                    const { description, requestBody, expectedStatus, expectedResponse } = testCase
+                    it(description, async() => {
+                        const response = await request(server).post(endpoint.route).send(requestBody);
+                        assert.equal(response.status, expectedStatus);
+    
+                        // if (expectedStatus === 201) { //only complete these assertions if there was a successful creation 
+                        //     //validate the expected response is correct schema
+                        //     //if property in response is in both reqBody and expectedResponse
+                        //         //compare that the values are the same;
+                        //     //validate the properties are correct, apart from the ID
+                            
+                        //     //how to do this without modifying the backend!
+                        // }
+                    })
                 })
             })
         })
-    })
-      });
+          });
+})
+
       
 
 describe('Database Function tests', () => {
@@ -387,7 +409,10 @@ describe('Controller Function tests', () => {
         })
     })
 })
+})
 
+
+// server.close()
 //include describe block for validate functions
 //it rejects invalid category item 
     //could be a getCategory function to validate 
