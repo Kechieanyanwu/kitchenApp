@@ -1,5 +1,4 @@
 const getAllFromDatabase = async (pool, tableName) => {
-    // console.log("getAllFromDatabase function"); //test
     const client = await pool.connect();  
     var result;
     const query = 'SELECT * FROM ' + tableName;
@@ -20,13 +19,10 @@ const getAllFromDatabase = async (pool, tableName) => {
 
 // CURRENTLY WIP 
 const addToDatabase = async (pool, tableName, newItem) => {
-    console.log("reached addToDatabase"); //test
     const client = await pool.connect();  
     var addedItem;
     //for field in new item, append to a string, with "," between each 
     const query = `INSERT INTO ${tableName} (${newItem.columns}) VALUES (${newItem.values}) RETURNING *`;
-    
-    console.log("before try look in add to db"); //test
     try {
         addedItem = await client.query(query);
     } catch (error) {
@@ -34,7 +30,8 @@ const addToDatabase = async (pool, tableName, newItem) => {
         throw error; //how to handle specific types of errors? Probably in future iteration
     };
     client.release();
-    return addedItem; 
+    return addedItem; //previously returned this but might have to return .rows 
+ 
     // return { id: 3, category_name: "Vegetables" }
 }
 
