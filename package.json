@@ -7,8 +7,12 @@
     "test": "src/test"
   },
   "scripts": {
-    "test": "mocha 'src/test/*.js'",
-    "start": "node src/server.js"
+    "test": "cross-env NODE-ENV=test mocha 'src/test/*.js'",
+    "pretest": "cross-env NODE_ENV=test npm run db:reset",
+    "db:reset": "npx sequelize-cli db:drop && npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all --seeders-path ./database/seeders/test",
+    "db:create:test": "cross-env NODE_ENV=test npx sequelize-cli db:create",
+    "start": "node src/server.js",
+    "migrate": "npx sequelize-cli db:migrate"
   },
   "author": "Nkechi Anyanwu",
   "license": "ISC",
