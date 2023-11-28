@@ -6,8 +6,11 @@ const expect = chai.expect;
 const request = require("supertest");
 const {app, server} = require("../server"); 
 const { after } = require('node:test');
+// importing models from Sequelize
+// const { Category } = require("../../database/models/category");
 
 const model = require('../models/model'); //general import as you can't destructure when stubbing with sinon
+const getAllFromDatabase_New = model.getAllFromDatabase_New;
 const getAllFromDatabase = model.getAllFromDatabase;
 const addToDatabase = model.addToDatabase;
 const categoriesSchema = model.categoriesSchema;
@@ -40,25 +43,11 @@ describe("Server testing", () => {
     });
 });
 
-/*
-Chidi, 
-My endpoint tests suddenly seem to be more of integration tests than unit tests. 
-
-I am trying to update the post endpoints logic (e.g. in categoriesRouter) with the correct implementation 
-that calls the addNewItem and addToDatabase functions, and I've just realised that my current endpoint tests are actually sending these values to the database. 
-If you look at my Post endpoint tests and my categoriesRouter file, it seems that the only reason why they currently aren't changing the database is that I haven't implemented the call to the addNewItem function. 
-
-I believe that in order to keep these tests correct, they must not affect my actual database. I have one idea on how to go about this: 
-    1) Mock database. Pro: The tests won't affect my actual database. Con: I feel its too early for this to take place in the development process. It also seems to be more complicated than necessary.
-
-I'd love your opinion on this. How should I think about testing my endpoints without making it an integration test? Am I thinking about this in the right way? Is there something I'm not yet aware of?
-
-*/
-
 
 describe("Endpoint testing", () => {
     describe("GET Endpoint testing", () => { 
         //this is more of an integration test than a unit test. How to modify so it doesnt directly modify my db? 
+        
         const endpoints = [
             {
                 name: "Categories",
@@ -200,6 +189,37 @@ describe("Endpoint testing", () => {
 
 describe('Database Function tests', () => {
     describe("General Database functions", () => {
+        describe("Sequelize Function tests", () => {
+           describe("getAllFromDatabase_New", () => {
+               it("returns all items from a successful db query", async () => {
+
+
+                const testCategories = [
+                       {
+                           id: 1,
+                           category_name: "Butcher",
+                           date_created: "2023-11-08T14:14:01.390Z",
+                           date_updated: "2023-11-08T14:14:01.390Z",
+                       },
+                       {
+                           id: 2,
+                           category_name: "Condiments",
+                           date_created: "2023-11-08T14:14:01.390Z",
+                           date_updated: "2023-11-08T14:14:01.390Z",
+                       },
+                       {
+                           id: 3,
+                           category_name: "Cleaning",
+                           date_created: "2023-11-08T14:14:01.390Z",
+                           date_updated: "2023-11-08T14:14:01.390Z",
+                       }
+                   ];
+                   const response = await getAllFromDatabase_New()
+                   //test each manually;  write another test
+                   assert.deepEqual(response, testCategories); //assert that the returned values are the same with what is in the test db
+               })
+           })
+        });
         describe("getAllFromDatabase" ,() => {
             it("returns all items from a successful db query", async () => {
                 const mockCategoriesList = [
@@ -410,6 +430,7 @@ describe('Controller Function tests', () => {
     })
 })
 })
+
 
 
 // server.close()
