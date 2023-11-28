@@ -1,3 +1,15 @@
+const { Categories } = require("../../database/models/category");
+
+
+
+
+const getAllFromDatabase_New = async () => {
+    console.log("This is categories", Categories); //test
+    return await Categories.findAll();
+ // writing a test for this 
+ //remember to call _new
+}
+
 const getAllFromDatabase = async (pool, tableName) => {
     const client = await pool.connect();  
     var result;
@@ -86,6 +98,7 @@ const tableNames = {
 
 module.exports = { 
     getAllFromDatabase,
+    getAllFromDatabase_New,
     addToDatabase,
     categoriesSchema,
     checklistSchema,

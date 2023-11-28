@@ -12,6 +12,7 @@ const getAllItems = async (tableName) => {
     var items;
     try {
         items = await model.getAllFromDatabase(pool, tableName); //you can't destructure imported modules with sinon stubs
+    //to change to _new
     } catch (error) {
         throw error;
     }
