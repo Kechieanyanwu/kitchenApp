@@ -29,6 +29,7 @@ Checklist.init(
   {
     sequelize: db.sequelize,
     modelName: "Checklist",
+    tableName: "Checklists",
     createdAt: "date_created",
     updatedAt: "date_updated",
     underscored: true,

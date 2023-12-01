@@ -28,6 +28,7 @@ Inventory.init(
   {
     sequelize: db.sequelize,
     modelName: "Inventory",
+    tableName: "Inventories",
     createdAt: "date_created",
     updatedAt: "date_updated",
     underscored: true,

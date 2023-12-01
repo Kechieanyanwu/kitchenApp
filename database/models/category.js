@@ -19,6 +19,7 @@ Category.init(
   {
     sequelize: db.sequelize,
     modelName: "Category",
+    tableName: "Categories", // just added this
     createdAt: "date_created",
     updatedAt: "date_updated",
     underscored: true,
