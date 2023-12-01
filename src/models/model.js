@@ -1,17 +1,17 @@
-const { Categories } = require("../../database/models/category");
+const { Category } = require("../../database/models/category");
 
 
 
 
 const getAllFromDatabase_New = async () => {
-    console.log("This is categories", Categories); //test
-    return await Categories.findAll();
- // writing a test for this 
+    console.log("This is categories", Category); //test
+    return await Category.findAll();
+ // writing a test for this
  //remember to call _new
 }
 
 const getAllFromDatabase = async (pool, tableName) => {
-    const client = await pool.connect();  
+    const client = await pool.connect();
     var result;
     const query = 'SELECT * FROM ' + tableName;
 
@@ -24,16 +24,16 @@ const getAllFromDatabase = async (pool, tableName) => {
 
     const queryResult = result.rows;
     client.release();
-    
-    return queryResult; 
+
+    return queryResult;
 }
 
 
-// CURRENTLY WIP 
+// CURRENTLY WIP
 const addToDatabase = async (pool, tableName, newItem) => {
-    const client = await pool.connect();  
+    const client = await pool.connect();
     var addedItem;
-    //for field in new item, append to a string, with "," between each 
+    //for field in new item, append to a string, with "," between each
     const query = `INSERT INTO ${tableName} (${newItem.columns}) VALUES (${newItem.values}) RETURNING *`;
     try {
         addedItem = await client.query(query);
@@ -42,8 +42,8 @@ const addToDatabase = async (pool, tableName, newItem) => {
         throw error; //how to handle specific types of errors? Probably in future iteration
     };
     client.release();
-    return addedItem; //previously returned this but might have to return .rows 
- 
+    return addedItem; //previously returned this but might have to return .rows
+
     // return { id: 3, category_name: "Vegetables" }
 }
 
@@ -96,7 +96,7 @@ const tableNames = {
     inventory: "inventory"
 }
 
-module.exports = { 
+module.exports = {
     getAllFromDatabase,
     getAllFromDatabase_New,
     addToDatabase,

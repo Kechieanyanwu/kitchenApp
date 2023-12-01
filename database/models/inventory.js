@@ -1,19 +1,18 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
-  class Inventory extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
+"use strict";
+const { Model, DataTypes } = require("sequelize");
+const db = require(".");
+class Inventory extends Model {
+  /**
+   * Helper method for defining associations.
+   * This method is not a part of Sequelize lifecycle.
+   * The `models/index` file will call this method automatically.
+   */
+  static associate(models) {
+    // define association here
   }
-  Inventory.init({
+}
+Inventory.init(
+  {
     item_name: DataTypes.STRING,
     quantity: DataTypes.INTEGER,
     category_id: {
@@ -22,15 +21,16 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: "CASCADE",
       references: {
         model: "Categories",
-        key: "id"
-      }
-    }
-  }, {
-    sequelize,
-    modelName: 'Inventory',
+        key: "id",
+      },
+    },
+  },
+  {
+    sequelize: db.sequelize,
+    modelName: "Inventory",
     createdAt: "date_created",
     updatedAt: "date_updated",
     underscored: true,
-  });
-  return Inventory;
-};
+  }
+);
+module.exports = { Inventory };
