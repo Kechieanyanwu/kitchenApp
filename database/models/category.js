@@ -1,5 +1,5 @@
 "use strict";
-
+//issue with test using development database could be from the change to this set up
 const { Model, DataTypes } = require("sequelize");
 const db = require("./index");
 class Category extends Model {

@@ -2,10 +2,13 @@ const { Category } = require("../../database/models/category");
 
 
 
-
+//this seems to be returning from the development database, not the test database
 const getAllFromDatabase_New = async () => {
+    // note make this use transactions
     console.log("This is categories", Category); //test
-    return await Category.findAll();
+    const values = await Category.findAll();
+    console.log(values); //test
+    return values; //testing this is how to return 
  // writing a test for this
  //remember to call _new
 }
