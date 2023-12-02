@@ -6,7 +6,7 @@ const { Category } = require("../../database/models/category");
 const getAllFromDatabase_New = async () => {
     // note make this use transactions
     console.log("This is categories", Category); //test
-    const values = await Category.findAll();
+    const values = await Category.findAll({ raw: true }); //testing new addition
     console.log(values); //test
     return values; //testing this is how to return 
  // writing a test for this
