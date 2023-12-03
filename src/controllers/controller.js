@@ -2,8 +2,25 @@ const model = require("../models/model"); //you can't destructure imported modul
 const { pool } = require("../models/dbConfig"); 
 const { tableNames } = require("../models/model");
 
+//importing the tables to update. Do i import this here, or in the calling file?
+const { Category } = require("../../database/models/category");
+const { Checklist } = require("../../database/models/checklist");
+const { Inventory } = require("../../database/models/inventory");
+
 const noTableError = new Error("no table specified");
 const nonExistentTableError = new Error("table does not exist");
+
+//to use only one getall function
+const getAllItems_New = async (modelName) => {
+    var items;
+    try {
+        items = await modelName.findAll({ raw: true }) //you can't destructure imported modules with sinon stubs
+    //to change to _new
+    } catch (error) {
+        throw error;
+    }
+    return items
+}
 
 
 const getAllItems = async (tableName) => {
@@ -133,32 +150,5 @@ module.exports = {
     validateTableName,
     buildNewItem,
     addNewItem,
+    getAllItems_New,
  };
-
- // const validateTableName = (tableName) => {
-//     if (tableName === "" || tableName === undefined) {      //throw error if no table name is specified
-//         throw noTableError;
-//     } else {
-//         if (tableNames.hasOwnProperty(tableName)) {     //validate that table name exists 
-//             return true;
-//         } else {
-//             throw nonExistentTableError;
-//         }
-//     }
-// }
-
-// const getAllItems = async (tableName) => {
-//     try {
-//         const tableExists = validateTableName(tableName);
-//     } catch (err) {
-//         throw err;
-//     }
-
-//     var items;
-//     try {
-//         items = await model.getAllFromDatabase(pool, tableName); //you can't destructure imported modules with sinon stubs
-//     } catch (error) {
-//         throw error;
-//     }
-//     return items
-// }

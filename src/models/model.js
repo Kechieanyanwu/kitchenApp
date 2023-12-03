@@ -2,11 +2,11 @@ const { Category } = require("../../database/models/category");
 
 
 
-//this seems to be returning from the development database, not the test database
+//might eventually take this out since we are using sequelize
 const getAllFromDatabase_New = async () => {
     // note make this use transactions
     console.log("This is categories", Category); //test
-    const values = await Category.findAll({ raw: true }); //testing new addition
+    const values = await Category.findAll({ raw: true }); //update to take in model name
     console.log(values); //test
     return values; //testing this is how to return 
  // writing a test for this
@@ -51,7 +51,7 @@ const addToDatabase = async (pool, tableName, newItem) => {
 }
 
 
-
+//updated for the date created and updated values
 const categoriesSchema = {
     type: "array",
     items: {
@@ -59,10 +59,25 @@ const categoriesSchema = {
         properties: {
             id: {type: "number"},
             category_name: {type: "string"},
-        },
-        required: ["id", "category_name"],
+            date_created: { type: "string", format: "date-time" },
+            date_updated: { type: "string", format: "date-time" },
     },
+    required: ["id", "category_name", "date_created", "date_updated"],
+  },
 };
+
+//old version. Testing
+// const categoriesSchema = {
+//     type: "array",
+//     items: {
+//         type: "object",
+//         properties: {
+//             id: {type: "number"},
+//             category_name: {type: "string"},
+//         },
+//         required: ["id", "category_name"],
+//     },
+// };
 
 const checklistSchema = {
     type: "array",
