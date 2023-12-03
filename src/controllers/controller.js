@@ -150,32 +150,5 @@ module.exports = {
     validateTableName,
     buildNewItem,
     addNewItem,
+    getAllItems_New,
  };
-
- // const validateTableName = (tableName) => {
-//     if (tableName === "" || tableName === undefined) {      //throw error if no table name is specified
-//         throw noTableError;
-//     } else {
-//         if (tableNames.hasOwnProperty(tableName)) {     //validate that table name exists 
-//             return true;
-//         } else {
-//             throw nonExistentTableError;
-//         }
-//     }
-// }
-
-// const getAllItems = async (tableName) => {
-//     try {
-//         const tableExists = validateTableName(tableName);
-//     } catch (err) {
-//         throw err;
-//     }
-
-//     var items;
-//     try {
-//         items = await model.getAllFromDatabase(pool, tableName); //you can't destructure imported modules with sinon stubs
-//     } catch (error) {
-//         throw error;
-//     }
-//     return items
-// }
