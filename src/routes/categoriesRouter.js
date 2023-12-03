@@ -9,6 +9,19 @@ const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json(); //used only in specific routes
 
 
+// new version using the sequelize function
+categoriesRouter.get("/", async (req, res, next) => {
+    let categoriesArray
+    try {
+        categoriesArray = await getAllItems("Category");
+    } catch (err) {
+        next(err) //validate that all errs have message and status 
+    }
+    res.status(200).json(categoriesArray)
+});
+
+
+// previous
 categoriesRouter.get("/", async (req, res, next) => {
     let categoriesArray
     try {
