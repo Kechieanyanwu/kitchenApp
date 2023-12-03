@@ -198,20 +198,20 @@ describe('Database Function tests', () => {
                        {
                            id: 1,
                            category_name: "Butcher",
-                           date_created: "2023-11-08T14:14:01.390Z",
-                           date_updated: "2023-11-08T14:14:01.390Z",
+                           date_created: new Date("2023-11-08T14:14:01.390Z"),
+                           date_updated: new Date("2023-11-08T14:14:01.390Z"),
                        },
                        {
                            id: 2,
                            category_name: "Condiments",
-                           date_created: "2023-11-08T14:14:01.390Z",
-                           date_updated: "2023-11-08T14:14:01.390Z",
+                           date_created: new Date("2023-11-08T14:14:01.390Z"),
+                           date_updated: new Date("2023-11-08T14:14:01.390Z"),
                        },
                        {
                            id: 3,
                            category_name: "Cleaning",
-                           date_created: "2023-11-08T14:14:01.390Z",
-                           date_updated: "2023-11-08T14:14:01.390Z",
+                           date_created: new Date("2023-11-08T14:14:01.390Z"),
+                           date_updated: new Date("2023-11-08T14:14:01.390Z"),
                        }
                    ];
                    const response = await getAllFromDatabase_New()
