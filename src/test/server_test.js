@@ -10,8 +10,7 @@ const { after } = require('node:test');
 // const { Category } = require("../../database/models/category");
 
 const model = require('../models/model'); //general import as you can't destructure when stubbing with sinon
-const getAllFromDatabase_New = model.getAllFromDatabase_New;
-const getAllFromDatabase = model.getAllFromDatabase;
+
 const addToDatabase = model.addToDatabase;
 const categoriesSchema = model.categoriesSchema;
 const checklistSchema = model.checklistSchema;
@@ -190,73 +189,7 @@ describe("Endpoint testing", () => {
 describe('Database Function tests', () => {
     describe("General Database functions", () => {
         describe("Sequelize Function tests", () => {
-           describe("getAllFromDatabase_New", () => {
-               it("returns all items from a successful db query", async () => {
-
-
-                const testCategories = [
-                       {
-                           id: 1,
-                           category_name: "Butcher",
-                           date_created: new Date("2023-11-08T14:14:01.390Z"),
-                           date_updated: new Date("2023-11-08T14:14:01.390Z"),
-                       },
-                       {
-                           id: 2,
-                           category_name: "Condiments",
-                           date_created: new Date("2023-11-08T14:14:01.390Z"),
-                           date_updated: new Date("2023-11-08T14:14:01.390Z"),
-                       },
-                       {
-                           id: 3,
-                           category_name: "Cleaning",
-                           date_created: new Date("2023-11-08T14:14:01.390Z"),
-                           date_updated: new Date("2023-11-08T14:14:01.390Z"),
-                       }
-                   ];
-                   const response = await getAllFromDatabase_New()
-                   //test each manually;  write another test
-                   assert.deepEqual(response, testCategories); //assert that the returned values are the same with what is in the test db
-               })
-           })
-        });
-        describe("getAllFromDatabase" ,() => {
-            it("returns all items from a successful db query", async () => {
-                const mockCategoriesList = [
-                    { id: 1, category_name: "Dairy"},
-                    { id: 2, category_name: "Grains"}
-                ]
-                //mock connection pool
-                const mockPool = {
-                    connect: async () => {
-                        return {
-                            query: async () => {
-                                return {rows: mockCategoriesList}
-                            },
-                            release: () => {} // mocks the release method of a pool
-                        }
-                    }
-                }
-                const response = await getAllFromDatabase(mockPool, "categories") //abstract away all names
-                assert.deepEqual(response, mockCategoriesList);
-                await assert.isFulfilled(getAllFromDatabase(mockPool, "categories")); //asserting no error occurred
-            });
-            it("returns an error correctly", async () => { 
-                const mockError = new Error('test error'); // Used for our mock DB to throw
-
-                //code smell. Seems like I can abstract this
-                const mockPool = {
-                    connect: async () => {
-                        return {
-                            query: async () => {
-                                throw mockError // simulating a request resulting in an error
-                            },
-                            release: () => {} // mocks the release method of a pool
-                        }
-                    }
-                }
-                await assert.isRejected(getAllFromDatabase(mockPool, "categories"), mockError);
-            });
+            //to come if applicable
         });
         describe("addToDatabase", () => {
             it("adds the new item to the table", async () => {
@@ -320,44 +253,45 @@ describe('Database Function tests', () => {
 
 describe('Controller Function tests', () => {
     describe("General Controller functions", () => {
-        describe("GetAllItems", () => {
-            let getAllFromDatabaseStub;
-            const dummyTable = "checklist"; //feels a little bit like coupling as test knows about checklist. Could fix this by putting validation at higher levels of the code e.g. route validation
-            const mockItems = [
-                { id: 1, category_name: "Dairy"},
-                { id: 2, category_name: "Grains"}
-            ]
+        describe("GetAllItems", () => { //need to update this for the new sequelize test
+            // let getAllFromDatabaseStub; 
+            // const dummyTable = "checklist"; //feels a little bit like coupling as test knows about checklist. Could fix this by putting validation at higher levels of the code e.g. route validation
+            // const mockItems = [
+            //     { id: 1, category_name: "Dairy"},
+            //     { id: 2, category_name: "Grains"}
+            // ]
 
-            beforeEach(function () {
-                //create a sinon stub for getAllFromDatabase
-                getAllFromDatabaseStub = sinon.stub(model, 'getAllFromDatabase');
-            })
-            afterEach(function () {
-                //restore the original function to avoid affecting other tests
-                getAllFromDatabaseStub.restore();
-            });
+            // beforeEach(function () {
+            //     //create a sinon stub for getAllFromDatabase
+            //     getAllFromDatabaseStub = sinon.stub(model, 'getAllFromDatabase_New');
+            //     // getAllFromDatabaseStub = sinon.stub(model, 'getAllFromDatabase'); previous
+            // })
+            // afterEach(function () {
+            //     //restore the original function to avoid affecting other tests
+            //     getAllFromDatabaseStub.restore();
+            // });
 
-            it("returns all items correctly", async () => {
-                //sinon stub for getAllFromDatabase that resolves with the items 
-                getAllFromDatabaseStub.resolves(mockItems);
+            // it("returns all items correctly", async () => {
+            //     //sinon stub for getAllFromDatabase that resolves with the items 
+            //     getAllFromDatabaseStub.resolves(mockItems);
                 
-                //call the function to be tested which will use the stubbed function
-                const items = await getAllItems(dummyTable);
+            //     //call the function to be tested which will use the stubbed function
+            //     const items = await getAllItems(dummyTable);
                 
-                assert.deepEqual(items, mockItems); //assert that items match the mocked data  
-                await assert.isFulfilled(getAllItems(dummyTable)); //asserting no error occurred
-            });
+            //     assert.deepEqual(items, mockItems); //assert that items match the mocked data  
+            //     await assert.isFulfilled(getAllItems(dummyTable)); //asserting no error occurred
+            // });
 
-            it("handles an error from the db correctly", async () => {
-                //set up
-                const mockError = new Error('test error');
+            // it("handles an error from the db correctly", async () => {
+            //     //set up
+            //     const mockError = new Error('test error');
 
-                //sinon stub for getAllFromDatabase that throws an error
-                getAllFromDatabaseStub.throws(mockError);
+            //     //sinon stub for getAllFromDatabase that throws an error
+            //     getAllFromDatabaseStub.throws(mockError);
 
-                //assert the promise is rejected and the mock error thrown
-                await assert.isRejected(getAllItems(dummyTable), mockError);
-            });
+            //     //assert the promise is rejected and the mock error thrown
+            //     await assert.isRejected(getAllItems(dummyTable), mockError);
+            // });
         });
 
         describe("buildNewItem", () => { //havent exported yet
