@@ -3,33 +3,20 @@ const { pool } = require("../models/dbConfig");
 const { tableNames } = require("../models/model");
 
 //importing the tables to update. Do i import this here, or in the calling file?
-const { Category } = require("../../database/models/category");
-const { Checklist } = require("../../database/models/checklist");
-const { Inventory } = require("../../database/models/inventory");
+
+const { Inventory } = require("../../database/models/inventory"); //to move to the respective router
 
 const noTableError = new Error("no table specified");
 const nonExistentTableError = new Error("table does not exist");
 
 //to use only one getall function
-const getAllItems_New = async (modelName) => {
+const getAllItems = async (modelName) => {
     var items;
+    console.log("You are in the getAllItems function for ", modelName); //test
     try {
-        items = await modelName.findAll({ raw: true }) //you can't destructure imported modules with sinon stubs
-    //to change to _new
-    } catch (error) {
-        throw error;
-    }
-    return items
-}
-
-
-const getAllItems = async (tableName) => {
-    validateTableName(tableName);
-
-    var items;
-    try {
-        items = await model.getAllFromDatabase(pool, tableName); //you can't destructure imported modules with sinon stubs
-    //to change to _new
+        console.log("before calling model"); //test
+        items = await modelName.findAll({ raw: true }) 
+        console.log("after calling model"); //test
     } catch (error) {
         throw error;
     }
@@ -150,5 +137,4 @@ module.exports = {
     validateTableName,
     buildNewItem,
     addNewItem,
-    getAllItems_New,
  };
