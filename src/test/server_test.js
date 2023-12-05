@@ -22,6 +22,8 @@ const { getAllItems,
         buildNewItem,
         addNewItem,
         validateTableName} = require('../controllers/controller');
+const { Checklist } = require('../../database/models/checklist');
+const { Category } = require('../../database/models/category');
 
 chai.use(require('chai-json-schema-ajv')); //for validating JSON schema
 chai.use(require('chai-as-promised')); //extends chai to handle promises 
@@ -253,45 +255,11 @@ describe('Database Function tests', () => {
 
 describe('Controller Function tests', () => {
     describe("General Controller functions", () => {
-        describe("GetAllItems", () => { //need to update this for the new sequelize test
-            // let getAllFromDatabaseStub; 
-            // const dummyTable = "checklist"; //feels a little bit like coupling as test knows about checklist. Could fix this by putting validation at higher levels of the code e.g. route validation
-            // const mockItems = [
-            //     { id: 1, category_name: "Dairy"},
-            //     { id: 2, category_name: "Grains"}
-            // ]
+        describe("GetAllItems", async () => { //need to update this for the new sequelize test
 
-            // beforeEach(function () {
-            //     //create a sinon stub for getAllFromDatabase
-            //     getAllFromDatabaseStub = sinon.stub(model, 'getAllFromDatabase_New');
-            //     // getAllFromDatabaseStub = sinon.stub(model, 'getAllFromDatabase'); previous
-            // })
-            // afterEach(function () {
-            //     //restore the original function to avoid affecting other tests
-            //     getAllFromDatabaseStub.restore();
-            // });
+            const categoriesArray = await getAllItems(Category);
+            assert.jsonSchema(categoriesArray, categoriesSchema);
 
-            // it("returns all items correctly", async () => {
-            //     //sinon stub for getAllFromDatabase that resolves with the items 
-            //     getAllFromDatabaseStub.resolves(mockItems);
-                
-            //     //call the function to be tested which will use the stubbed function
-            //     const items = await getAllItems(dummyTable);
-                
-            //     assert.deepEqual(items, mockItems); //assert that items match the mocked data  
-            //     await assert.isFulfilled(getAllItems(dummyTable)); //asserting no error occurred
-            // });
-
-            // it("handles an error from the db correctly", async () => {
-            //     //set up
-            //     const mockError = new Error('test error');
-
-            //     //sinon stub for getAllFromDatabase that throws an error
-            //     getAllFromDatabaseStub.throws(mockError);
-
-            //     //assert the promise is rejected and the mock error thrown
-            //     await assert.isRejected(getAllItems(dummyTable), mockError);
-            // });
         });
 
         describe("buildNewItem", () => { //havent exported yet
