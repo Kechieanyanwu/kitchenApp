@@ -28,6 +28,7 @@ categoriesRouter.get("/", async (req, res, next) => {
 //currently working on making this actually call the addNewItem function 
 categoriesRouter.post("/", jsonParser, validateNewCategory, async (req, res, next) => {
     var response;
+
     // console.log(req.body); //test
     // try {
     //     response = await addNewItem(tableNames.categories, req.body);

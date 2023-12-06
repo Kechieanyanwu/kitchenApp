@@ -12,36 +12,32 @@ const nonExistentTableError = new Error("table does not exist");
 //to use only one getall function
 const getAllItems = async (modelName) => {
     var items;
-    console.log("You are in the getAllItems function for ", modelName); //test
     try {
-        console.log("before calling model"); //test
         items = await modelName.findAll({ raw: true }) 
-        console.log("after calling model"); //test
     } catch (error) {
         throw error;
     }
     return items
 }
 
-
-
-
+// new version 
 const addNewItem = async(tableName, requestBody) => {
-    validateTableName(tableName);
 
-    const newItem = buildNewItem(requestBody);
+    validateTableName(tableName.name); 
+
+    // const newItem = buildNewItem(requestBody); took build new item out
+    const newItem = requestBody; //using this for now to test
     var addedItem;
     
     // calling addToDB with the new item
     try {
-        addedItem = await model.addToDatabase(pool, tableName, newItem)
+        addedItem = await tableName.create(newItem);
     } catch (err) {
         throw err;
     }
 
-    return addedItem
+    return addedItem.dataValues
 }
-
 
 const buildNewItem = (requestBody) => {
     //initialize an empty object
