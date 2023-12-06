@@ -2,7 +2,7 @@
 
 
 
-// CURRENTLY WIP
+// TO DELETE LATER
 const addToDatabase = async (pool, tableName, newItem) => {
     const client = await pool.connect();
     var addedItem;
@@ -79,9 +79,11 @@ const inventorySchema = {
 };
 
 const tableNames = {
-    categories: "categories",
-    checklist: "checklist",
-    inventory: "inventory"
+    // categories: "categories", changed to pass the test for addNewItem
+    // havent changed the values, only key. Will decide later if valus is also necessary
+    Category: "categories",
+    Checklist: "checklist",
+    Inventory: "inventory"
 }
 
 module.exports = {
