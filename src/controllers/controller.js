@@ -39,6 +39,7 @@ const addNewItem = async(tableName, requestBody) => {
     return addedItem.dataValues
 }
 
+//might take this away
 const buildNewItem = (requestBody) => {
     //initialize an empty object
     var newItem = {}; 
