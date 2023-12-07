@@ -300,6 +300,13 @@ describe('Controller Function tests', () => {
                 // to set this up later
             });
         });
+        
+        describe("UpdateItem", () => {
+            it("returns the updated item", async() => {
+                //update existing item
+                //assert that the item is now updated to the mock item
+            })
+        })
 
         describe("validateTableName", () => {
             it("throws an error if no table name is specified", () => {
