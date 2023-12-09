@@ -10,7 +10,6 @@ const { after } = require('node:test');
 
 const model = require('../models/model'); //general import as you can't destructure when stubbing with sinon
 
-const addToDatabase = model.addToDatabase;
 const categoriesSchema = model.categoriesSchema;
 const checklistSchema = model.checklistSchema;
 const inventorySchema = model.inventorySchema;
@@ -247,6 +246,7 @@ describe('Controller Function tests', () => {
         describe("UpdateItem", () => {
             it("returns the updated item", async() => {
                 //update existing item
+        
                 //assert that the item is now updated to the mock item
             })
         })
