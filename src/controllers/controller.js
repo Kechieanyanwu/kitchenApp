@@ -5,20 +5,37 @@ const { tableNames } = require("../models/model");
 //importing the tables to update. Do i import this here, or in the calling file?
 
 const { Inventory } = require("../../database/models/inventory"); //to move to the respective router
+const { sequelize } = require("../../database/models");
 
 const noTableError = new Error("no table specified");
 const nonExistentTableError = new Error("table does not exist");
 
-//to use only one getall function
+//version with managed transactions WIP
 const getAllItems = async (modelName) => {
-    var items;
-    try {
-        items = await modelName.findAll({ raw: true }) 
-    } catch (error) {
-        throw error;
+        var items;
+        try {
+            const result = await sequelize.transaction(async (t) => {
+                items = await modelName.findAll(
+                { raw: true }, 
+                { transaction: t }); 
+                return items;
+            })
+        } catch (error) {
+            throw error;
     }
-    return items
 }
+
+
+// previous version without transactions
+// const getAllItems = async (modelName) => {
+//     var items;
+//     try {
+//         items = await modelName.findAll({ raw: true }) 
+//     } catch (error) {
+//         throw error;
+//     }
+//     return items
+// }
 
 // new version 
 const addNewItem = async(tableName, requestBody) => {
