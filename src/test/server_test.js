@@ -194,6 +194,7 @@ describe('Controller Function tests', () => {
         describe("GetAllItems", async () => { //why is this not showing up on test
             
             const categoriesArray = await getAllItems(Category);
+            console.log("Categories test:", categoriesArray)///test:
             for (const category of categoriesArray) { //changing to string because JSON schema is validating string
                 category.date_created = '' + category.date_created;
                 category.date_updated = '' + category.date_updated;

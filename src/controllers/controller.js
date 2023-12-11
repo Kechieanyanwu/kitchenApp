@@ -20,6 +20,7 @@ const getAllItems = async (modelName) => {
                 { transaction: t }); 
                 return items;
             })
+            return result;
         } catch (error) {
             throw error;
     }
@@ -37,24 +38,46 @@ const getAllItems = async (modelName) => {
 //     return items
 // }
 
-// new version 
+//new version using managed transactions
 const addNewItem = async(tableName, requestBody) => {
 
     validateTableName(tableName.name); 
 
-    // const newItem = buildNewItem(requestBody); took build new item out
     const newItem = requestBody; //using this for now to test
     var addedItem;
     
-    // calling addToDB with the new item
     try {
-        addedItem = await tableName.create(newItem);
+        const result = sequelize.transaction(async (t) => {
+            addedItem = await tableName.create(newItem, { transaction: t });
+            return addedItem.dataValues
+        })
+        return result;
     } catch (err) {
         throw err;
     }
 
-    return addedItem.dataValues
+
 }
+
+
+// previous version with unmanaged transactions
+// const addNewItem = async(tableName, requestBody) => {
+
+//     validateTableName(tableName.name); 
+
+//     // const newItem = buildNewItem(requestBody); took build new item out
+//     const newItem = requestBody; //using this for now to test
+//     var addedItem;
+    
+//     // calling addToDB with the new item
+//     try {
+//         addedItem = await tableName.create(newItem);
+//     } catch (err) {
+//         throw err;
+//     }
+
+//     return addedItem.dataValues
+// }
 
 //might take this away
 const buildNewItem = (requestBody) => {
