@@ -1,21 +1,14 @@
-const model = require("../models/model"); //you can't destructure imported modules with sinon stubs
-const { pool } = require("../models/dbConfig"); 
 const { tableNames } = require("../models/model");
-
-//importing the tables to update. Do i import this here, or in the calling file?
-
-const { Inventory } = require("../../database/models/inventory"); //to move to the respective router
 const { sequelize } = require("../../database/models");
 
 const noTableError = new Error("no table specified");
 const nonExistentTableError = new Error("table does not exist");
 
-//version with managed transactions WIP
 const getAllItems = async (modelName) => {
-        var items;
+    //to update to not return data and time 
         try {
             const result = await sequelize.transaction(async (t) => {
-                items = await modelName.findAll(
+                const items = await modelName.findAll(
                 { raw: true }, 
                 { transaction: t }); 
                 return items;
@@ -26,31 +19,43 @@ const getAllItems = async (modelName) => {
     }
 }
 
+const getItem = async (modelName, itemID) => {
+    console.log("ItemID", itemID); //test
+    validateModelName(modelName.name); //is there a better place to do this? 
 
-// previous version without transactions
-// const getAllItems = async (modelName) => {
-//     var items;
-//     try {
-//         items = await modelName.findAll({ raw: true }) 
-//     } catch (error) {
-//         throw error;
-//     }
-//     return items
-// }
+    try{
+        const result = await sequelize.transaction(async (t) => {
+            const requestedItem = await modelName.findByPk(itemID, 
+                { attributes: {exclude: ["date_created", "date_updated"]},
+                transaction: t })
+            if (requestedItem === null) {
+                throw new Error("Nonexistent item");
+            } else {
+                return requestedItem.dataValues;
+            }
+        })
+        return result;
+    } catch (err) {
+        throw err;
+    }
+}
 
-//new version using managed transactions
-const addNewItem = async(tableName, requestBody) => {
 
-    validateTableName(tableName.name); 
+const addNewItem = async(modelName, requestBody) => {
+
+    validateModelName(modelName.name); 
 
     const newItem = requestBody; //using this for now to test
-    var addedItem;
     
     try {
-        const result = sequelize.transaction(async (t) => {
-            addedItem = await tableName.create(newItem, { transaction: t });
-            return addedItem.dataValues
+        const result = await sequelize.transaction(async (t) => {
+            const addedItem = await modelName.create(newItem, 
+                { attributes: { exclude: ["date_created", "date_updated"] }, transaction: t, });
+                console.log("addedItem", addedItem); //test
+                return addedItem.dataValues
+                //testing why i cant exclude date created and date updated
         })
+        console.log("addnewitem" ,result); //test
         return result;
     } catch (err) {
         throw err;
@@ -60,24 +65,6 @@ const addNewItem = async(tableName, requestBody) => {
 }
 
 
-// previous version with unmanaged transactions
-// const addNewItem = async(tableName, requestBody) => {
-
-//     validateTableName(tableName.name); 
-
-//     // const newItem = buildNewItem(requestBody); took build new item out
-//     const newItem = requestBody; //using this for now to test
-//     var addedItem;
-    
-//     // calling addToDB with the new item
-//     try {
-//         addedItem = await tableName.create(newItem);
-//     } catch (err) {
-//         throw err;
-//     }
-
-//     return addedItem.dataValues
-// }
 
 //might take this away
 const buildNewItem = (requestBody) => {
@@ -152,11 +139,11 @@ const validateNewCategory = (req, res, next) => {
     }
 };
 
-const validateTableName = (tableName) => {
-    if (tableName === "" || tableName === undefined) {      //throw error if no table name is specified
+const validateModelName = (modelName) => {
+    if (modelName === "" || modelName === undefined) {      //throw error if no table name is specified
         throw noTableError;
     } else {
-        if (tableNames.hasOwnProperty(tableName)) {     //validate that table name exists 
+        if (tableNames.hasOwnProperty(modelName)) {     //validate that table name exists 
             return;
         } else {
             throw nonExistentTableError;
@@ -171,7 +158,8 @@ module.exports = {
     nonExistentTableError,
     validateNewGroceryItem,
     validateNewCategory,
-    validateTableName,
+    validateModelName,
     buildNewItem,
     addNewItem,
+    getItem,
  };
