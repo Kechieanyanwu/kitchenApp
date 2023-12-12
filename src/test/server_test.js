@@ -19,10 +19,10 @@ const { getAllItems,
         nonExistentTableError, 
         buildNewItem,
         addNewItem,
-        validateTableName} = require('../controllers/controller');
+        validateModelName,
+        getItem} = require('../controllers/controller');
 
 // importing models from Sequelize
-// const { Category } = require("../../database/models/category");
 const { Checklist } = require('../../database/models/checklist');
 const { Category } = require('../../database/models/category');
 
@@ -191,17 +191,46 @@ describe('Database Function tests', () => {
 
 describe('Controller Function tests', () => {
     describe("General Controller functions", () => {
-        describe("GetAllItems", async () => { //why is this not showing up on test
-            
-            const categoriesArray = await getAllItems(Category);
-            console.log("Categories test:", categoriesArray)///test:
-            for (const category of categoriesArray) { //changing to string because JSON schema is validating string
-                category.date_created = '' + category.date_created;
-                category.date_updated = '' + category.date_updated;
-            }
-            assert.jsonSchema(categoriesArray, categoriesSchema);
+        describe("GetAllItems", async () => {
+            it("returns all items from the database", async () => {
+                const categoriesArray = await getAllItems(Category);
+
+                //do I even want to return the date created and updated? Can this just stay in the db? 
+                for (const category of categoriesArray) { //changing to string because JSON schema is validating string
+                    category.date_created = '' + category.date_created;
+                    category.date_updated = '' + category.date_updated;
+                }
+                assert.jsonSchema(categoriesArray, categoriesSchema);
+            })
+
 
         });
+
+        describe("Get Item", async () => {
+            it("returns the requested item specified by ID", async () => { //to update this for other tables? 
+                const requestedID = 2;
+                const modelName = Category;
+                requestedItem =           
+                {
+                    id: 2,
+                    category_name: "Condiments"
+                }
+
+                const categoryItem = await getItem(modelName, requestedID); 
+
+                assert.deepEqual(requestedItem, categoryItem);
+            })
+
+            //WIP
+            it("throws an error if a nonexistent ID is specified", async () => {
+                const requestedID = 10;
+                const modelName = Category;
+                const expectedError = new Error("Nonexistent item");
+                assert.throws(async () => {
+                    await getItem(modelName, requestedID)}, expectedError.message); 
+
+            })
+        })
 
         describe("buildNewItem", () => { //havent exported yet
             it("transforms a request object into a new item object", () => {
@@ -252,16 +281,16 @@ describe('Controller Function tests', () => {
             })
         })
 
-        describe("validateTableName", () => {
+        describe("validateModelName", () => {
             it("throws an error if no table name is specified", () => {
                 const emptyTable = "";
                 assert.throws(() => {
-                    validateTableName(emptyTable)}, noTableError);
+                    validateModelName(emptyTable)}, noTableError);
             });
             it("throws an error if a non-existent table is specified", () => {
                 const nonExistentTable = "Banana";
                 assert.throws(() => {
-                    validateTableName(nonExistentTable)}, nonExistentTableError);
+                    validateModelName(nonExistentTable)}, nonExistentTableError);
             })
         })
     })
@@ -279,5 +308,6 @@ describe('Controller Function tests', () => {
 
 
 /* Questions
-3. How can I close a server after tests are complete
+3. How can I close a server quicker after tests are complete
+4. Do I need to test getItem for all models? 
 */
