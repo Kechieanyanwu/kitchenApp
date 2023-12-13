@@ -3,8 +3,10 @@ const { sequelize } = require("../../database/models");
 
 const noTableError = new Error("no table specified");
 const nonExistentTableError = new Error("table does not exist");
+const nonExistentItemError = new Error("Nonexistent item")
 
 const getAllItems = async (modelName) => {
+    validateModelName(modelName.name); //is there a better place to do this?
     //to update to not return data and time 
         try {
             const result = await sequelize.transaction(async (t) => {
@@ -20,7 +22,6 @@ const getAllItems = async (modelName) => {
 }
 
 const getItem = async (modelName, itemID) => {
-    console.log("ItemID", itemID); //test
     validateModelName(modelName.name); //is there a better place to do this? 
 
     try{
@@ -29,7 +30,7 @@ const getItem = async (modelName, itemID) => {
                 { attributes: {exclude: ["date_created", "date_updated"]},
                 transaction: t })
             if (requestedItem === null) {
-                throw new Error("Nonexistent item");
+                throw nonExistentItemError;
             } else {
                 return requestedItem.dataValues;
             }
@@ -42,7 +43,6 @@ const getItem = async (modelName, itemID) => {
 
 
 const addNewItem = async(modelName, requestBody) => {
-
     validateModelName(modelName.name); 
 
     const newItem = requestBody; //using this for now to test
@@ -64,25 +64,15 @@ const addNewItem = async(modelName, requestBody) => {
 
 }
 
+const updateItem = async(modelName, itemID, desiredUpdate) => {
+    // return {
+    //     id: 3,
+    //     category_name: "Update Category"
+    // }
+    const item = await getItem(modelName, itemID);
 
-
-//might take this away
-const buildNewItem = (requestBody) => {
-    //initialize an empty object
-    var newItem = {}; 
-    
-    //loop through each key in the requestBody and build the newItem object
-     for (const key in requestBody) {
-        //build the field names for newItem, separated by commas
-        newItem.columns = newItem.columns ? `${newItem.columns}, ${key}` : key;
-
-        //build the values for newItem, separated by commas and enclosed in single quotes if a string
-        const value = typeof requestBody[key] === "string" ? `'${requestBody[key]}'` : requestBody[key];
-        newItem.values = newItem.values ? `${newItem.values}, ${value}` : value;
-        } 
-    return newItem;
+    //assign values from desiredUpdate to the result object 
 }
-
 
 const validateNewGroceryItem = (req, res, next) => { //include validateCategoryID soon
     if (JSON.stringify(req.body) == "{}") {
@@ -156,10 +146,11 @@ module.exports = {
     getAllItems,
     noTableError,
     nonExistentTableError,
+    nonExistentItemError,
     validateNewGroceryItem,
     validateNewCategory,
     validateModelName,
-    buildNewItem,
     addNewItem,
     getItem,
+    updateItem,
  };

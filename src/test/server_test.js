@@ -17,10 +17,11 @@ const inventorySchema = model.inventorySchema;
 const { getAllItems,
         noTableError,
         nonExistentTableError, 
-        buildNewItem,
         addNewItem,
         validateModelName,
-        getItem} = require('../controllers/controller');
+        getItem,
+        nonExistentItemError,
+        updateItem} = require('../controllers/controller');
 
 // importing models from Sequelize
 const { Checklist } = require('../../database/models/checklist');
@@ -179,15 +180,6 @@ describe("Endpoint testing", () => {
           });
 })
 
-      
-
-describe('Database Function tests', () => {
-    describe("General Database functions", () => {
-        describe("Sequelize Function tests", () => {
-            //to come if applicable
-        });
-        })
-    })
 
 describe('Controller Function tests', () => {
     describe("General Controller functions", () => {
@@ -221,35 +213,13 @@ describe('Controller Function tests', () => {
                 assert.deepEqual(requestedItem, categoryItem);
             })
 
-            //WIP
             it("throws an error if a nonexistent ID is specified", async () => {
                 const requestedID = 10;
                 const modelName = Category;
-                const expectedError = new Error("Nonexistent item");
-                assert.throws(async () => {
-                    await getItem(modelName, requestedID)}, expectedError.message); 
 
+                await assert.isRejected(getItem(modelName, requestedID), nonExistentItemError); 
             })
         })
-
-        describe("buildNewItem", () => { //havent exported yet
-            it("transforms a request object into a new item object", () => {
-                const requestBody = {
-                    "item_name": "Milk",
-                    "quantity": 2,
-                    "category_id": 3,
-                  };
-                const expectedNewItem = {
-                    columns: "item_name, quantity, category_id",
-                    values: "'Milk', 2, 3"
-                };
-                
-                //run function and check we get the right object
-                const result = buildNewItem(requestBody);
-                assert.deepEqual(result, expectedNewItem);
-
-            })
-        });
 
         describe("addNewItem", async () => {
             it("returns the newly added item", async () => {
@@ -276,8 +246,19 @@ describe('Controller Function tests', () => {
         describe("UpdateItem", () => {
             it("returns the updated item", async() => {
                 //update existing item
+                const itemID = 3;
+                const desiredUpdate = {
+                    id: 3,
+                    category_name: "Update Category"
+                }
+                const modelName = Category;
+
+                const actualUpdate = await updateItem(Category, itemID, desiredUpdate);
         
                 //assert that the item is now updated to the mock item
+                assert.deepEqual(desiredUpdate, actualUpdate); 
+
+                //rollback changes 
             })
         })
 
