@@ -26,6 +26,7 @@ const { getAllItems,
 // importing models from Sequelize
 const { Checklist } = require('../../database/models/checklist');
 const { Category } = require('../../database/models/category');
+const { sequelize, Sequelize } = require('../../database/models');
 
 chai.use(require('chai-json-schema-ajv')); //for validating JSON schema
 chai.use(require('chai-as-promised')); //extends chai to handle promises 
@@ -231,7 +232,7 @@ describe('Controller Function tests', () => {
                 //send to database using function
                 const newItem = await addNewItem(Category, mockRequestBody);
                 
-                const assertItem = {} //doing this to ignore the timestamp
+                const assertItem = {} //doing this to ignore the timestamp, but it seems a bit too coupled to the category object shape. Leaving for now
                 assertItem.id = newItem.id;
                 assertItem.category_name = newItem.category_name;
                 
@@ -243,23 +244,41 @@ describe('Controller Function tests', () => {
             });
         });
         
-        describe("UpdateItem", () => {
+        describe("UpdateItem", async () => {
+            //rollback the changes after
+            const t = await sequelize.transaction();
+            after(t.rollback());
+
             it("returns the updated item", async() => {
-                //update existing item
+                //setup
                 const itemID = 3;
-                const desiredUpdate = {
-                    id: 3,
-                    category_name: "Update Category"
-                }
+                const update = { category_name: "Update Category" }
                 const modelName = Category;
 
-                const actualUpdate = await updateItem(Category, itemID, desiredUpdate);
+                const desiredUpdate = { id: 3, category_name: "Update Category" }
+                
+                //update existing item
+                const actualUpdate = await updateItem(modelName, itemID, update);
+
+                const assertItem = {} //doing this to ignore the timestamp, but it seems a bit too coupled to the category object shape. Leaving for now
+                assertItem.id = actualUpdate.id;
+                assertItem.category_name = actualUpdate.category_name;
         
                 //assert that the item is now updated to the mock item
-                assert.deepEqual(desiredUpdate, actualUpdate); 
+                assert.deepEqual(assertItem, desiredUpdate); 
 
                 //rollback changes 
+                //could rollback any changes in by using a before and after segment 
             })
+
+            it("throws an error if a nonexistent ID is specified", async () => {
+                const requestedID = 10;
+                const modelName = Category;
+                const update = { category_name: "Update Category" }
+
+                await assert.isRejected(updateItem(modelName, requestedID, update), nonExistentItemError); 
+            })
+
         })
 
         describe("validateModelName", () => {

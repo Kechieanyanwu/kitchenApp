@@ -5,6 +5,10 @@ const noTableError = new Error("no table specified");
 const nonExistentTableError = new Error("table does not exist");
 const nonExistentItemError = new Error("Nonexistent item")
 
+
+//REMEMBER TO PASS TRANSACTION T INTO EVERY SEQUELIZE CALL
+
+
 const getAllItems = async (modelName) => {
     validateModelName(modelName.name); //is there a better place to do this?
     //to update to not return data and time 
@@ -69,9 +73,30 @@ const updateItem = async(modelName, itemID, desiredUpdate) => {
     //     id: 3,
     //     category_name: "Update Category"
     // }
-    const item = await getItem(modelName, itemID);
+    try {
+        const result = await sequelize.transaction(async (t) => {
+            //get requested item using itemID
+            const item = await modelName.findByPk(itemID, 
+                { attributes: {exclude: ["date_created", "date_updated"]},
+                transaction: t, 
+                plain: true }) //do I need plain: true everywhere? 
+            //check that the itemID exists
+            if (item === null) {
+                    throw nonExistentItemError;
+            }
 
-    //assign values from desiredUpdate to the result object 
+            //update with new details
+            await item.update(desiredUpdate, { transaction: t });
+            //how to i remove date_updated?
+            //return updated item 
+            console.log("updatedItem", item.dataValues); //test
+            return item.dataValues; //might be dataValues
+        })
+        return result;
+    } catch (err) {
+        throw err;
+    }
+
 }
 
 const validateNewGroceryItem = (req, res, next) => { //include validateCategoryID soon
