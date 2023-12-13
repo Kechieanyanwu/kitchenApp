@@ -99,6 +99,7 @@ const updateItem = async(modelName, itemID, desiredUpdate) => {
 
 }
 
+
 const validateNewGroceryItem = (req, res, next) => { //include validateCategoryID soon
     if (JSON.stringify(req.body) == "{}") {
         const err = new Error("Please include details of the new checklist item");
