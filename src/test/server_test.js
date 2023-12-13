@@ -267,8 +267,6 @@ describe('Controller Function tests', () => {
                 //assert that the item is now updated to the mock item
                 assert.deepEqual(assertItem, desiredUpdate); 
 
-                //rollback changes 
-                //could rollback any changes in by using a before and after segment 
             })
 
             it("throws an error if a nonexistent ID is specified", async () => {
