@@ -21,7 +21,8 @@ const { getAllItems,
         validateModelName,
         getItem,
         nonExistentItemError,
-        updateItem} = require('../controllers/controller');
+        updateItem,
+        deleteItem} = require('../controllers/controller');
 
 // importing models from Sequelize
 const { Checklist } = require('../../database/models/checklist');
@@ -246,11 +247,23 @@ describe('Controller Function tests', () => {
         
         describe("UpdateItem", async () => {
             //rollback the changes after
-            const t = await sequelize.transaction();
-            after(t.rollback());
+            // let t; // Declare the transaction variable at a higher scope
+
+            // Run this before the tests in this describe block
+            // before(async () => {
+            //   // Start a transaction before the tests
+            //   t = await sequelize.transaction();
+            // });
+          
+            // Run this after the tests in this describe block
+            // after(async () => {
+            //   // Rollback the transaction after the tests
+            //   await t.rollback();
+            // });
 
             it("returns the updated item", async() => {
                 //setup
+                const t = await sequelize.transaction();
                 const itemID = 3;
                 const update = { category_name: "Update Category" }
                 const modelName = Category;
@@ -258,7 +271,9 @@ describe('Controller Function tests', () => {
                 const desiredUpdate = { id: 3, category_name: "Update Category" }
                 
                 //update existing item
-                const actualUpdate = await updateItem(modelName, itemID, update);
+                // const actualUpdate = await updateItem(modelName, itemID, update);
+                const actualUpdate = await updateItem(modelName, itemID, update, t);
+                console.log("actual update", actualUpdate); //test
 
                 const assertItem = {} //doing this to ignore the timestamp, but it seems a bit too coupled to the category object shape. Leaving for now
                 assertItem.id = actualUpdate.id;
@@ -266,6 +281,8 @@ describe('Controller Function tests', () => {
         
                 //assert that the item is now updated to the mock item
                 assert.deepEqual(assertItem, desiredUpdate); 
+
+                await t.rollback();
 
             })
 
@@ -277,6 +294,22 @@ describe('Controller Function tests', () => {
                 await assert.isRejected(updateItem(modelName, requestedID, update), nonExistentItemError); 
             })
 
+        })
+
+        describe("Delete Item", () => {
+            it("Successfully deletes a specified item by ID", async () => {
+                const itemID = 4; //this is the newly added item from the addItem test. Does this make it too coupled? 
+                const modelName = Category;
+                const mockAddedItem = { id: 4, category_name: "Dairy"}; 
+                
+                const deletedItem = await deleteItem(modelName, itemID);
+                console.log("deletedItem", deletedItem)
+
+                assert.notDeepNestedInclude(deletedItem, mockAddedItem, "Correct!");
+            })
+            it("throws an error is a nonexistent ID is specified", async () => {
+
+            })
         })
 
         describe("validateModelName", () => {

@@ -68,17 +68,34 @@ const addNewItem = async(modelName, requestBody) => {
 
 }
 
-const updateItem = async(modelName, itemID, desiredUpdate) => {
-    // return {
-    //     id: 3,
-    //     category_name: "Update Category"
+const updateItem = async(modelName, itemID, desiredUpdate, t = null) => { //testing passing a transaction from outside
+    // try {
+    //     const result = await sequelize.transaction(async (t) => {
+    //         //get requested item using itemID
+    //         const item = await modelName.findByPk(itemID, 
+    //             { attributes: {exclude: ["date_created", "date_updated"]},
+    //             transaction: t,
+    //             plain: true }) //do I need plain: true everywhere? 
+    //         //check that the itemID exists
+    //         if (item === null) {
+    //                 throw nonExistentItemError;
+    //         }
+
+    //         //update with new details
+    //         await item.update(desiredUpdate, { transaction: t });
+    //         //how to i remove date_updated?
+    //         //return updated item 
+
+    //         return item.dataValues;
+    //     })
+    //     return result;
+    // } catch (err) {
+    //     throw err;
     // }
     try {
-        const result = await sequelize.transaction(async (t) => {
-            //get requested item using itemID
             const item = await modelName.findByPk(itemID, 
                 { attributes: {exclude: ["date_created", "date_updated"]},
-                transaction: t, 
+                transaction: t,
                 plain: true }) //do I need plain: true everywhere? 
             //check that the itemID exists
             if (item === null) {
@@ -89,8 +106,31 @@ const updateItem = async(modelName, itemID, desiredUpdate) => {
             await item.update(desiredUpdate, { transaction: t });
             //how to i remove date_updated?
             //return updated item 
-            console.log("updatedItem", item.dataValues); //test
-            return item.dataValues; //might be dataValues
+
+            return item.dataValues;
+    } catch (err) {
+        throw err;
+    }
+}
+
+const deleteItem = async (modelName, itemID) => {
+    validateModelName(modelName.name); 
+
+    try {
+        const result = await sequelize.transaction(async (t) => {
+            //deleted requested item using itemID
+            await modelName.destroy({
+                where: {
+                    id: itemID
+                }, 
+                transaction: t
+            });
+            //get the updated items in database
+            const items = await modelName.findAll(
+                { raw: true , 
+                attributes: {exclude: ["date_created", "date_updated"]},
+                transaction: t }); 
+                return items;
         })
         return result;
     } catch (err) {
@@ -98,7 +138,6 @@ const updateItem = async(modelName, itemID, desiredUpdate) => {
     }
 
 }
-
 
 const validateNewGroceryItem = (req, res, next) => { //include validateCategoryID soon
     if (JSON.stringify(req.body) == "{}") {
@@ -179,4 +218,5 @@ module.exports = {
     addNewItem,
     getItem,
     updateItem,
+    deleteItem,
  };
