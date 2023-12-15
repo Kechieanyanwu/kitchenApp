@@ -34,7 +34,9 @@ chai.use(require('chai-as-promised')); //extends chai to handle promises
 
 
 describe("KitchenApp testing", function () {
-    after(server.close()); //this takes TOO LONG to close. Why? 
+    after(() => {
+        server.close()
+    }); //this takes TOO LONG to close. Why? 
 
 describe("Server testing", () => {
     describe("loading express", () => {
@@ -186,8 +188,10 @@ describe("Endpoint testing", () => {
 describe('Controller Function tests', () => {
     describe("General Controller functions", () => {
         describe("GetAllItems", async () => {
+
             it("returns all items from the database", async () => {
-                const categoriesArray = await getAllItems(Category);
+                const t = await sequelize.transaction();
+                const categoriesArray = await getAllItems(Category, t);
 
                 //do I even want to return the date created and updated? Can this just stay in the db? 
                 for (const category of categoriesArray) { //changing to string because JSON schema is validating string
@@ -202,6 +206,7 @@ describe('Controller Function tests', () => {
 
         describe("Get Item", async () => {
             it("returns the requested item specified by ID", async () => { //to update this for other tables? 
+                const t = await sequelize.transaction();
                 const requestedID = 2;
                 const modelName = Category;
                 requestedItem =           
@@ -210,7 +215,7 @@ describe('Controller Function tests', () => {
                     category_name: "Condiments"
                 }
 
-                const categoryItem = await getItem(modelName, requestedID); 
+                const categoryItem = await getItem(modelName, requestedID, t); 
 
                 assert.deepEqual(requestedItem, categoryItem);
             })
@@ -225,13 +230,14 @@ describe('Controller Function tests', () => {
 
         describe("addNewItem", async () => {
             it("returns the newly added item", async () => {
+                const t = await sequelize.transaction();
                 const mockAddedItem = { id: 4, category_name: "Dairy"}; //id 4 because we have 3 items in test database. Is this too coupled?
 
                 //create dummy data
                 const mockRequestBody = { "category_name": "Dairy" }
                 
                 //send to database using function
-                const newItem = await addNewItem(Category, mockRequestBody);
+                const newItem = await addNewItem(Category, mockRequestBody, t);
                 
                 const assertItem = {} //doing this to ignore the timestamp, but it seems a bit too coupled to the category object shape. Leaving for now
                 assertItem.id = newItem.id;
@@ -246,20 +252,6 @@ describe('Controller Function tests', () => {
         });
         
         describe("UpdateItem", async () => {
-            //rollback the changes after
-            // let t; // Declare the transaction variable at a higher scope
-
-            // Run this before the tests in this describe block
-            // before(async () => {
-            //   // Start a transaction before the tests
-            //   t = await sequelize.transaction();
-            // });
-          
-            // Run this after the tests in this describe block
-            // after(async () => {
-            //   // Rollback the transaction after the tests
-            //   await t.rollback();
-            // });
 
             it("returns the updated item", async() => {
                 //setup
@@ -282,33 +274,44 @@ describe('Controller Function tests', () => {
                 //assert that the item is now updated to the mock item
                 assert.deepEqual(assertItem, desiredUpdate); 
 
+                //rollback the changes 
                 await t.rollback();
+                //could this error be from the rollback: Error: Timeout of 2000ms exceeded. For async tests and hooks, ensure "done()" is called; if returning a Promise, ensure it resolves. 
+                //(/Users/nkechianyanwu/Desktop/Code Learning/Projects/kitchenApp/src/test/server_test.js)
+
 
             })
 
             it("throws an error if a nonexistent ID is specified", async () => {
+                const t = await sequelize.transaction();
                 const requestedID = 10;
                 const modelName = Category;
                 const update = { category_name: "Update Category" }
 
-                await assert.isRejected(updateItem(modelName, requestedID, update), nonExistentItemError); 
+                await assert.isRejected(updateItem(modelName, requestedID, update, t), nonExistentItemError); 
             })
 
         })
 
         describe("Delete Item", () => {
             it("Successfully deletes a specified item by ID", async () => {
+                const t = await sequelize.transaction();
                 const itemID = 4; //this is the newly added item from the addItem test. Does this make it too coupled? 
+                // const itemID = 2; //pprev
                 const modelName = Category;
                 const mockAddedItem = { id: 4, category_name: "Dairy"}; 
                 
-                const deletedItem = await deleteItem(modelName, itemID);
-                console.log("deletedItem", deletedItem)
+                const deletedItem = await deleteItem(modelName, itemID, t);
+                console.log("deletedItem", JSON.stringify(deletedItem)); //test
 
                 assert.notDeepNestedInclude(deletedItem, mockAddedItem, "Correct!");
             })
             it("throws an error is a nonexistent ID is specified", async () => {
+                const t = await sequelize.transaction();
+                const itemID = 10;
+                const modelName = Category;
 
+                await assert.isRejected(deleteItem(modelName, itemID, t), nonExistentItemError); 
             })
         })
 
