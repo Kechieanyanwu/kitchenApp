@@ -9,27 +9,23 @@ const nonExistentItemError = new Error("Nonexistent item")
 //REMEMBER TO PASS TRANSACTION T INTO EVERY SEQUELIZE CALL
 
 
-const getAllItems = async (modelName) => {
+const getAllItems = async (modelName, t) => {
     validateModelName(modelName.name); //is there a better place to do this?
     //to update to not return data and time 
         try {
-            const result = await sequelize.transaction(async (t) => {
                 const items = await modelName.findAll(
                 { raw: true }, 
                 { transaction: t }); 
                 return items;
-            })
-            return result;
         } catch (error) {
             throw error;
     }
 }
 
-const getItem = async (modelName, itemID) => {
+const getItem = async (modelName, itemID, t) => {
     validateModelName(modelName.name); //is there a better place to do this? 
 
     try{
-        const result = await sequelize.transaction(async (t) => {
             const requestedItem = await modelName.findByPk(itemID, 
                 { attributes: {exclude: ["date_created", "date_updated"]},
                 transaction: t })
@@ -38,29 +34,28 @@ const getItem = async (modelName, itemID) => {
             } else {
                 return requestedItem.dataValues;
             }
-        })
-        return result;
     } catch (err) {
         throw err;
     }
 }
 
 
-const addNewItem = async(modelName, requestBody) => {
+const addNewItem = async(modelName, requestBody, t) => {
     validateModelName(modelName.name); 
 
     const newItem = requestBody; //using this for now to test
     
     try {
-        const result = await sequelize.transaction(async (t) => {
             const addedItem = await modelName.create(newItem, 
                 { attributes: { exclude: ["date_created", "date_updated"] }, transaction: t, });
                 console.log("addedItem", addedItem); //test
+                const items = await modelName.findAll( //test
+                    { raw: true , 
+                    attributes: {exclude: ["date_created", "date_updated"]},//test
+                    transaction: t }); //test
+                    console.log(items); //test
                 return addedItem.dataValues
                 //testing why i cant exclude date created and date updated
-        })
-        console.log("addnewitem" ,result); //test
-        return result;
     } catch (err) {
         throw err;
     }
@@ -68,30 +63,9 @@ const addNewItem = async(modelName, requestBody) => {
 
 }
 
-const updateItem = async(modelName, itemID, desiredUpdate, t = null) => { //testing passing a transaction from outside
-    // try {
-    //     const result = await sequelize.transaction(async (t) => {
-    //         //get requested item using itemID
-    //         const item = await modelName.findByPk(itemID, 
-    //             { attributes: {exclude: ["date_created", "date_updated"]},
-    //             transaction: t,
-    //             plain: true }) //do I need plain: true everywhere? 
-    //         //check that the itemID exists
-    //         if (item === null) {
-    //                 throw nonExistentItemError;
-    //         }
+const updateItem = async(modelName, itemID, desiredUpdate, t) => { //testing passing a transaction from outside
+    validateModelName(modelName.name); 
 
-    //         //update with new details
-    //         await item.update(desiredUpdate, { transaction: t });
-    //         //how to i remove date_updated?
-    //         //return updated item 
-
-    //         return item.dataValues;
-    //     })
-    //     return result;
-    // } catch (err) {
-    //     throw err;
-    // }
     try {
             const item = await modelName.findByPk(itemID, 
                 { attributes: {exclude: ["date_created", "date_updated"]},
@@ -106,6 +80,11 @@ const updateItem = async(modelName, itemID, desiredUpdate, t = null) => { //test
             await item.update(desiredUpdate, { transaction: t });
             //how to i remove date_updated?
             //return updated item 
+            const items = await modelName.findAll( //test
+            { raw: true , 
+            attributes: {exclude: ["date_created", "date_updated"]},//test
+            transaction: t }); //test
+            console.log(items); //test
 
             return item.dataValues;
     } catch (err) {
@@ -113,26 +92,47 @@ const updateItem = async(modelName, itemID, desiredUpdate, t = null) => { //test
     }
 }
 
-const deleteItem = async (modelName, itemID) => {
+const deleteItem = async (modelName, itemID, t) => {
     validateModelName(modelName.name); 
-
+    console.log(itemID); //test
+    var items;
     try {
-        const result = await sequelize.transaction(async (t) => {
-            //deleted requested item using itemID
-            await modelName.destroy({
-                where: {
-                    id: itemID
-                }, 
-                transaction: t
-            });
-            //get the updated items in database
+        const item = await modelName.findByPk(itemID, 
+            { attributes: {exclude: ["date_created", "date_updated"]},
+            transaction: t,
+            plain: true }) //do I need plain: true everywhere? 
+        //check that the itemID exists
+        if (item === null) {
+                throw nonExistentItemError;
+        } else {
+            console.log("item gotten is", requestedItem); //test
+            await item.destroy({ transaction: t });
             const items = await modelName.findAll(
                 { raw: true , 
                 attributes: {exclude: ["date_created", "date_updated"]},
                 transaction: t }); 
-                return items;
-        })
-        return result;
+                return items; 
+        }
+
+            // const result = await modelName.destroy({
+            //     where: {
+            //         id: itemID
+            //     }, returning: true,
+            //     transaction: t
+            // });
+            // console.log("result",result)
+            // if (result === 0) {
+            //     throw nonExistentItemError;
+            // } else {
+            //     const items = await modelName.findAll(
+            //         { raw: true , 
+            //         attributes: {exclude: ["date_created", "date_updated"]},
+            //         transaction: t }); 
+            //         return items; 
+            // }
+            // //get the updated items in database
+
+        // }
     } catch (err) {
         throw err;
     }
