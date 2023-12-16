@@ -10,12 +10,12 @@ const nonExistentItemError = new Error("Nonexistent item")
 
 
 const getAllItems = async (modelName, t) => {
-    validateModelName(modelName.name); //is there a better place to do this?
+    validateModelName(modelName.name); //to be moved to the router files
     //to update to not return data and time 
         try {
                 const items = await modelName.findAll(
-                { raw: true }, 
-                { transaction: t }); 
+                { raw: true,  transaction: t }); 
+                // { transaction: t }); 
                 return items;
         } catch (error) {
             throw error;
@@ -23,7 +23,7 @@ const getAllItems = async (modelName, t) => {
 }
 
 const getItem = async (modelName, itemID, t) => {
-    validateModelName(modelName.name); //is there a better place to do this? 
+    validateModelName(modelName.name); //to be moved to the router files
 
     try{
             const requestedItem = await modelName.findByPk(itemID, 
@@ -40,22 +40,19 @@ const getItem = async (modelName, itemID, t) => {
 }
 
 
-const addNewItem = async(modelName, requestBody, t) => {
-    validateModelName(modelName.name); 
-
-    const newItem = requestBody; //using this for now to test
+const addNewItem = async(modelName, newItem, t) => {
+    validateModelName(modelName.name); //to be moved to the router files
     
     try {
             const addedItem = await modelName.create(newItem, 
-                { attributes: { exclude: ["date_created", "date_updated"] }, transaction: t, });
-                // console.log("addedItem", addedItem); //test
-                const items = await modelName.findAll( //test
-                    { raw: true , 
-                    attributes: {exclude: ["date_created", "date_updated"]},//test
-                    transaction: t }); //test
-                    console.log(items); //test
-                return addedItem.dataValues
-                //testing why i cant exclude date created and date updated
+                { transaction: t });
+            const items = await modelName.findAll( //test
+                { raw: true, 
+                attributes: {exclude: ["date_created", "date_updated"]},//test
+                transaction: t }); //test
+                console.log(items); //test
+            return addedItem.dataValues
+                // why i cant exclude date created and date updated
     } catch (err) {
         throw err;
     }
@@ -63,9 +60,10 @@ const addNewItem = async(modelName, requestBody, t) => {
 
 }
 
-const updateItem = async(modelName, itemID, desiredUpdate, t) => { //testing passing a transaction from outside
-    validateModelName(modelName.name); 
+const updateItem = async(modelName, itemID, desiredUpdate, t) => { 
+    validateModelName(modelName.name); //to be moved to the router files
 
+    //this is currently showing the changes from the previous test isnt working
     const items = await modelName.findAll( //test
     { raw: true , 
     attributes: {exclude: ["date_created", "date_updated"]},//test
@@ -97,51 +95,27 @@ const updateItem = async(modelName, itemID, desiredUpdate, t) => { //testing pas
         throw err;
     }
 }
-
+//deal with later
 const deleteItem = async (modelName, itemID, t) => {
-    validateModelName(modelName.name); 
-    console.log("itemID", itemID); //test
-    var items;
-    try {
-        const item = await modelName.findByPk(itemID, 
-            { attributes: {exclude: ["date_created", "date_updated"]},
-            transaction: t,
-            plain: true }) //do I need plain: true everywhere? 
-        //check that the itemID exists
-        if (item === null) {
-                throw nonExistentItemError;
-        } else {
-            console.log("item gotten is", requestedItem); //test
-            await item.destroy({ transaction: t });
-            const items = await modelName.findAll(
-                { raw: true , 
-                attributes: {exclude: ["date_created", "date_updated"]},
-                transaction: t }); 
-                return items; 
-        }
-
-            // const result = await modelName.destroy({
-            //     where: {
-            //         id: itemID
-            //     }, returning: true,
-            //     transaction: t
-            // });
-            // console.log("result",result)
-            // if (result === 0) {
-            //     throw nonExistentItemError;
-            // } else {
-            //     const items = await modelName.findAll(
-            //         { raw: true , 
-            //         attributes: {exclude: ["date_created", "date_updated"]},
-            //         transaction: t }); 
-            //         return items; 
-            // }
-            // //get the updated items in database
-
-        // }
-    } catch (err) {
-        throw err;
-    }
+    return true
+    // console.log("itemID", itemID); //test
+    // validateModelName(modelName.name); //to be moved to the router files
+    // try {
+    //     await modelName.destroy({
+    //         where: {
+    //             id: itemID
+    //         }, 
+    //         transaction: t
+    //     });
+    //     //get the updated items in database
+    //     const items = await modelName.findAll(
+    //         { raw: true , 
+    //         attributes: {exclude: ["date_created", "date_updated"]},
+    //         transaction: t }); 
+    //         return items;
+    // } catch (err) {
+    //     throw err;
+    // }
 
 }
 
