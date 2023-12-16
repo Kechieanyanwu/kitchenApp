@@ -270,14 +270,6 @@ describe('Controller Function tests', () => {
         
                 //assert that the item is now updated to the mock item
                 assert.deepEqual(assertItem, desiredUpdate); 
-
-                //rollback the changes 
-                // await t.rollback(); testing if the update even persists
-                //but sequelize says to never rollback manually, but to throw an error. I think my usecase works? 
-                //could this error be from the rollback: Error: Timeout of 2000ms exceeded. For async tests and hooks, ensure "done()" is called; if returning a Promise, ensure it resolves. 
-                //(/Users/nkechianyanwu/Desktop/Code Learning/Projects/kitchenApp/src/test/server_test.js)
-
-
             })
 
             it("throws an error if a nonexistent ID is specified", async () => {
@@ -289,27 +281,26 @@ describe('Controller Function tests', () => {
             })
 
         })
+
 //deal with later
         describe("Delete Item", () => { 
-            // it("Successfully deletes a specified item by ID", async () => {
-            //     const t = await sequelize.transaction();
-            //     const itemID = 4; //this is the newly added item from the addItem test. Does this make it too coupled? 
-            //     // const itemID = 2; //pprev
-            //     const modelName = Category;
-            //     const assertDeletedItem = { id: 4, category_name: "Dairy"}; 
+            it("Successfully deletes a specified item by ID", async () => {
+                const itemID = 4; //this is the newly added item from the addItem test. Does this make it too coupled? 
+                // const itemID = 2; //pprev
+                const modelName = Category;
+                const assertDeletedItem = { id: 4, category_name: "Dairy"}; 
                 
-            //     const deletedItem = await deleteItem(modelName, itemID, t);
-            //     console.log("deletedItem", JSON.stringify(deletedItem)); //test
+                const deletedItem = await deleteItem(modelName, itemID, t);
+                console.log("deletedItem", JSON.stringify(deletedItem)); //test
 
-            //     assert.notDeepNestedInclude(deletedItem, assertDeletedItem, "Correct!");
-            // })
-            // it("throws an error if a nonexistent ID is specified", async () => {
-            //     const t = await sequelize.transaction();
-            //     const itemID = 10;
-            //     const modelName = Category;
+                assert.notDeepNestedInclude(deletedItem, assertDeletedItem, "Correct!");
+            })
+            it("throws an error if a nonexistent ID is specified", async () => {
+                const itemID = 10;
+                const modelName = Category;
 
-            //     await assert.isRejected(deleteItem(modelName, itemID, t), nonExistentItemError); 
-            // })
+                await assert.isRejected(deleteItem(modelName, itemID, t), nonExistentItemError); 
+            })
         })
 
         describe("validateModelName", () => {
