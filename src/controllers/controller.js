@@ -63,14 +63,16 @@ const addNewItem = async(modelName, newItem, t) => {
 const updateItem = async(modelName, itemID, desiredUpdate, t) => { 
     validateModelName(modelName.name); //to be moved to the router files
 
-    //this is currently showing the changes from the previous test isnt working
+
     const items = await modelName.findAll( //test
     { raw: true , 
-    attributes: {exclude: ["date_created", "date_updated"]},//test
+    attributes: {exclude: ["date_created", "date_updated"]},
+    order: [['id', 'ASC']],
     transaction: t }); //test
     console.log(items); //test
 
     try {
+            // how would I check for nonexistence if I just go straight to using the model to update, instead of finding first? 
             const item = await modelName.findByPk(itemID, 
                 { attributes: {exclude: ["date_created", "date_updated"]},
                 transaction: t,
@@ -86,7 +88,8 @@ const updateItem = async(modelName, itemID, desiredUpdate, t) => {
             //return updated item 
             const items = await modelName.findAll( //test
             { raw: true , 
-            attributes: {exclude: ["date_created", "date_updated"]},//test
+            attributes: {exclude: ["date_created", "date_updated"]},
+            order: [['id', 'ASC']],
             transaction: t }); //test
             console.log(items); //test
 

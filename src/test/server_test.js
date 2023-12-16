@@ -186,11 +186,13 @@ describe("Endpoint testing", () => {
 
 
 describe('Controller Function tests', () => {
-    describe("General Controller functions", () => {
+    describe("General Controller functions", async () => { //test added async
+
+        t = await sequelize.transaction();
+
         describe("GetAllItems", async () => {
 
             it("returns all items from the database", async () => {
-                const t = await sequelize.transaction();
                 const categoriesArray = await getAllItems(Category, t);
 
                 //do I even want to return the date created and updated? Can this just stay in the db? 
@@ -206,7 +208,6 @@ describe('Controller Function tests', () => {
 
         describe("Get Item", async () => {
             it("returns the requested item specified by ID", async () => { //to update this for other tables? 
-                const t = await sequelize.transaction();
                 const requestedID = 2;
                 const modelName = Category;
                 requestedItem =           
@@ -224,13 +225,12 @@ describe('Controller Function tests', () => {
                 const requestedID = 10;
                 const modelName = Category;
 
-                await assert.isRejected(getItem(modelName, requestedID), nonExistentItemError); 
+                await assert.isRejected(getItem(modelName, requestedID, t), nonExistentItemError); 
             })
         })
 
         describe("addNewItem", async () => {
             it("returns the newly added item", async () => {
-                const t = await sequelize.transaction();
                 const mockAddedItem = { id: 4, category_name: "Dairy"}; //id 4 because we have 3 items in test database. Is this too coupled?
 
                 //create dummy data
@@ -255,7 +255,6 @@ describe('Controller Function tests', () => {
 
             it("returns the updated item", async() => {
                 //setup
-                const t = await sequelize.transaction();
                 const itemID = 3;
                 const update = { category_name: "Update Category" }
                 const modelName = Category;
@@ -282,7 +281,6 @@ describe('Controller Function tests', () => {
             })
 
             it("throws an error if a nonexistent ID is specified", async () => {
-                const t = await sequelize.transaction();
                 const requestedID = 10;
                 const modelName = Category;
                 const update = { category_name: "Update Category" }
