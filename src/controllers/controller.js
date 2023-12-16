@@ -48,7 +48,7 @@ const addNewItem = async(modelName, requestBody, t) => {
     try {
             const addedItem = await modelName.create(newItem, 
                 { attributes: { exclude: ["date_created", "date_updated"] }, transaction: t, });
-                console.log("addedItem", addedItem); //test
+                // console.log("addedItem", addedItem); //test
                 const items = await modelName.findAll( //test
                     { raw: true , 
                     attributes: {exclude: ["date_created", "date_updated"]},//test
@@ -65,6 +65,12 @@ const addNewItem = async(modelName, requestBody, t) => {
 
 const updateItem = async(modelName, itemID, desiredUpdate, t) => { //testing passing a transaction from outside
     validateModelName(modelName.name); 
+
+    const items = await modelName.findAll( //test
+    { raw: true , 
+    attributes: {exclude: ["date_created", "date_updated"]},//test
+    transaction: t }); //test
+    console.log(items); //test
 
     try {
             const item = await modelName.findByPk(itemID, 
@@ -94,7 +100,7 @@ const updateItem = async(modelName, itemID, desiredUpdate, t) => { //testing pas
 
 const deleteItem = async (modelName, itemID, t) => {
     validateModelName(modelName.name); 
-    console.log(itemID); //test
+    console.log("itemID", itemID); //test
     var items;
     try {
         const item = await modelName.findByPk(itemID, 

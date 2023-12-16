@@ -275,7 +275,7 @@ describe('Controller Function tests', () => {
                 assert.deepEqual(assertItem, desiredUpdate); 
 
                 //rollback the changes 
-                await t.rollback();
+                // await t.rollback(); testing if the update even persists
                 //could this error be from the rollback: Error: Timeout of 2000ms exceeded. For async tests and hooks, ensure "done()" is called; if returning a Promise, ensure it resolves. 
                 //(/Users/nkechianyanwu/Desktop/Code Learning/Projects/kitchenApp/src/test/server_test.js)
 
@@ -306,7 +306,7 @@ describe('Controller Function tests', () => {
 
                 assert.notDeepNestedInclude(deletedItem, mockAddedItem, "Correct!");
             })
-            it("throws an error is a nonexistent ID is specified", async () => {
+            it("throws an error if a nonexistent ID is specified", async () => {
                 const t = await sequelize.transaction();
                 const itemID = 10;
                 const modelName = Category;
