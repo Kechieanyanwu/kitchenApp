@@ -1,16 +1,22 @@
+// Model and Sequelize Imports
 const { tableNames } = require("../models/model");
-const { sequelize } = require("../../database/models");
+const { sequelize } = require("../../database/models"); // might eventually call this when creating transaction variable
 
+// Errors
 const noTableError = new Error("no table specified");
 const nonExistentTableError = new Error("table does not exist");
 const nonExistentItemError = new Error("Nonexistent item")
 
 
 //REMEMBER TO PASS TRANSACTION T INTO EVERY SEQUELIZE CALL
+//WILL UPDATE THIS TO USE CLS IF VIBE DEY
 
 
+// Beginning of functions
 const getAllItems = async (modelName, t ) => {
     validateModelName(modelName.name); //to be moved to the router files
+    //I WANT TO ADD A CHECK FOR WHETHER THERE IS A T BEING PASSED, IF NOT, I CREATE A NEW TRANSACTION
+    // I think I'll add this when I integrate to the routers
     // if (t == null) {
     //     t = await sequelize.transaction(); t=null
     // }
@@ -26,7 +32,6 @@ const getAllItems = async (modelName, t ) => {
 
 const getItem = async (modelName, itemID, t) => {
     validateModelName(modelName.name); //to be moved to the router files
-    //I WANT TO ADD A CHECK FOR WHETHER THERE IS A T BEING PASSED, IF NOT, I CREATE A NEW TRANSACTION
     try{
             const requestedItem = await modelName.findByPk(itemID, 
                 { attributes: {exclude: ["date_created", "date_updated"]},
@@ -48,13 +53,9 @@ const addNewItem = async(modelName, newItem, t) => {
     try {
             const addedItem = await modelName.create(newItem, 
                 { transaction: t });
-            const items = await modelName.findAll( //test
-                { raw: true, 
-                attributes: {exclude: ["date_created", "date_updated"]},//test
-                transaction: t }); //test
-                console.log(items); //test
+
             return addedItem.dataValues
-                // why i cant exclude date created and date updated
+                // why can't I exclude date created and date updated?
     } catch (err) {
         throw err;
     }
@@ -65,42 +66,25 @@ const addNewItem = async(modelName, newItem, t) => {
 const updateItem = async(modelName, itemID, desiredUpdate, t) => { 
     validateModelName(modelName.name); //to be moved to the router files
 
-
-    const items = await modelName.findAll( //test
-    { raw: true , 
-    attributes: {exclude: ["date_created", "date_updated"]},
-    order: [['id', 'ASC']],
-    transaction: t }); //test
-    console.log(items); //test
-
     try {
-            // how would I check for nonexistence if I just go straight to using the model to update, instead of finding first? 
-            const item = await modelName.findByPk(itemID, 
-                { attributes: {exclude: ["date_created", "date_updated"]},
-                transaction: t,
-                plain: true }) //do I need plain: true everywhere? 
-            //check that the itemID exists
-            if (item === null) {
-                    throw nonExistentItemError;
-            }
-
-            //update with new details
-            await item.update(desiredUpdate, { transaction: t });
-            //how to i remove date_updated?
-            //return updated item 
-            const items = await modelName.findAll( //test
-            { raw: true , 
-            attributes: {exclude: ["date_created", "date_updated"]},
-            order: [['id', 'ASC']],
-            transaction: t }); //test
-            console.log(items); //test
-
-            return item.dataValues;
+        // Any other way of checking for nonexistence if I just go straight to using the model to update, instead of finding first? 
+        const item = await modelName.findByPk(itemID, 
+            { attributes: {exclude: ["date_created", "date_updated"]},
+            transaction: t,
+            plain: true }) //do I need plain: true everywhere? 
+        //check that the itemID exists
+        if (item === null) {
+                throw nonExistentItemError;
+        }
+        //update with new details
+        await item.update(desiredUpdate, { transaction: t });
+        //return updated item 
+        return item.dataValues;
     } catch (err) {
         throw err;
     }
 }
-//deal with later
+
 const deleteItem = async (modelName, itemID, t) => {
     try {
         const item = await modelName.findByPk(itemID, 
@@ -112,7 +96,6 @@ const deleteItem = async (modelName, itemID, t) => {
         if (item === null) {
                 throw nonExistentItemError;
         } else {
-            console.log("item gotten is", item.dataValues); //test
             await item.destroy({ transaction: t });
             const items = await modelName.findAll(
                 { raw: true , 
@@ -123,52 +106,6 @@ const deleteItem = async (modelName, itemID, t) => {
     } catch (err) {
         throw err;
     }
-
-
-        // const result = await modelName.destroy({
-        //     where: {
-        //         id: itemID
-        //     }, returning: true,
-        //     transaction: t
-        // });
-        // console.log("result",result)
-        // if (result === 0) {
-        //     throw nonExistentItemError;
-        // } else {
-        //     const items = await modelName.findAll(
-        //         { raw: true , 
-        //         attributes: {exclude: ["date_created", "date_updated"]},
-        //         transaction: t }); 
-        //         return items; 
-        // }
-        // //get the updated items in database
-
-    // }
-
-
-
-
-
-
-    // console.log("itemID", itemID); //test
-    // validateModelName(modelName.name); //to be moved to the router files
-    // try {
-    //     await modelName.destroy({
-    //         where: {
-    //             id: itemID
-    //         }, 
-    //         transaction: t
-    //     });
-    //     //get the updated items in database
-    //     const items = await modelName.findAll(
-    //         { raw: true , 
-    //         attributes: {exclude: ["date_created", "date_updated"]},
-    //         transaction: t }); 
-    //         return items;
-    // } catch (err) {
-    //     throw err;
-    // }
-
 }
 
 const validateNewGroceryItem = (req, res, next) => { //include validateCategoryID soon
@@ -227,10 +164,10 @@ const validateNewCategory = (req, res, next) => {
 };
 
 const validateModelName = (modelName) => {
-    if (modelName === "" || modelName === undefined) {      //throw error if no table name is specified
+    if (modelName === "" || modelName === undefined) { //throw error if no table name is specified
         throw noTableError;
     } else {
-        if (tableNames.hasOwnProperty(modelName)) {     //validate that table name exists 
+        if (tableNames.hasOwnProperty(modelName)) { //validate that table name exists 
             return;
         } else {
             throw nonExistentTableError;
