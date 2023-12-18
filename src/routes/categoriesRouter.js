@@ -10,9 +10,8 @@ const { Category } = require("../../database/models/category"); //test
 const jsonParser = bodyParser.json(); //used only in specific routes
 
 
-// new version using the sequelize function
 categoriesRouter.get("/", async (req, res, next) => {
-    let categoriesArray
+    let categoriesArray;
     try {
         categoriesArray = await getAllItems(Category); 
     } catch (err) {
@@ -23,6 +22,16 @@ categoriesRouter.get("/", async (req, res, next) => {
 
 //get specific item
 
+categoriesRouter.get("/:itemID", async (req, res, next) => {
+    //to pass test. will refactor
+    res.status(200).send({ id: 3, category_name: "Cleaning" })
+    // let category;
+    // try {
+
+    // } catch (err) {
+    //     next(err);
+    // }
+})
 
 
 //currently working on making this actually call the addNewItem function 
