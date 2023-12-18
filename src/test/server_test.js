@@ -52,42 +52,62 @@ describe("KitchenApp testing", function () {
 
 
     describe("Endpoint testing", () => {
-        describe("GET Endpoint testing", () => { 
+        // describe("GET Endpoint testing", () => { 
             
-            const endpoints = [
-                {
-                    name: "Categories",
-                    path: "/categories",
-                    schema: categoriesSchema,
-                },
-                {
-                    name: "Checklist",
-                    path: "/checklist",
-                    schema: checklistSchema,
-                },
-                {
-                    name: "Inventory",
-                    path: "/inventory",
-                    schema: inventorySchema,
-                },
-            ];
+        //     const endpoints = [
+        //         {
+        //             name: "Categories",
+        //             path: "/categories",
+        //             schema: categoriesSchema,
+        //         },
+        //         {
+        //             name: "Checklist",
+        //             path: "/checklist",
+        //             schema: checklistSchema,
+        //         },
+        //         {
+        //             name: "Inventory",
+        //             path: "/inventory",
+        //             schema: inventorySchema,
+        //         },
+        //     ];
         
-            for (const endpoint of endpoints) {
-                describe(`${endpoint.name}`, () => {
-                    it("sends a 200 code on a good request" , async () => {
-                        const response = await request(server).get(endpoint.path);
-                        assert.equal(response.status, 200);
-                    });
-                    it("sends JSON response with correct schema", async () => {
-                        const response = await request(server).get(endpoint.path);
-                        assert.jsonSchema(response.body, endpoint.schema);
-                    });
-                });
-            }
+        //     for (const endpoint of endpoints) {
+        //         describe(`${endpoint.name}`, () => {
+        //             it("sends a 200 code on a good request" , async () => {
+        //                 const response = await request(server).get(endpoint.path);
+        //                 assert.equal(response.status, 200);
+        //             });
+        //             it("sends JSON response with correct schema", async () => {
+        //                 const response = await request(server).get(endpoint.path);
+        //                 assert.jsonSchema(response.body, endpoint.schema);
+        //             });
+        //         });
+        //     }
+        // })
+
+        //CURRENTLY WORKING ON
+        describe("GET item endpoint testing", () => {
+            //to start with categories, then change to table driven tests later
+            it("responds with 200 and the correct item", async () => {
+                // Set up
+                const itemID = 3;
+                const expectedResponse = { id: 3, category_name: "Cleaning" };
+                const expectedStatus = 200;
+
+                // Request
+                const response = await request(server).get(`/categories/${itemID}`);
+                
+                // Assertion
+                assert.equal(response.status, expectedStatus);
+                assert.deepEqual(response.body, expectedResponse);
+
+            })
         })
         
         //to come back to this after get specific item. Do i need to send a get request when updating? So the form is populated?
         
+        //to update endpoint tests now that I have created the controller functions 
         //might need to include test for what the response is
         describe("POST endpoint testing", () => {
             const endpoints = [
