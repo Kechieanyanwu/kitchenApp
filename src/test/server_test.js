@@ -88,7 +88,29 @@ describe("KitchenApp testing", function () {
 
         //CURRENTLY WORKING ON
         describe("GET item endpoint testing", () => {
+            // table driven test WIP
+            const endpoints = [
+                {
+                name: "Categories",
+                route: "/categories",
+                testCases: [
+                    {
+                        description: "responds with 200 and the correct item to a valid request",
+                        itemID: 3,
+                        expectedResponse: { id: 3, category_name: "Cleaning" },
+                        expectedStatus: 200,
+                    },
+                    {
+                        description: "returns a 400 error for a nonexistent item",
+                        itemID: 10,
+                        expectedStatus: 400,
+                        //do i also assert the message? Could add later
+                    }
+                    ]
+                },
+            ]
             //to start with categories, then change to table driven tests later
+            
             it("responds with 200 and the correct item", async () => {
                 // Set up
                 const itemID = 3;
@@ -103,6 +125,17 @@ describe("KitchenApp testing", function () {
                 assert.deepEqual(response.body, expectedResponse);
 
             })
+            it("return 400 error for a nonexistent item", async () => {
+                // Set up
+                const itemID = 10;
+                const expectedStatus = 400;
+
+                // Request
+                const response = await request(server).get(`/categories/${itemID}`);
+
+                // Assertion
+                assert.equal(response.status, expectedStatus);
+            })
         })
         
         //to come back to this after get specific item. Do i need to send a get request when updating? So the form is populated?
@@ -110,6 +143,7 @@ describe("KitchenApp testing", function () {
         //to update endpoint tests now that I have created the controller functions 
         //might need to include test for what the response is
         describe("POST endpoint testing", () => {
+            //THIS IS WHERE YOU STOPPED WORKING------
             const endpoints = [
                 {
                 name: "Categories",
@@ -340,3 +374,4 @@ describe("KitchenApp testing", function () {
 3. How can I close a server quicker after tests are complete
 4. Do I need to test getItem / addItem for all models? 
 */
+
