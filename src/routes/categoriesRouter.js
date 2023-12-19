@@ -2,7 +2,8 @@ const express = require('express');
 const categoriesRouter = express();
 const { getAllItems,
         validateNewCategory, 
-        addNewItem} = require('../controllers/controller');
+        addNewItem,
+        getItem} = require('../controllers/controller');
 const { tableNames } = require('../models/model');
 const bodyParser = require("body-parser");
 const { Category } = require("../../database/models/category"); //test
@@ -24,13 +25,16 @@ categoriesRouter.get("/", async (req, res, next) => {
 
 categoriesRouter.get("/:itemID", async (req, res, next) => {
     //to pass test. will refactor
-    res.status(200).send({ id: 3, category_name: "Cleaning" })
-    // let category;
-    // try {
-
-    // } catch (err) {
-    //     next(err);
-    // }
+    // res.status(200).send({ id: 3, category_name: "Cleaning" })
+    const itemID = req.params.itemID;
+    let category;
+    try {
+        category = await getItem(Category, itemID) //testing sending no transaction T
+    } catch (err) {
+        err.status = 400;
+        next(err);
+    }
+    res.status(200).send(category)
 })
 
 
