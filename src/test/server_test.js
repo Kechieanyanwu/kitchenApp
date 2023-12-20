@@ -92,12 +92,14 @@ describe("KitchenApp testing", function () {
                 route: "/categories/",
                 testCases: [
                     {
+                        requestType: "Good",
                         description: "responds with 200 and the correct item to a valid request",
                         itemID: 3,
                         expectedResponse: { id: 3, category_name: "Cleaning" },
                         expectedStatus: 200,
                     },
                     {
+                        requestType: "Bad",
                         description: "returns a 400 error for a nonexistent item",
                         itemID: 10,
                         expectedStatus: 400,
@@ -111,12 +113,14 @@ describe("KitchenApp testing", function () {
                 route: "/inventory/",
                 testCases: [
                     {
+                        requestType: "Good",
                         description: "responds with 200 and the correct item to a valid request",
                         itemID: 3,
                         expectedResponse: { id: 3, item_name: "Dettol Wipes", quantity: 3, category_id: 3 },
                         expectedStatus: 200,
                     },
                     {
+                        requestType: "Bad",
                         description: "returns a 400 error for a nonexistent item",
                         itemID: 10,
                         expectedStatus: 400,
@@ -130,12 +134,14 @@ describe("KitchenApp testing", function () {
                 route: "/checklist/",
                 testCases: [
                     {
+                        requestType: "Good",
                         description: "responds with 200 and the correct item to a valid request",
                         itemID: 3,
                         expectedResponse: { id: 3, item_name: "Dishwashing tabs", quantity: 10, purchased: false, category_id: 3 },
                         expectedStatus: 200,
                     },
                     {
+                        requestType: "Bad",
                         description: "returns a 400 error for a nonexistent item",
                         itemID: 10,
                         expectedStatus: 400,
@@ -148,7 +154,7 @@ describe("KitchenApp testing", function () {
             endpoints.forEach((endpoint) => {
                 describe(`${endpoint.name}`, () => {
                     endpoint.testCases.forEach((testCase) => {
-                        const { description, itemID, expectedStatus, expectedResponse, expectedError } = testCase
+                        const { description, itemID, expectedStatus, expectedResponse, expectedError, requestType } = testCase
                         it(description, async() => { //could probably refactor this so we have two separate table-driven tests for A and B. Possibly later 
                             const response = await request(server).get(endpoint.route + itemID);
                             
@@ -156,11 +162,11 @@ describe("KitchenApp testing", function () {
                             assert.equal(response.status, expectedStatus);
                             
                             //assertion for a good request
-                            if (expectedResponse != null) { //i.e. there is no response body for a 400 error
+                            if(requestType == "Good") {
                                 assert.deepEqual(response.body, expectedResponse);
-                            } 
+                            }
                             //assertion for a bad request from a nonexistent item
-                            if (expectedError != null) {
+                            if (requestType == "Bad") {
                                 assert.deepEqual(response.error.text, expectedError.message);
                             } 
                         })
@@ -178,24 +184,26 @@ describe("KitchenApp testing", function () {
                 name: "Categories",
                 route: "/categories",
                 testCases: [
-                    {//what I dont want is for my test to actually populate my database. I just want it to check that the response is correct, so 
+                    {
+                        requestType: "Good",
                         description: "responds with 201 to a valid request body",
-                        requestBody: { "category_name": "Dairy" },
+                        requestBody: { "category_name": "Post Endpoint Test" },
                         expectedStatus: 201,
-                        // expectedResponse: {"id": 1, "category_name": "Dairy"}
-                        //somehow will modify expected response to have ID and category name keys, and the category name must be dairy 
-                        // is including validation for expectedstatus too coupled? 
+                        expectedResponse: {"id": 4, "category_name": "Post Endpoint Test"}
                     },
                     {
+                        requestType: "Bad",
                         description: "rejects an empty request body",
                         requestBody: undefined,
                         expectedStatus: 400,
-                        //do I need to include a response here? For consistency, maybe. To ask Chidi 
+                        expectedError: "Empty Body"
                     }, 
                     {
+                        requestType: "Bad",
                         description: "rejects a request body with an incorrect schema",
                         requestBody: { "inventory": "Dairy" },
                         expectedStatus: 400,
+                        expectedError: "Request must only contain a category name"
                     }
                     ]
                 },
@@ -206,21 +214,32 @@ describe("KitchenApp testing", function () {
                     {
                         description: "responds with 201 to a valid request body",  
                         requestBody: {
-                            "item_name": "Milk",
+                            "item_name": "Post Endpoint Test",
                             "quantity": 2,
                             "category_id": 3,
                         },
                         expectedStatus: 201,
+                        expectedResponse: {
+                            "id": 4,
+                            "item_name": "Post Endpoint Test",
+                            "quantity": 2,
+                            "category_id": 3,
+                            "purchased": false
+                        },
                     },
                     {
+                        requestType: "Bad", //uh-oh, is this code smell? Let's finish and get back to it
                         description: "rejects an empty request body",  
                         requestBody: undefined,
                         expectedStatus: 400,
+                        expectedError: "Empty Body"
                     }, 
                     {
+                        requestType: "Bad",
                         description: "rejects a request body with an incorrect schema",
                         requestBody: { "inventory": "Dairy" },
                         expectedStatus: 400,
+                        expectedError: "Item must have an item name, quantity and category ID"
                     },
                     ]
                 },
@@ -231,21 +250,31 @@ describe("KitchenApp testing", function () {
                     {
                         description: "responds with 201 to a valid request body",  
                         requestBody: {
-                            "item_name": "Bread",
-                            "quantity": 2,
+                            "item_name": "Post Endpoint Test",
+                            "quantity": 20,
                             "category_id": 3,
                         },
                         expectedStatus: 201,
+                        expectedResponse: {
+                            "id": 4,
+                            "item_name": "Post Endpoint Test",
+                            "quantity": 20,
+                            "category_id": 3,
+                        },
                     },
                     {
+                        requestType: "Bad",
                         description: "rejects an empty request body",  
                         requestBody: undefined,
                         expectedStatus: 400,
+                        expectedError: "Empty Body"
                     }, 
                     {
+                        requestType: "Bad",
                         description: "rejects a request body with an incorrect schema",
                         requestBody: { "inventory": "Dairy" },
                         expectedStatus: 400,
+                        expectedError: "Item must have an item name, quantity and category ID"
                     },
                     ]
                 },
@@ -254,10 +283,19 @@ describe("KitchenApp testing", function () {
             endpoints.forEach((endpoint) => {
                 describe(`${endpoint.name}`, () => {
                     endpoint.testCases.forEach((testCase) => {
-                        const { description, requestBody, expectedStatus, expectedResponse } = testCase
+                        const { description, requestBody, expectedStatus, expectedResponse, requestType, expectedError } = testCase
                         it(description, async() => {
                             const response = await request(server).post(endpoint.route).send(requestBody);
+                            
                             assert.equal(response.status, expectedStatus);
+
+                            if(requestType == "Good") {
+                                assert.deepEqual(response.body, expectedResponse);
+                            }
+
+                            if (requestType == "Bad") {
+                                assert.deepEqual(response.error.text, expectedError);
+                            }
         
                         })
                     })
@@ -311,20 +349,16 @@ describe("KitchenApp testing", function () {
 
             describe("addNewItem", async () => { // this test feels too coupled to Category. Future update could be to change this
                 it("returns the newly added item", async () => {
-                    const mockAddedItem = { id: 4, category_name: "Dairy"}; //id 4 because we have 3 items in test database. Is this too coupled?
+                    const mockAddedItem = { id: 5, category_name: "addNewItem test category"}; //id 4 because we have 3 items in test database. Is this too coupled?
 
                     //create dummy data
-                    const mockRequestBody = { "category_name": "Dairy" }
+                    const mockRequestBody = { "category_name": "addNewItem test category" } //should I take out this string quotes?
                     
                     //send to database using function
                     const newItem = await addNewItem(Category, mockRequestBody, t);
-                    
-                    const assertItem = {} //doing this to ignore the timestamp, but it seems a bit too coupled to the category object shape. Leaving for now
-                    assertItem.id = newItem.id;
-                    assertItem.category_name = newItem.category_name;
-                    
+                                        
                     //validate that the request was fulfilled
-                    assert.deepEqual(assertItem, mockAddedItem); 
+                    assert.deepEqual(newItem, mockAddedItem); 
                 });
                 it("handles an error from the db correctly", async () => {
                     // to set this up later
@@ -343,13 +377,9 @@ describe("KitchenApp testing", function () {
                     
                     //update existing item
                     const actualUpdate = await updateItem(modelName, itemID, update, t);
-
-                    const assertItem = {} //doing this to ignore the timestamp, but it seems a bit too coupled to the category object shape. Leaving for now
-                    assertItem.id = actualUpdate.id;
-                    assertItem.category_name = actualUpdate.category_name;
             
                     //assert that the item is now updated to the mock item
-                    assert.deepEqual(assertItem, desiredUpdate); 
+                    assert.deepEqual(actualUpdate, desiredUpdate); 
                 })
 
                 it("throws an error if a nonexistent ID is specified", async () => {
