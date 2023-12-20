@@ -10,7 +10,9 @@ const nonExistentItemError = new Error("Nonexistent item")
 
 //REMEMBER TO PASS TRANSACTION T INTO EVERY SEQUELIZE CALL
 //WILL UPDATE THIS TO USE CLS IF VIBE DEY
+//will have to read up some more on transactions to see if i need to pass
 
+//do I want there to be a separate checkItem endpoint? Or do I just want it as an update? 
 
 
 // Beginning of functions
