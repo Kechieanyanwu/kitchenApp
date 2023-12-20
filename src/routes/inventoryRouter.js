@@ -2,7 +2,8 @@ const express = require('express');
 const inventoryRouter = express.Router(); //creating a router instance
 const { getAllItems,
         validateNewGroceryItem, 
-        getItem} = require('../controllers/controller');
+        getItem,
+        addNewItem} = require('../controllers/controller');
 const { tableNames } = require('../models/model');
 const bodyParser = require("body-parser");
 const { Inventory } = require('../../database/models/inventory');
@@ -33,7 +34,16 @@ inventoryRouter.get("/:itemID", async (req, res, next) => {
 
 
 inventoryRouter.post("/", jsonParser, validateNewGroceryItem, async (req, res, next) => {
-        res.status(201).send("Request processed successfully");
+    let addedItem;
+    const newItem = {item_name: req.item_name, quantity: req.quantity, category_id: req.category_id};
+
+    try {
+        addedItem = await addNewItem(Inventory, newItem);
+    } catch (err) {
+        err.status = 400;
+        next(err);
+    }
+    res.status(201).send(addedItem)
 })
 
 

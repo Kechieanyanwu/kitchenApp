@@ -54,11 +54,16 @@ const addNewItem = async(modelName, newItem, t) => {
     validateModelName(modelName.name); //to be moved to the router files
     
     try {
-            const addedItem = await modelName.create(newItem, 
-                { transaction: t });
+        const addedItem = await modelName.create(newItem, 
+            { transaction: t }); //seems you can't exclude columns on create, only on return, so will have to delete date columns
+        
+        // remove these columns from result
+        delete addedItem.dataValues.date_created;
+        delete addedItem.dataValues.date_updated;
+        
+        // return new item
+        return addedItem.dataValues
 
-            return addedItem.dataValues
-                // why can't I exclude date created and date updated?
     } catch (err) {
         throw err;
     }
@@ -72,8 +77,7 @@ const updateItem = async(modelName, itemID, desiredUpdate, t) => {
     try {
         // Any other way of checking for nonexistence if I just go straight to using the model to update, instead of finding first? 
         const item = await modelName.findByPk(itemID, 
-            { attributes: {exclude: ["date_created", "date_updated"]},
-            transaction: t,
+            { transaction: t,
             plain: true }) //do I need plain: true everywhere? 
         //check that the itemID exists
         if (item === null) {
@@ -81,6 +85,11 @@ const updateItem = async(modelName, itemID, desiredUpdate, t) => {
         }
         //update with new details
         await item.update(desiredUpdate, { transaction: t });
+
+        // remove these columns from result
+        delete item.dataValues.date_created;
+        delete item.dataValues.date_updated;
+
         //return updated item 
         return item.dataValues;
     } catch (err) {
@@ -113,7 +122,7 @@ const deleteItem = async (modelName, itemID, t) => {
 
 const validateNewGroceryItem = (req, res, next) => { //include validateCategoryID soon
     if (JSON.stringify(req.body) == "{}") {
-        const err = new Error("Please include details of the new checklist item");
+        const err = new Error("Empty Body");
         err.status = 400;
         next(err);
     } else {
@@ -123,7 +132,7 @@ const validateNewGroceryItem = (req, res, next) => { //include validateCategoryI
             req.quantity = req.body.quantity;
             req.category_id = req.body.category_id;
             if (typeof req.item_name === "string" && typeof req.quantity === "number" && typeof req.category_id === "number") {
-                //to add validation that the category ID exists 
+                //to add validation that the category ID exists. 20/12/23 Not adding as this will not be on the client side as an input, but a dropdown
                 next();
             } else {
                 const err = new Error("Item name must be a string, quantity and category ID must be a number");
@@ -132,7 +141,7 @@ const validateNewGroceryItem = (req, res, next) => { //include validateCategoryI
                 next(err);
             }
         } else {
-            const err = new Error("Checklist item must have an item name, quantity and category ID");
+            const err = new Error("Item must have an item name, quantity and category ID");
             err.status = 400; 
 
             next(err);
@@ -142,7 +151,7 @@ const validateNewGroceryItem = (req, res, next) => { //include validateCategoryI
 
 const validateNewCategory = (req, res, next) => {
     if (JSON.stringify(req.body) == "{}") { //if an empty request body
-        const err = new Error("Please include a category name");
+        const err = new Error("Empty Body");
         err.status = 400;
         next(err);
     } else {

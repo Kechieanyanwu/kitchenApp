@@ -39,16 +39,16 @@ categoriesRouter.get("/:itemID", async (req, res, next) => {
 
 //currently working on making this actually call the addNewItem function 
 categoriesRouter.post("/", jsonParser, validateNewCategory, async (req, res, next) => {
-    var response;
+    let addedCategory;
+    const newCategory = { category_name: req.category_name }
 
-    // console.log(req.body); //test
-    // try {
-    //     response = await addNewItem(tableNames.categories, req.body);
-    // } catch (err) {
-    //     err.status = 500;
-    //     next(err);
-    // }
-    res.status(201).send(response); 
+    try {
+        addedCategory = await addNewItem(Category, newCategory);
+    } catch (err) {
+        err.status = 400;
+        next(err);
+    }
+    res.status(201).send(addedCategory); 
 })
 
 

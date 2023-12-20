@@ -2,7 +2,8 @@ const express = require('express');
 const checklistRouter = express.Router(); //creating a router instance 
 const { getAllItems,
         validateNewGroceryItem, 
-        getItem} = require('../controllers/controller');
+        getItem,
+        addNewItem} = require('../controllers/controller');
 const { tableNames } = require('../models/model');
 const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json(); //used only in specific routes
@@ -35,7 +36,16 @@ checklistRouter.get("/:itemID", async (req, res, next) => {
 
 
 checklistRouter.post("/", jsonParser, validateNewGroceryItem, async (req, res, next) => {
-    res.status(201).send("Request processed successfully") //to update logic 
+    let addedItem;
+    const newItem = {item_name: req.item_name, quantity: req.quantity, category_id: req.category_id};
+
+    try {
+        addedItem = await addNewItem(Checklist, newItem);
+    } catch (err) {
+        err.status = 400;
+        next(err);
+    }
+    res.status(201).send(addedItem)
 })
 
 
