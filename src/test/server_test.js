@@ -52,47 +52,44 @@ describe("KitchenApp testing", function () {
 
 
     describe("Endpoint testing", () => {
-        // describe("GET Endpoint testing", () => { 
-            
-        //     const endpoints = [
-        //         {
-        //             name: "Categories",
-        //             path: "/categories",
-        //             schema: categoriesSchema,
-        //         },
-        //         {
-        //             name: "Checklist",
-        //             path: "/checklist",
-        //             schema: checklistSchema,
-        //         },
-        //         {
-        //             name: "Inventory",
-        //             path: "/inventory",
-        //             schema: inventorySchema,
-        //         },
-        //     ];
+        describe("GET Endpoint testing", () => { 
+            const endpoints = [
+                {
+                    name: "Categories",
+                    path: "/categories",
+                    schema: categoriesSchema,
+                },
+                {
+                    name: "Checklist",
+                    path: "/checklist",
+                    schema: checklistSchema,
+                },
+                {
+                    name: "Inventory",
+                    path: "/inventory",
+                    schema: inventorySchema,
+                },
+            ];
         
-        //     for (const endpoint of endpoints) {
-        //         describe(`${endpoint.name}`, () => {
-        //             it("sends a 200 code on a good request" , async () => {
-        //                 const response = await request(server).get(endpoint.path);
-        //                 assert.equal(response.status, 200);
-        //             });
-        //             it("sends JSON response with correct schema", async () => {
-        //                 const response = await request(server).get(endpoint.path);
-        //                 assert.jsonSchema(response.body, endpoint.schema);
-        //             });
-        //         });
-        //     }
-        // })
+            for (const endpoint of endpoints) {
+                describe(`${endpoint.name}`, () => {
+                    it("sends a 200 code on a good request" , async () => {
+                        const response = await request(server).get(endpoint.path);
+                        assert.equal(response.status, 200);
+                    });
+                    it("sends JSON response with correct schema", async () => {
+                        const response = await request(server).get(endpoint.path);
+                        assert.jsonSchema(response.body, endpoint.schema);
+                    });
+                });
+            }
+        })
 
-        //CURRENTLY WORKING ON
         describe("GET item endpoint testing", () => {
-            // table driven test WIP
             const endpoints = [
                 {
                 name: "Categories",
-                route: "/categories",
+                route: "/categories/",
                 testCases: [
                     {
                         description: "responds with 200 and the correct item to a valid request",
@@ -104,46 +101,78 @@ describe("KitchenApp testing", function () {
                         description: "returns a 400 error for a nonexistent item",
                         itemID: 10,
                         expectedStatus: 400,
+                        expectedError: nonExistentItemError,
                         //do i also assert the message? Could add later
                     }
                     ]
                 },
+                {
+                name: "Inventory",
+                route: "/inventory/",
+                testCases: [
+                    {
+                        description: "responds with 200 and the correct item to a valid request",
+                        itemID: 3,
+                        expectedResponse: { id: 3, item_name: "Dettol Wipes", quantity: 3, category_id: 3 },
+                        expectedStatus: 200,
+                    },
+                    {
+                        description: "returns a 400 error for a nonexistent item",
+                        itemID: 10,
+                        expectedStatus: 400,
+                        expectedError: nonExistentItemError,
+                        //do i also assert the message? Could add later
+                    }
+                    ]
+                },
+                {
+                name: "Checklist",
+                route: "/checklist/",
+                testCases: [
+                    {
+                        description: "responds with 200 and the correct item to a valid request",
+                        itemID: 3,
+                        expectedResponse: { id: 3, item_name: "Dishwashing tabs", quantity: 10, purchased: false, category_id: 3 },
+                        expectedStatus: 200,
+                    },
+                    {
+                        description: "returns a 400 error for a nonexistent item",
+                        itemID: 10,
+                        expectedStatus: 400,
+                        expectedError: nonExistentItemError,
+                        //do i also assert the message? Could add later
+                    }
+                    ]
+                }
             ]
-            //to start with categories, then change to table driven tests later
-            
-            it("responds with 200 and the correct item", async () => {
-                // Set up
-                const itemID = 3;
-                const expectedResponse = { id: 3, category_name: "Cleaning" };
-                const expectedStatus = 200;
-
-                // Request
-                const response = await request(server).get(`/categories/${itemID}`);
-                
-                // Assertion
-                assert.equal(response.status, expectedStatus);
-                assert.deepEqual(response.body, expectedResponse);
-
-            })
-            it("return 400 error for a nonexistent item", async () => {
-                // Set up
-                const itemID = 10;
-                const expectedStatus = 400;
-
-                // Request
-                const response = await request(server).get(`/categories/${itemID}`);
-
-                // Assertion
-                assert.equal(response.status, expectedStatus);
+            endpoints.forEach((endpoint) => {
+                describe(`${endpoint.name}`, () => {
+                    endpoint.testCases.forEach((testCase) => {
+                        const { description, itemID, expectedStatus, expectedResponse, expectedError } = testCase
+                        it(description, async() => { //could probably refactor this so we have two separate table-driven tests for A and B. Possibly later 
+                            const response = await request(server).get(endpoint.route + itemID);
+                            
+                            //asserts status code is correct
+                            assert.equal(response.status, expectedStatus);
+                            
+                            //assertion for a good request
+                            if (expectedResponse != null) { //i.e. there is no response body for a 400 error
+                                assert.deepEqual(response.body, expectedResponse);
+                            } 
+                            //assertion for a bad request from a nonexistent item
+                            if (expectedError != null) {
+                                assert.deepEqual(response.error.text, expectedError.message);
+                            } 
+                        })
+                    })
+                })
             })
         })
         
-        //to come back to this after get specific item. Do i need to send a get request when updating? So the form is populated?
-        
+        //to come back to this after get specific item. Do i need to send a get request when updating? So the form is populated?     
         //to update endpoint tests now that I have created the controller functions 
-        //might need to include test for what the response is
         describe("POST endpoint testing", () => {
-            //THIS IS WHERE YOU STOPPED WORKING------
+            // ---- I AM WORKING HERE NKECHI ---
             const endpoints = [
                 {
                 name: "Categories",

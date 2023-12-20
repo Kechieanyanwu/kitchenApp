@@ -1,14 +1,14 @@
 const express = require('express');
-const inventoryRouter = express();
+const inventoryRouter = express.Router(); //creating a router instance
 const { getAllItems,
-        validateNewGroceryItem } = require('../controllers/controller');
+        validateNewGroceryItem, 
+        getItem} = require('../controllers/controller');
 const { tableNames } = require('../models/model');
 const bodyParser = require("body-parser");
 const { Inventory } = require('../../database/models/inventory');
 const jsonParser = bodyParser.json(); //used only in specific routes
 
 
-// new version using the sequelize function
 inventoryRouter.get("/", async (req, res, next) => {
     let inventoryArray
     try {
@@ -18,6 +18,18 @@ inventoryRouter.get("/", async (req, res, next) => {
     }
     res.status(200).json(inventoryArray)
 });
+
+inventoryRouter.get("/:itemID", async (req, res, next) => {
+    const itemID = req.params.itemID;
+    let item;
+    try {
+        item = await getItem(Inventory, itemID) //testing sending no transaction T
+    } catch (err) {
+        err.status = 400;
+        next(err);
+    }
+    res.status(200).send(item)
+})
 
 
 inventoryRouter.post("/", jsonParser, validateNewGroceryItem, async (req, res, next) => {

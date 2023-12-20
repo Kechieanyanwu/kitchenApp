@@ -1,5 +1,6 @@
 const express = require('express');
-const categoriesRouter = express();
+const categoriesRouter = express.Router(); //creating a router instance
+
 const { getAllItems,
         validateNewCategory, 
         addNewItem,
@@ -24,8 +25,6 @@ categoriesRouter.get("/", async (req, res, next) => {
 //get specific item
 
 categoriesRouter.get("/:itemID", async (req, res, next) => {
-    //to pass test. will refactor
-    // res.status(200).send({ id: 3, category_name: "Cleaning" })
     const itemID = req.params.itemID;
     let category;
     try {
