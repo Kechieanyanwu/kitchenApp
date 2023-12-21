@@ -178,7 +178,6 @@ describe("KitchenApp testing", function () {
         //to come back to this after get specific item. Do i need to send a get request when updating? So the form is populated?     
         //to update endpoint tests now that I have created the controller functions 
         describe("POST endpoint testing", () => {
-            // ---- I AM WORKING HERE NKECHI ---
             const endpoints = [
                 {
                 name: "Categories",
@@ -302,6 +301,56 @@ describe("KitchenApp testing", function () {
                 })
             })
             });
+
+        describe("Update Item endpoint testing", () => {
+            // ---- I AM WORKING HERE ----
+            // Creating separate tests first as checklist has the additional check of whether it has been purchased, and whether
+            // an item updated to be purchased has been deleted from the checklist, and appears in the inventory
+            describe("Category", ()=> {
+                it("correctly returns an updated category", async () => {
+                    //update item 1
+                    requestBody = { category_name: "Update Category Endpoint" };
+                    itemID = 1;
+
+                    const expectedResponse = { id: 1, category_name: "Update Category Endpoint" };
+                    const expectedStatus = 200; //is this correct for put? 
+
+                    //make update
+                    const response = await request(server).put("/categories/" + itemID).send(requestBody)
+
+                    //assert that the expectedResponse went through
+                    assert.equal(response.status, expectedStatus)
+                    assert.deepEqual(response.body, expectedResponse);
+                })
+
+            })
+            describe("Inventory", () => {
+                it("correctly returns an updated inventory item", async () => {
+                    //update item 1
+                    requestBody = {
+                        "item_name": "Update Inventory Item Test",
+                        "quantity": 25,
+                        "category_id": 2,
+                    };
+                    itemID = 1;
+
+                    const expectedResponse = {
+                        "id": 1,
+                        "item_name": "Update Inventory Item Test",
+                        "quantity": 25,
+                        "category_id": 2,
+                    };
+                    const expectedStatus = 200; //is this correct for put? 
+
+                    //make update
+                    const response = await request(server).put("/inventory/" + itemID).send(requestBody)
+
+                    //assert that the expectedResponse went through
+                    assert.equal(response.status, expectedStatus)
+                    assert.deepEqual(response.body, expectedResponse);
+                })
+            })
+        })
     })
 
 

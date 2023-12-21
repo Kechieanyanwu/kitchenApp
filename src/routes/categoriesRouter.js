@@ -4,14 +4,15 @@ const categoriesRouter = express.Router(); //creating a router instance
 const { getAllItems,
         validateNewCategory, 
         addNewItem,
-        getItem} = require('../controllers/controller');
+        getItem,
+        updateItem} = require('../controllers/controller');
 const { tableNames } = require('../models/model');
 const bodyParser = require("body-parser");
 const { Category } = require("../../database/models/category"); //test
 
 const jsonParser = bodyParser.json(); //used only in specific routes
 
-
+//get all categories
 categoriesRouter.get("/", async (req, res, next) => {
     let categoriesArray;
     try {
@@ -22,8 +23,7 @@ categoriesRouter.get("/", async (req, res, next) => {
     res.status(200).json(categoriesArray)
 });
 
-//get specific item
-
+//get specific category
 categoriesRouter.get("/:itemID", async (req, res, next) => {
     const itemID = req.params.itemID;
     let category;
@@ -37,7 +37,7 @@ categoriesRouter.get("/:itemID", async (req, res, next) => {
 })
 
 
-//currently working on making this actually call the addNewItem function 
+//add new category
 categoriesRouter.post("/", jsonParser, validateNewCategory, async (req, res, next) => {
     let addedCategory;
     const newCategory = { category_name: req.category_name }
@@ -52,6 +52,23 @@ categoriesRouter.post("/", jsonParser, validateNewCategory, async (req, res, nex
 })
 
 
+//update existing category
+categoriesRouter.put("/:itemID", jsonParser, async (req, res, next) => {
+    // passing tests, now let's refactor!
+    // res.status(200).send({ id: 1, category_name: "Update Category Endpoint" })
+    const itemID = req.params.itemID; //code smell, could use a general router.params thingy
+    const update = req.body;
+    let updatedCategory;
+
+    try {
+        updatedCategory = await updateItem(Category, itemID, update);
+    } catch (err) {
+        next(err);
+    }
+
+    res.status(200).send(updatedCategory);
+
+})
 
 
 

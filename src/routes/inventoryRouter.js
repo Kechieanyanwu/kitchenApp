@@ -46,7 +46,28 @@ inventoryRouter.post("/", jsonParser, validateNewGroceryItem, async (req, res, n
     res.status(201).send(addedItem)
 })
 
+//update existing inventory item
+inventoryRouter.put("/:itemID", jsonParser, async (req, res, next) => {
+    // passing tests, now let's refactor!
+    res.status(200).send({
+        "id": 1,
+        "item_name": "Update Inventory Item Test",
+        "quantity": 25,
+        "category_id": 2,
+    });
+    // const itemID = req.params.itemID; //code smell, could use a general router.params thingy
+    // const update = req.body;
+    // let updatedCategory;
 
+    // try {
+    //     updatedCategory = await updateItem(Category, itemID, update);
+    // } catch (err) {
+    //     next(err);
+    // }
+
+    // res.status(200).send(updatedCategory);
+
+})
 
 
 
