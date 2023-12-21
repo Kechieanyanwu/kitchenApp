@@ -3,12 +3,16 @@ const checklistRouter = express.Router(); //creating a router instance
 const { getAllItems,
         validateNewGroceryItem, 
         getItem,
-        addNewItem} = require('../controllers/controller');
+        addNewItem,
+        updateItem,
+        deleteItem} = require('../controllers/controller');
 const { tableNames } = require('../models/model');
 const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json(); //used only in specific routes
 
 const { Checklist } = require("../../database/models/checklist"); 
+const { sequelize } = require('../../database/models');
+const { Inventory } = require('../../database/models/inventory');
 
 
 checklistRouter.get("/", async (req, res, next) => {
@@ -49,8 +53,35 @@ checklistRouter.post("/", jsonParser, validateNewGroceryItem, async (req, res, n
 })
 
 
-    //assertion that when checklist is ticked off, 
+// ntoe to self: assertion that when checklist is ticked off...
+//update existing inventory item
+checklistRouter.put("/:itemID", jsonParser, async (req, res, next) => {
 
+    const itemID = req.params.itemID; //code smell, could use a general router.params thingy
+    const update = req.body;
+    let updatedItem;
+
+    if (update.purchased === true ) { //if this item has been marked as purchased
+        console.log("You have been bought with a price"); //test
+        try {
+            //do I create a transaction here because multiple things happening?
+            const newItem = req.body;
+            delete newItem.purchased;
+            await deleteItem(Checklist, itemID);
+            await addNewItem(Inventory, newItem);
+            res.status(200).send("Item is now in inventory");
+        } catch (err) {
+            throw (err);
+        }
+    } else {
+        try {
+            updatedItem = await updateItem(Checklist, itemID, update);
+        } catch (err) {
+            next(err);
+        }
+        res.status(200).send(updatedItem);
+    }
+})
 
 
 

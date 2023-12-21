@@ -25,7 +25,8 @@ const getAllItems = async (modelName, t ) => {
     // }
         try {
                 const items = await modelName.findAll(
-                { raw: true,  transaction: t }); 
+                // { raw: true, transaction: t }); 
+                { raw: true, attributes: {exclude: ["date_created", "date_updated"]}, transaction: t }); 
                 // { transaction: t }); 
                 return items;
         } catch (error) {
