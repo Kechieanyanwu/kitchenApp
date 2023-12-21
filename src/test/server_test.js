@@ -26,6 +26,7 @@ const { getAllItems,
 const { Checklist } = require('../../database/models/checklist');
 const { Category } = require('../../database/models/category');
 const { sequelize, Sequelize } = require('../../database/models');
+const { Inventory } = require('../../database/models/inventory');
 
 // Usage binding
 chai.use(require('chai-json-schema-ajv')); //for validating JSON schema
@@ -304,16 +305,20 @@ describe("KitchenApp testing", function () {
 
         describe("Update Item endpoint testing", () => {
             // ---- I AM WORKING HERE ----
-            // Creating separate tests first as checklist has the additional check of whether it has been purchased, and whether
-            // an item updated to be purchased has been deleted from the checklist, and appears in the inventory
+
+            /*
+            Creating separate tests first as checklist has the additional check of whether it has been purchased, and whether
+            an item updated to be purchased has been deleted from the checklist, and appears in the inventory
+            Seems that the first two tests are common among all. Will finalise Checklist item when purchased and see how to refactor
+            */
             describe("Category", ()=> {
                 it("correctly returns an updated category", async () => {
                     //update item 1
-                    requestBody = { category_name: "Update Category Endpoint" };
-                    itemID = 1;
+                    const requestBody = { category_name: "Update Category Test" };
+                    const itemID = 1;
 
-                    const expectedResponse = { id: 1, category_name: "Update Category Endpoint" };
-                    const expectedStatus = 200; //is this correct for put? 
+                    const expectedResponse = { id: 1, category_name: "Update Category Test" };
+                    const expectedStatus = 200;
 
                     //make update
                     const response = await request(server).put("/categories/" + itemID).send(requestBody)
@@ -322,17 +327,32 @@ describe("KitchenApp testing", function () {
                     assert.equal(response.status, expectedStatus)
                     assert.deepEqual(response.body, expectedResponse);
                 })
+                it("returns an error for a nonexistent category", async () => {
+                    //update item 11
+                    const requestBody = { category_name: "Update Category Endpoint" };
+                    const itemID = 11;
+
+                    const expectedError = nonExistentItemError
+                    const expectedStatus = 400;
+
+                    //make update
+                    const response = await request(server).put("/categories/" + itemID).send(requestBody)
+
+                    //assert that the request failed with the right error and status code
+                    assert.equal(response.status, expectedStatus)
+                    assert.deepEqual(response.error.text, expectedError.message);
+                })
 
             })
             describe("Inventory", () => {
                 it("correctly returns an updated inventory item", async () => {
                     //update item 1
-                    requestBody = {
+                    const requestBody = {
                         "item_name": "Update Inventory Item Test",
                         "quantity": 25,
                         "category_id": 2,
                     };
-                    itemID = 1;
+                    const itemID = 1;
 
                     const expectedResponse = {
                         "id": 1,
@@ -340,7 +360,7 @@ describe("KitchenApp testing", function () {
                         "quantity": 25,
                         "category_id": 2,
                     };
-                    const expectedStatus = 200; //is this correct for put? 
+                    const expectedStatus = 200;
 
                     //make update
                     const response = await request(server).put("/inventory/" + itemID).send(requestBody)
@@ -349,6 +369,113 @@ describe("KitchenApp testing", function () {
                     assert.equal(response.status, expectedStatus)
                     assert.deepEqual(response.body, expectedResponse);
                 })
+                it("returns an error for a nonexistent item", async () => {
+                    //update item 11
+                    const requestBody = {
+                        "item_name": "Update Inventory Item Test",
+                        "quantity": 25,
+                        "category_id": 2,
+                    };
+                    const itemID = 11;
+
+                    const expectedError = nonExistentItemError
+                    const expectedStatus = 400;
+
+                    //make update
+                    const response = await request(server).put("/inventory/" + itemID).send(requestBody)
+
+                    //assert that the request failed with the right error and status code
+                    assert.equal(response.status, expectedStatus)
+                    assert.deepEqual(response.error.text, expectedError.message);
+                })
+            })
+            describe("Checklist", () => {
+                it("Correctly returns an updated unpurchased checklist item", async () => {
+                    //update item 1
+                    const requestBody = {
+                        "item_name": "Update Checklist Item Test",
+                        "quantity": 13,
+                        "category_id": 3,
+                    };
+                    const itemID = 1;
+
+                    const expectedResponse = {
+                        "id": 1,
+                        "item_name": "Update Checklist Item Test",
+                        "quantity": 13,
+                        "category_id": 3,
+                        "purchased": false
+                    };
+                    const expectedStatus = 200;
+
+                    //make update
+                    const response = await request(server).put("/checklist/" + itemID).send(requestBody)
+
+                    //assert that the expectedResponse went through
+                    assert.equal(response.status, expectedStatus)
+                    assert.deepEqual(response.body, expectedResponse);
+                })
+                it("returns an error for a nonexistent item", async () => {
+                    //update item 11
+                    const requestBody = {
+                        "item_name": "Update Checklist Item Test",
+                        "quantity": 13,
+                        "category_id": 3,
+                    };
+                    const itemID = 11;
+
+                    const expectedError = nonExistentItemError
+                    const expectedStatus = 400;
+
+                    //make update
+                    const response = await request(server).put("/checklist/" + itemID).send(requestBody)
+
+                    //assert that the request failed with the right error and status code
+                    assert.equal(response.status, expectedStatus)
+                    assert.deepEqual(response.error.text, expectedError.message);
+                })
+                it("correctly moves a purchased item to the inventory", async () => { //might end up with another implementation of this based on the front end
+                    //update item and set purchased to true
+                    const requestBody = {
+                        "item_name": "Update Checklist Item Test",
+                        "quantity": 13,
+                        "category_id": 3,
+                        "purchased": true
+                    };
+                    const itemID = 1;
+                    const assertDeletedItem = {
+                        "id": 1,
+                        "item_name": "Update Checklist Item Test",
+                        "quantity": 13,
+                        "category_id": 3,
+                        "purchased": true
+                    };
+
+                    assertIncludedItem = {
+                        "id": 5,
+                        "item_name": "Update Checklist Item Test",
+                        "quantity": 13,
+                        "category_id": 3,
+                    };
+
+                    const expectedResponse = "Item is now in inventory";
+                    const expectedStatus = 200;
+
+                    //make update
+                    const response = await request(server).put("/checklist/" + itemID).send(requestBody)
+
+                    //assert that the item was added successfully and the response wasn't an updated item
+                    assert.equal(response.status, expectedStatus)
+                    assert.equal(response.text, expectedResponse);  //currently asserting on the text
+                    
+                    //asserting that the item has been moved
+                    const checklistArray = await getAllItems(Checklist)
+                    
+                    //assert that the item is no longer in the checklist
+                    assert.notDeepNestedInclude(checklistArray, assertDeletedItem);
+                    //assert that the item is now in the inventory
+                    assert.deepNestedInclude(inventoryArray, assertIncludedItem);
+                 })
             })
         })
     })
@@ -447,9 +574,9 @@ describe("KitchenApp testing", function () {
                     const modelName = Category;
                     const assertDeletedItem = { id: 4, category_name: "Dairy"}; 
                     
-                    const deletedItem = await deleteItem(modelName, itemID, t);
+                    const items = await deleteItem(modelName, itemID, t);
 
-                    assert.notDeepNestedInclude(deletedItem, assertDeletedItem);
+                    assert.notDeepNestedInclude(items, assertDeletedItem);
                 })
                 it("throws an error if a nonexistent ID is specified", async () => {
                     const itemID = 10;
