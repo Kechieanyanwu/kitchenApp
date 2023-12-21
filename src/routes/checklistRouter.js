@@ -49,6 +49,9 @@ checklistRouter.post("/", jsonParser, validateNewGroceryItem, async (req, res, n
 })
 
 
+    //assertion that when checklist is ticked off, 
+
+
 
 
 
