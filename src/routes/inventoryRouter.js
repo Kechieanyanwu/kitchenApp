@@ -11,6 +11,7 @@ const { Inventory } = require('../../database/models/inventory');
 const jsonParser = bodyParser.json(); //used only in specific routes
 
 
+//get all inventory items
 inventoryRouter.get("/", async (req, res, next) => {
     let inventoryArray
     try {
@@ -21,6 +22,7 @@ inventoryRouter.get("/", async (req, res, next) => {
     res.status(200).json(inventoryArray)
 });
 
+//get specific inventory item
 inventoryRouter.get("/:itemID", async (req, res, next) => {
     const itemID = req.params.itemID;
     let item;
@@ -33,7 +35,7 @@ inventoryRouter.get("/:itemID", async (req, res, next) => {
     res.status(200).send(item)
 })
 
-
+//add new inventory item
 inventoryRouter.post("/", jsonParser, validateNewGroceryItem, async (req, res, next) => {
     let addedItem;
     const newItem = {item_name: req.item_name, quantity: req.quantity, category_id: req.category_id};
@@ -49,13 +51,6 @@ inventoryRouter.post("/", jsonParser, validateNewGroceryItem, async (req, res, n
 
 //update existing inventory item
 inventoryRouter.put("/:itemID", jsonParser, async (req, res, next) => {
-    // passing tests, now let's refactor!
-    // res.status(200).send({
-    //     "id": 1,
-    //     "item_name": "Update Inventory Item Test",
-    //     "quantity": 25,
-    //     "category_id": 2,
-    // });
     const itemID = req.params.itemID; //code smell, could use a general router.params thingy
     const update = req.body;
     let updatedItem;

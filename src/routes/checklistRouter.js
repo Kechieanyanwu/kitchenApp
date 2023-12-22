@@ -14,7 +14,7 @@ const { Checklist } = require("../../database/models/checklist");
 const { sequelize } = require('../../database/models');
 const { Inventory } = require('../../database/models/inventory');
 
-
+//get all checklist items
 checklistRouter.get("/", async (req, res, next) => {
     let checklistArray
     try {
@@ -38,7 +38,7 @@ checklistRouter.get("/:itemID", async (req, res, next) => {
     res.status(200).send(item);
 })
 
-
+//add new checklist item
 checklistRouter.post("/", jsonParser, validateNewGroceryItem, async (req, res, next) => {
     let addedItem;
     const newItem = {item_name: req.item_name, quantity: req.quantity, category_id: req.category_id};
@@ -53,8 +53,7 @@ checklistRouter.post("/", jsonParser, validateNewGroceryItem, async (req, res, n
 })
 
 
-// ntoe to self: assertion that when checklist is ticked off...
-//update existing inventory item
+//update existing checklist item
 checklistRouter.put("/:itemID", jsonParser, async (req, res, next) => {
 
     const itemID = req.params.itemID; //code smell, could use a general router.params thingy

@@ -54,8 +54,6 @@ categoriesRouter.post("/", jsonParser, validateNewCategory, async (req, res, nex
 
 //update existing category
 categoriesRouter.put("/:itemID", jsonParser, async (req, res, next) => {
-    // passing tests, now let's refactor!
-    // res.status(200).send({ id: 1, category_name: "Update Category Endpoint" })
     const itemID = req.params.itemID; //code smell, could use a general router.params thingy
     const update = req.body;
     let updatedCategory;
