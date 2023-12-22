@@ -1,3 +1,6 @@
+// JUST STORING A BACKUP OF ALL THE TESTS HERE
+
+
 // Test framework Imports
 const chai = require('chai');
 const assert = chai.assert;
@@ -187,9 +190,9 @@ describe("KitchenApp testing", function () {
                     {
                         requestType: "Good",
                         description: "responds with 201 to a valid request body",
-                        requestBody: { "category_name": "Post Category Test" },
+                        requestBody: { "category_name": "Post Endpoint Test" },
                         expectedStatus: 201,
-                        expectedResponse: {"id": 4, "category_name": "Post Category Test"}
+                        expectedResponse: {"id": 4, "category_name": "Post Endpoint Test"}
                     },
                     {
                         requestType: "Bad",
@@ -214,14 +217,14 @@ describe("KitchenApp testing", function () {
                     {
                         description: "responds with 201 to a valid request body",  
                         requestBody: {
-                            "item_name": "Post Checklist Test",
+                            "item_name": "Post Endpoint Test",
                             "quantity": 2,
                             "category_id": 3,
                         },
                         expectedStatus: 201,
                         expectedResponse: {
                             "id": 4,
-                            "item_name": "Post Checklist Test",
+                            "item_name": "Post Endpoint Test",
                             "quantity": 2,
                             "category_id": 3,
                             "purchased": false
@@ -250,14 +253,14 @@ describe("KitchenApp testing", function () {
                     {
                         description: "responds with 201 to a valid request body",  
                         requestBody: {
-                            "item_name": "Post Inventory Test",
+                            "item_name": "Post Endpoint Test",
                             "quantity": 20,
                             "category_id": 3,
                         },
                         expectedStatus: 201,
                         expectedResponse: {
                             "id": 4,
-                            "item_name": "Post Inventory Test",
+                            "item_name": "Post Endpoint Test",
                             "quantity": 20,
                             "category_id": 3,
                         },
@@ -438,7 +441,7 @@ describe("KitchenApp testing", function () {
                     const requestBody = {
                         "item_name": "Update Checklist Item Test",
                         "quantity": 13,
-                        "category_id": 1,
+                        "category_id": 3,
                         "purchased": true
                     };
                     const itemID = 1;
@@ -446,7 +449,7 @@ describe("KitchenApp testing", function () {
                         "id": 1,
                         "item_name": "Update Checklist Item Test",
                         "quantity": 13,
-                        "category_id": 1,
+                        "category_id": 3,
                         "purchased": true
                     };
 
@@ -454,7 +457,7 @@ describe("KitchenApp testing", function () {
                         "id": 5,
                         "item_name": "Update Checklist Item Test",
                         "quantity": 13,
-                        "category_id": 1,
+                        "category_id": 3,
                     };
 
                     const expectedResponse = "Item is now in inventory";
@@ -489,4 +492,134 @@ describe("KitchenApp testing", function () {
         })
 
     })
+
+
+    describe('Controller Function tests', () => {
+        describe("General Controller functions", async () => {
+
+            // general transaction for all tests in this section
+            t = await sequelize.transaction();
+
+            describe("GetAllItems", async () => {
+                it("returns all items from the database", async () => {
+                    const categoriesArray = await getAllItems(Category, t);
+
+                    //do I even want to return the date created and updated? Can this just stay in the db? 
+                    for (const category of categoriesArray) { //changing to string because JSON schema is validating string
+                        category.date_created = '' + category.date_created;
+                        category.date_updated = '' + category.date_updated;
+                    }
+                    assert.jsonSchema(categoriesArray, categoriesSchema);
+                })
+            });
+
+            describe("Get Item", async () => {
+                it("returns the requested item specified by ID", async () => { //to update this for other tables? 
+                    const requestedID = 2;
+                    const modelName = Category;
+                    requestedItem =           
+                    {
+                        id: 2,
+                        category_name: "Condiments"
+                    }
+
+                    const categoryItem = await getItem(modelName, requestedID, t); 
+
+                    assert.deepEqual(requestedItem, categoryItem);
+                })
+
+                it("throws an error if a nonexistent ID is specified", async () => {
+                    const requestedID = 10;
+                    const modelName = Category;
+
+                    await assert.isRejected(getItem(modelName, requestedID, t), nonExistentItemError); 
+                })
+            })
+
+            describe("addNewItem", async () => { // this test feels too coupled to Category. Future update could be to change this
+                it("returns the newly added item", async () => {
+                    const mockAddedItem = { id: 5, category_name: "addNewItem test category"}; //id 4 because we have 3 items in test database. Is this too coupled?
+
+                    //create dummy data
+                    const mockRequestBody = { "category_name": "addNewItem test category" } //should I take out this string quotes?
+                    
+                    //send to database using function
+                    const newItem = await addNewItem(Category, mockRequestBody, t);
+                                        
+                    //validate that the request was fulfilled
+                    assert.deepEqual(newItem, mockAddedItem); 
+                });
+                it("handles an error from the db correctly", async () => {
+                    // to set this up later
+                });
+            });
+            
+            describe("UpdateItem", async () => {
+
+                it("returns the updated item", async() => {
+                    //setup
+                    const itemID = 3;
+                    const update = { category_name: "Update Category" }
+                    const modelName = Category;
+
+                    const desiredUpdate = { id: 3, category_name: "Update Category" }
+                    
+                    //update existing item
+                    const actualUpdate = await updateItem(modelName, itemID, update, t);
+            
+                    //assert that the item is now updated to the mock item
+                    assert.deepEqual(actualUpdate, desiredUpdate); 
+                })
+
+                it("throws an error if a nonexistent ID is specified", async () => {
+                    const requestedID = 10;
+                    const modelName = Category;
+                    const update = { category_name: "Update Category" }
+
+                    await assert.isRejected(updateItem(modelName, requestedID, update, t), nonExistentItemError); 
+                })
+
+            })
+
+            describe("Delete Item", () => { 
+                it("Successfully deletes a specified item by ID", async () => {
+                    const itemID = 4; //this is the newly added item from the addItem test. Does this make it too coupled? 
+                    const modelName = Category;
+                    const assertDeletedItem = { id: 4, category_name: "Dairy"}; 
+                    
+                    const items = await deleteItem(modelName, itemID, t);
+
+                    assert.notDeepNestedInclude(items, assertDeletedItem);
+                })
+                it("throws an error if a nonexistent ID is specified", async () => {
+                    const itemID = 10;
+                    const modelName = Category;
+
+                    await assert.isRejected(deleteItem(modelName, itemID, t), nonExistentItemError); 
+                })
+            })
+
+            describe("validateModelName", () => {
+                it("throws an error if no table name is specified", () => {
+                    const emptyTable = "";
+                    assert.throws(() => {
+                        validateModelName(emptyTable)}, noTableError);
+                });
+                it("throws an error if a non-existent table is specified", () => {
+                    const nonExistentTable = "Banana";
+                    assert.throws(() => {
+                        validateModelName(nonExistentTable)}, nonExistentTableError);
+                })
+            })
+        })
+    })
 })
+
+
+
+
+/* Questions
+3. How can I close a server quicker after tests are complete
+4. Do I need to test getItem / addItem for all models? 
+*/
+
