@@ -20,9 +20,11 @@ const getAllItems = async (modelName, t ) => {
     validateModelName(modelName.name); //to be moved to the router files
     //I WANT TO ADD A CHECK FOR WHETHER THERE IS A T BEING PASSED, IF NOT, I CREATE A NEW TRANSACTION
     // I think I'll add this when I integrate to the routers
-    // if (t == null) {
-    //     t = await sequelize.transaction(); t=null
+    // if (t === null) {
+    //     t = await sequelize.transaction();
     // }
+    // t===null? t = await sequelize.transaction(): t; //test
+
         try {
                 const items = await modelName.findAll(
                 // { raw: true, transaction: t }); 
@@ -36,6 +38,9 @@ const getAllItems = async (modelName, t ) => {
 
 const getItem = async (modelName, itemID, t) => {
     validateModelName(modelName.name); //to be moved to the router files
+
+    // t===null? t = await sequelize.transaction(): t; //test
+
     try{
             const requestedItem = await modelName.findByPk(itemID, 
                 { attributes: {exclude: ["date_created", "date_updated"]},
@@ -53,6 +58,8 @@ const getItem = async (modelName, itemID, t) => {
 
 const addNewItem = async(modelName, newItem, t) => {
     validateModelName(modelName.name); //to be moved to the router files
+
+    // t===null? t = await sequelize.transaction(): t; //test
     
     try {
         const addedItem = await modelName.create(newItem, 
@@ -74,6 +81,8 @@ const addNewItem = async(modelName, newItem, t) => {
 
 const updateItem = async(modelName, itemID, desiredUpdate, t) => { 
     validateModelName(modelName.name); //to be moved to the router files
+
+    // t===null? t = await sequelize.transaction(): t; //test
 
     try {
         // Any other way of checking for nonexistence if I just go straight to using the model to update, instead of finding first? 
@@ -99,6 +108,10 @@ const updateItem = async(modelName, itemID, desiredUpdate, t) => {
 }
 
 const deleteItem = async (modelName, itemID, t) => {
+
+    validateModelName(modelName.name); //to be moved to the router files
+    // t===null? t = await sequelize.transaction(): t; //test
+
     try {
         const item = await modelName.findByPk(itemID, 
             { attributes: {exclude: ["date_created", "date_updated"]},
