@@ -5,7 +5,8 @@ const { getAllItems,
         getItem,
         addNewItem,
         updateItem,
-        deleteItem} = require('../controllers/controller');
+        deleteItem,
+        moveCheckedItem} = require('../controllers/controller');
 const { tableNames } = require('../models/model');
 const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json(); //used only in specific routes
@@ -55,23 +56,19 @@ checklistRouter.post("/", jsonParser, validateNewGroceryItem, async (req, res, n
 
 //update existing checklist item
 checklistRouter.put("/:itemID", jsonParser, async (req, res, next) => {
-
-    const itemID = req.params.itemID; //code smell, could use a general router.params thingy
+    //can i have a cached list of items in the database? Like an array of existing IDs? so I don't have to keep querying? Potentially....
+    const itemID = req.params.itemID; //code smell, could use a general router.params thingy especially to validate existence
     const update = req.body;
     let updatedItem;
 
     if (update.purchased === true ) { //if this item has been marked as purchased
-        console.log("You have been bought with a price"); //test
+        let updatedChecklist
         try {
-            //do I create a transaction here because multiple things happening?
-            const newItem = req.body;
-            delete newItem.purchased;
-            await deleteItem(Checklist, itemID);
-            await addNewItem(Inventory, newItem);
-            res.status(200).send("Item is now in inventory");
+            updatedChecklist = await moveCheckedItem(itemID);
         } catch (err) {
             throw (err);
         }
+        res.status(200).send(updatedChecklist);
     } else {
         try {
             updatedItem = await updateItem(Checklist, itemID, update);
@@ -82,10 +79,23 @@ checklistRouter.put("/:itemID", jsonParser, async (req, res, next) => {
     }
 })
 
+checklistRouter.delete("/:itemID", jsonParser, async (req, res, next) => {
+    // res.status(200).send(        
+    //     {
+    //     "id": 3,
+    //     "category_name": "Post Category Test"
+    // })
+    const itemID = req.params.itemID;
+    let updatedChecklist;
 
+    try {
+        updatedChecklist = await deleteItem(Checklist, itemID);
+    } catch (err) {
+        next(err);
+    }
+    res.status(200).send(updatedChecklist)
 
-
-
+})
 
 
 const errorHandler = (err, req, res, next) => {

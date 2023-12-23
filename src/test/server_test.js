@@ -82,6 +82,7 @@ describe("KitchenApp testing", function () {
                     });
                     it("sends JSON response with correct schema", async () => {
                         const response = await request(server).get(endpoint.path);
+                        console.log(response.body);//test
                         assert.jsonSchema(response.body, endpoint.schema);
                     });
                 });
@@ -449,17 +450,16 @@ describe("KitchenApp testing", function () {
                         "item_name": "Update Checklist Item Test",
                         "quantity": 13,
                         "category_id": 1,
-                        "purchased": true
+                        "purchased": false
                     };
 
-                    assertIncludedItem = {
+                    const assertIncludedItem = {
                         "id": 5,
                         "item_name": "Update Checklist Item Test",
                         "quantity": 13,
                         "category_id": 1,
                     };
 
-                    const expectedResponse = "Item is now in inventory";
                     const expectedStatus = 200;
 
                     //make update
@@ -467,14 +467,13 @@ describe("KitchenApp testing", function () {
 
                     //assert that the item was added successfully and the response wasn't an updated item
                     assert.equal(response.status, expectedStatus)
-                    assert.equal(response.text, expectedResponse);  //currently asserting on the text
                     
-                    //asserting that the item has been moved
-                    const checklistArray = await getAllItems(Checklist)
+                    //asserting that the item is now in Inventory
                     const inventoryArray = await getAllItems(Inventory)
+
                     
                     //assert that the item is no longer in the checklist
-                    assert.notDeepNestedInclude(checklistArray, assertDeletedItem);
+                    assert.notDeepNestedInclude(response.body, assertDeletedItem);
                     //assert that the item is now in the inventory
                     assert.deepNestedInclude(inventoryArray, assertIncludedItem);
                  })
@@ -482,13 +481,50 @@ describe("KitchenApp testing", function () {
         })
         describe("Delete Item Endpoint Testing", ()=> {
             // ---- I AM WORKING HERE ----
-            it("successfully deletes an existing item", () => {
-
+            describe("Categories", () => {
+                it("successfully deletes an existing item", async () => {
+                    const itemID = 3;
+                    const assertDeletedItem = {
+                        "id": 3,
+                        "category_name": "Post Category Test"
+                    };
+                    const expectedStatus = 200;
+    
+                    const response = await request(server).delete("/categories/" + itemID);
+    
+                    assert.equal(response.status, expectedStatus);
+    
+                    //assert that the item has been deleted from the returned array
+                    assert.notDeepNestedInclude(response, assertDeletedItem); //double check this
+                })
+                // for category, will need to decide what a deleted category should do. Maybe delete all entries 
+                // for a first implementation? So, on delete, cascade
             })
-            // for category, will need to decide what a deleted category should do. Maybe delete all entries 
-            // for a first implementation? So, on delete, cascade
+
+            describe("Checklist", () => {
+                it("successfully deletes an existing item", async () => {
+                    // const itemID = 3;
+                    // const assertDeletedItem = {
+                    //     "id": 3,
+                    //     "category_name": "Post Category Test"
+                    // };
+                    // const expectedStatus = 200;
+    
+                    // const response = await request(server).delete("/checklist/" + itemID);
+    
+                    // assert.equal(response.status, expectedStatus);
+    
+                    // //assert that the item has been deleted from the returned array
+                    // assert.notDeepNestedInclude(response, assertDeletedItem);
+                })
+                // for category, will need to decide what a deleted category should do. Maybe delete all entries 
+                // for a first implementation? So, on delete, cascade
+            })
+
 
         })
 
     })
 })
+
+
