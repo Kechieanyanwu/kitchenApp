@@ -96,11 +96,11 @@ describe("Controller Function tests", function () { //why isnt this showing up o
 
             it("returns the updated item", async() => {
                 //setup
-                const itemID = 3;
+                const itemID = 1;
                 const update = { category_name: "Update Category" }
                 const modelName = Category;
 
-                const desiredUpdate = { id: 3, category_name: "Update Category" }
+                const desiredUpdate = { id: 1, category_name: "Update Category" }
                 
                 //update existing item
                 const actualUpdate = await updateItem(modelName, itemID, update, t);

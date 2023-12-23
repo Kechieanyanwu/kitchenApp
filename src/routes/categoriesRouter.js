@@ -5,7 +5,8 @@ const { getAllItems,
         validateNewCategory, 
         addNewItem,
         getItem,
-        updateItem} = require('../controllers/controller');
+        updateItem,
+        deleteItem} = require('../controllers/controller');
 const { tableNames } = require('../models/model');
 const bodyParser = require("body-parser");
 const { Category } = require("../../database/models/category"); //test
@@ -68,6 +69,18 @@ categoriesRouter.put("/:itemID", jsonParser, async (req, res, next) => {
 
 })
 
+categoriesRouter.delete("/:itemID", jsonParser, async (req, res, next) => {
+    const itemID = req.params.itemID;
+    let updatedCategories;
+
+    try {
+        updatedCategories = await deleteItem(Category, itemID);
+    } catch (err) {
+        next(err);
+    }
+    res.status(200).send(updatedCategories)
+
+})
 
 
 const errorHandler = (err, req, res, next) => {

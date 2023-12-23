@@ -1,6 +1,8 @@
 // Model and Sequelize Imports
 const { tableNames } = require("../models/model");
 const { sequelize } = require("../../database/models"); // might eventually call this when creating transaction variable
+const { Checklist } = require("../../database/models/checklist");
+const { Inventory } = require("../../database/models/inventory");
 
 // Errors
 const noTableError = new Error("no table specified");
@@ -113,6 +115,7 @@ const deleteItem = async (modelName, itemID, t) => {
     // t===null? t = await sequelize.transaction(): t; //test
 
     try {
+        //can refactor this to become an existence checker
         const item = await modelName.findByPk(itemID, 
             { attributes: {exclude: ["date_created", "date_updated"]},
             transaction: t,
@@ -128,6 +131,41 @@ const deleteItem = async (modelName, itemID, t) => {
                 attributes: {exclude: ["date_created", "date_updated"]},
                 transaction: t }); 
                 return items; 
+        }
+    } catch (err) {
+        throw err;
+    }
+}
+
+const moveCheckedItem = async (itemID, t) => {
+    //assert the item exists 
+    try {
+        const item = await Checklist.findByPk(itemID, 
+            { attributes: {exclude: ["date_created", "date_updated"]},
+            transaction: t,
+            plain: true }) //do I need plain: true everywhere? 
+
+        if (item === null) {
+            throw nonExistentItemError;
+        } else { 
+            newItem = item.get({ transaction: t });
+
+            //remove unnecessary values
+            delete newItem.id;
+            delete newItem.purchased;
+            
+            //add to inventory table
+            await Inventory.create(newItem, { transaction: t });
+
+
+            await Checklist.destroy({ where: { id: itemID }, transaction: t })
+            
+            const updatedChecklist = await Checklist.findAll(
+                { attributes: { exclude: ["date_created", "date_updated"] }, 
+                transaction: t });
+
+            return updatedChecklist; //returns an updated checklist to be refreshed on the page
+
         }
     } catch (err) {
         throw err;
@@ -214,4 +252,5 @@ module.exports = {
     getItem,
     updateItem,
     deleteItem,
+    moveCheckedItem,
  };
