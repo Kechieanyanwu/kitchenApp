@@ -1,6 +1,7 @@
 // Test framework Imports
 const chai = require('chai');
 const assert = chai.assert;
+const { after, before } = require('node:test');
 
 // Model Imports 
 const { categoriesSchema,
@@ -28,13 +29,22 @@ const { Inventory } = require('../../database/models/inventory');
 chai.use(require('chai-json-schema-ajv')); //for validating JSON schema
 chai.use(require('chai-as-promised')); //extends chai to handle promises 
 
+/*
+Wondering how to keep these two tests running separately, as it currently runs together and feels too coupled.
+
+All my functions here with transactions seem to not persist in the database, but they run the queries and assert correctly.
+If I take out transactions, I see the changes from these functions in my test db.
+Summary - I NEED to thoroughly understand what they're doing for me, and if I need them 
+in production. 
+I also need a code review in case there is something I am not considering.
+*/
 
 // Beginning of tests
 describe("Controller Function tests", function () { //why isnt this showing up on terminal?
     describe("General Controller functions", async () => { //why isnt this showing up on terminal?
 
         // general transaction for all tests in this section
-        t = await sequelize.transaction();
+        t = await sequelize.transaction(); //this helps keep these tests separate from server tests
 
         describe("GetAllItems", async () => {
             it("returns all items from the database", async () => {
@@ -68,19 +78,17 @@ describe("Controller Function tests", function () { //why isnt this showing up o
 
         describe("addNewItem", async () => { // this test feels too coupled to Category. Future update could be to change this
             it("returns the newly added item", async () => {
-                const mockAddedItem = { id: 5, category_name: "addNewItem test category"}; // Is this too coupled? How to assert without specifying the ID number? 
+                const mockAddedItem = { id: 5, category_name: "addNewItem test category"}; // this feels too coupled? How to assert without specifying the ID number? 
 
                 //create dummy data
                 const mockRequestBody = { "category_name": "addNewItem test category" } //should I take out this string quotes?
-                
+
                 //send to database using function
                 const newItem = await addNewItem(Category, mockRequestBody, t);
-                                    
+
                 //validate that the request was fulfilled
                 assert.deepEqual(newItem, mockAddedItem); 
-            });
-            it("handles an error from the db correctly", async () => {
-                // to set this up later
+
             });
         });
         
@@ -143,12 +151,3 @@ describe("Controller Function tests", function () { //why isnt this showing up o
         })
     })
 })
-
-
-
-
-/* Questions
-3. How can I close a server quicker after tests are complete
-4. Do I need to test getItem / addItem for all models? 
-*/
-
