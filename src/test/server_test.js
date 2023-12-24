@@ -503,19 +503,20 @@ describe("KitchenApp testing", function () {
 
             describe("Checklist", () => {
                 it("successfully deletes an existing item", async () => {
-                    // const itemID = 3;
-                    // const assertDeletedItem = {
-                    //     "id": 3,
-                    //     "category_name": "Post Category Test"
-                    // };
-                    // const expectedStatus = 200;
+                    // --- WORKING HERE ----
+                    const itemID = 3;
+                    const assertDeletedItem = {
+                        "id": 3,
+                        "category_name": "Post Category Test"
+                    };
+                    const expectedStatus = 200;
     
-                    // const response = await request(server).delete("/checklist/" + itemID);
+                    const response = await request(server).delete("/checklist/" + itemID);
     
-                    // assert.equal(response.status, expectedStatus);
+                    assert.equal(response.status, expectedStatus);
     
-                    // //assert that the item has been deleted from the returned array
-                    // assert.notDeepNestedInclude(response, assertDeletedItem);
+                    //assert that the item has been deleted from the returned array
+                    assert.notDeepNestedInclude(response, assertDeletedItem);
                 })
                 // for category, will need to decide what a deleted category should do. Maybe delete all entries 
                 // for a first implementation? So, on delete, cascade

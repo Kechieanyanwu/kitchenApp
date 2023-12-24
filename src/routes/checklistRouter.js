@@ -29,7 +29,7 @@ checklistRouter.get("/", async (req, res, next) => {
 //get specific item
 checklistRouter.get("/:itemID", async (req, res, next) => {
     const itemID = req.params.itemID;
-    let item;
+    let item; 
     try {
         item = await getItem(Checklist, itemID) //testing sending no transaction T
     } catch (err) {
@@ -80,11 +80,8 @@ checklistRouter.put("/:itemID", jsonParser, async (req, res, next) => {
 })
 
 checklistRouter.delete("/:itemID", jsonParser, async (req, res, next) => {
-    // res.status(200).send(        
-    //     {
-    //     "id": 3,
-    //     "category_name": "Post Category Test"
-    // })
+    // --- WORKING HERE ----
+
     const itemID = req.params.itemID;
     let updatedChecklist;
 
