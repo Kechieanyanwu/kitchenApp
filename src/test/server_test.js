@@ -504,11 +504,15 @@ describe("KitchenApp testing", function () {
             describe("Checklist", () => {
                 it("successfully deletes an existing item", async () => {
                     // --- WORKING HERE ----
-                    const itemID = 3;
+                    const itemID = 2;
                     const assertDeletedItem = {
-                        "id": 3,
-                        "category_name": "Post Category Test"
+                        "id": 2,
+                        "item_name": "Cinnamon Powder",
+                        "quantity": 2,
+                        "category_id": 2,
+                        "purchased": false
                     };
+                    
                     const expectedStatus = 200;
     
                     const response = await request(server).delete("/checklist/" + itemID);

@@ -110,11 +110,12 @@ const updateItem = async(modelName, itemID, desiredUpdate, t) => {
 }
 
 const deleteItem = async (modelName, itemID, t) => {
-
+    console.log("1. You have reached here"); //test
     validateModelName(modelName.name); //to be moved to the router files
     // t===null? t = await sequelize.transaction(): t; //test
 
     try {
+        console.log("2. You have reached here"); //test
         //can refactor this to become an existence checker
         const item = await modelName.findByPk(itemID, 
             { attributes: {exclude: ["date_created", "date_updated"]},
@@ -123,8 +124,10 @@ const deleteItem = async (modelName, itemID, t) => {
         
             //check that the itemID exists
         if (item === null) {
-                throw nonExistentItemError;
+            console.log("Item == null"); //ttest    
+            throw nonExistentItemError;
         } else {
+            console.log("3. You have reached here"); //test
             await item.destroy({ transaction: t });
             const items = await modelName.findAll(
                 { raw: true , 
