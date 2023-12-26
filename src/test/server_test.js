@@ -482,10 +482,12 @@ describe("KitchenApp testing", function () {
         describe("Delete Item Endpoint Testing", ()=> {
             // ---- I AM WORKING HERE ----
             describe("Categories", () => {
+                            // for category, will need to decide what a deleted category should do. Maybe delete all entries 
+                // for a first implementation? So, on delete, cascade
                 it("successfully deletes an existing item", async () => {
-                    const itemID = 3;
+                    const itemID = 4;
                     const assertDeletedItem = {
-                        "id": 3,
+                        "id": 4, //wip
                         "category_name": "Post Category Test"
                     };
                     const expectedStatus = 200;
@@ -497,19 +499,17 @@ describe("KitchenApp testing", function () {
                     //assert that the item has been deleted from the returned array
                     assert.notDeepNestedInclude(response, assertDeletedItem); //double check this
                 })
-                // for category, will need to decide what a deleted category should do. Maybe delete all entries 
-                // for a first implementation? So, on delete, cascade
             })
 
             describe("Checklist", () => {
                 it("successfully deletes an existing item", async () => {
                     // --- WORKING HERE ----
-                    const itemID = 2;
+                    const itemID = 4;
                     const assertDeletedItem = {
-                        "id": 2,
-                        "item_name": "Cinnamon Powder",
+                        "id": 4,
+                        "item_name": "Post Checklist Test",
                         "quantity": 2,
-                        "category_id": 2,
+                        "category_id": 3,
                         "purchased": false
                     };
                     
@@ -522,8 +522,28 @@ describe("KitchenApp testing", function () {
                     //assert that the item has been deleted from the returned array
                     assert.notDeepNestedInclude(response, assertDeletedItem);
                 })
-                // for category, will need to decide what a deleted category should do. Maybe delete all entries 
-                // for a first implementation? So, on delete, cascade
+            })
+
+            describe("Inventory", () => {
+                it("successfully deletes an existing item", async () => {
+                    // --- WORKING HERE ----
+                    const itemID = 1;
+                    const assertDeletedItem = {
+                        "id": 1,
+                        "item_name": "Update Inventory Item Test",
+                        "quantity": 25,
+                        "category_id": 2
+                    };
+                    
+                    const expectedStatus = 200;
+    
+                    const response = await request(server).delete("/inventory/" + itemID);
+    
+                    assert.equal(response.status, expectedStatus);
+    
+                    //assert that the item has been deleted from the returned array
+                    assert.notDeepNestedInclude(response, assertDeletedItem);
+                })
             })
 
 

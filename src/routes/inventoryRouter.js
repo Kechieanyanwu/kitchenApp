@@ -4,7 +4,8 @@ const { getAllItems,
         validateNewGroceryItem, 
         getItem,
         addNewItem,
-        updateItem} = require('../controllers/controller');
+        updateItem,
+        deleteItem} = require('../controllers/controller');
 const { tableNames } = require('../models/model');
 const bodyParser = require("body-parser");
 const { Inventory } = require('../../database/models/inventory');
@@ -65,7 +66,20 @@ inventoryRouter.put("/:itemID", jsonParser, async (req, res, next) => {
 
 })
 
+inventoryRouter.delete("/:itemID", jsonParser, async (req, res, next) => {
+    // --- WORKING HERE ----
 
+    const itemID = req.params.itemID;
+    let updatedInventory;
+
+    try {
+        updatedInventory = await deleteItem(Inventory, itemID);
+    } catch (err) {
+        next(err);
+    }
+    res.status(200).send(updatedInventory)
+
+})
 
 
 
