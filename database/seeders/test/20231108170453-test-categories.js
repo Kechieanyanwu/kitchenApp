@@ -30,6 +30,16 @@ module.exports = {
             category_name: "Cleaning",
             date_created: "2023-11-08T14:14:01.390Z",
             date_updated: "2023-11-08T14:14:01.390Z",
+          },
+          {
+            category_name: "Bakery",
+            date_created: "2023-11-08T14:14:01.390Z",
+            date_updated: "2023-11-08T14:14:01.390Z",
+          },
+          {
+            category_name: "Desserts",
+            date_created: "2023-11-08T14:14:01.390Z",
+            date_updated: "2023-11-08T14:14:01.390Z",
           }
         ]);
       })
