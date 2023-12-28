@@ -1,12 +1,9 @@
 // Model and Sequelize Imports
-const { tableNames } = require("../models/model");
 const { sequelize } = require("../../database/models"); // might eventually call this when creating transaction variable
 const { Checklist } = require("../../database/models/checklist");
 const { Inventory } = require("../../database/models/inventory");
 
 // Errors
-const noTableError = new Error("no table specified");
-const nonExistentTableError = new Error("table does not exist");
 const nonExistentItemError = new Error("Nonexistent item")
 
 
@@ -19,7 +16,6 @@ const nonExistentItemError = new Error("Nonexistent item")
 
 // Beginning of functions
 const getAllItems = async (modelName, t ) => {
-    validateModelName(modelName.name); //to be moved to the router files
     //I WANT TO ADD A CHECK FOR WHETHER THERE IS A T BEING PASSED, IF NOT, I CREATE A NEW TRANSACTION
     // I think I'll add this when I integrate to the routers
     // if (t === null) {
@@ -39,7 +35,6 @@ const getAllItems = async (modelName, t ) => {
 }
 
 const getItem = async (modelName, itemID, t) => {
-    validateModelName(modelName.name); //to be moved to the router files
 
     // t===null? t = await sequelize.transaction(): t; //test
 
@@ -59,7 +54,6 @@ const getItem = async (modelName, itemID, t) => {
 
 
 const addNewItem = async(modelName, newItem, t) => {
-    validateModelName(modelName.name); //to be moved to the router files
 
     // t===null? t = await sequelize.transaction(): t; //test
     
@@ -82,7 +76,6 @@ const addNewItem = async(modelName, newItem, t) => {
 }
 
 const updateItem = async(modelName, itemID, desiredUpdate, t) => { 
-    validateModelName(modelName.name); //to be moved to the router files
 
     // t===null? t = await sequelize.transaction(): t; //test
 
@@ -110,12 +103,9 @@ const updateItem = async(modelName, itemID, desiredUpdate, t) => {
 }
 
 const deleteItem = async (modelName, itemID, t) => {
-    console.log("1. You have reached here"); //test
-    validateModelName(modelName.name); //to be moved to the router files
     // t===null? t = await sequelize.transaction(): t; //test
 
     try {
-        console.log("2. You have reached here"); //test
         //can refactor this to become an existence checker
         const item = await modelName.findByPk(itemID, 
             { attributes: {exclude: ["date_created", "date_updated"]},
@@ -124,10 +114,8 @@ const deleteItem = async (modelName, itemID, t) => {
         
             //check that the itemID exists
         if (item === null) {
-            console.log("Item == null"); //ttest    
             throw nonExistentItemError;
         } else {
-            console.log("3. You have reached here"); //test
             await item.destroy({ transaction: t });
             const items = await modelName.findAll(
                 { raw: true , 
@@ -141,6 +129,7 @@ const deleteItem = async (modelName, itemID, t) => {
 }
 
 const moveCheckedItem = async (itemID, t) => {
+    //will I need to create a transaction here since multiple things are happening? 
     //assert the item exists 
     try {
         const item = await Checklist.findByPk(itemID, 
@@ -230,27 +219,12 @@ const validateNewCategory = (req, res, next) => {
     }
 };
 
-const validateModelName = (modelName) => {
-    if (modelName === "" || modelName === undefined) { //throw error if no table name is specified
-        throw noTableError;
-    } else {
-        if (tableNames.hasOwnProperty(modelName)) { //validate that table name exists 
-            return;
-        } else {
-            throw nonExistentTableError;
-        }
-    }
-}
-
 
 module.exports = { 
     getAllItems,
-    noTableError,
-    nonExistentTableError,
     nonExistentItemError,
     validateNewGroceryItem,
     validateNewCategory,
-    validateModelName,
     addNewItem,
     getItem,
     updateItem,

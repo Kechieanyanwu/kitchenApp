@@ -36,6 +36,20 @@ module.exports = {
             category_id: 3,
             date_created: "2023-11-08T14:14:01.390Z",
             date_updated: "2023-11-08T14:14:01.390Z",
+          },
+          {
+            item_name: "Lysol Wipes",
+            quantity: 2,
+            category_id: 3,
+            date_created: "2023-11-08T14:14:01.390Z",
+            date_updated: "2023-11-08T14:14:01.390Z",
+          },
+          {
+            item_name: "Baby Wipes",
+            quantity: 3,
+            category_id: 3,
+            date_created: "2023-11-08T14:14:01.390Z",
+            date_updated: "2023-11-08T14:14:01.390Z",
           }
         ]);
       })
