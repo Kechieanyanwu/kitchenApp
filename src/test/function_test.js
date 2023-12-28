@@ -1,29 +1,22 @@
 // Test framework Imports
 const chai = require('chai');
 const assert = chai.assert;
-const { after, before } = require('node:test');
+const { after, before } = require('node:test'); //still working out how to automatically close server after tests
 
 // Model Imports 
-const { categoriesSchema,
-        checklistSchema,
-        inventorySchema } = require('../models/model');
+const { categoriesSchema } = require('../models/model');
 
 // Controller Imports
 const { getAllItems,
-        noTableError,
-        nonExistentTableError, 
         addNewItem,
-        validateModelName,
         getItem,
         nonExistentItemError,
         updateItem,
         deleteItem} = require('../controllers/controller');
 
 // Sequelize Imports
-const { Checklist } = require('../../database/models/checklist');
 const { Category } = require('../../database/models/category');
 const { sequelize, Sequelize } = require('../../database/models');
-const { Inventory } = require('../../database/models/inventory');
 
 // Usage binding
 chai.use(require('chai-json-schema-ajv')); //for validating JSON schema
@@ -78,7 +71,7 @@ describe("Controller Function tests", function () { //why isnt this showing up o
 
         describe("addNewItem", async () => { // this test feels too coupled to Category. Future update could be to change this
             it("returns the newly added item", async () => {
-                const mockAddedItem = { id: 5, category_name: "addNewItem test category"}; // this feels too coupled? How to assert without specifying the ID number? 
+                const mockAddedItem = { id: 7, category_name: "addNewItem test category"}; // this feels too coupled? How to assert without specifying the ID number? 
 
                 //create dummy data
                 const mockRequestBody = { "category_name": "addNewItem test category" } //should I take out this string quotes?
@@ -121,9 +114,9 @@ describe("Controller Function tests", function () { //why isnt this showing up o
 
         describe("Delete Item", () => { 
             it("Successfully deletes a specified item by ID", async () => {
-                const itemID = 4; //this is the newly added item from the addItem test. Does this make it too coupled? 
+                const itemID = 5; //this is the newly added item from the addItem test. Does this make it too coupled? 
                 const modelName = Category;
-                const assertDeletedItem = { id: 4, category_name: "Dairy"}; 
+                const assertDeletedItem = { id: 5, category_name: "Delete Item Test"}; 
                 
                 const items = await deleteItem(modelName, itemID, t);
 
@@ -137,17 +130,5 @@ describe("Controller Function tests", function () { //why isnt this showing up o
             })
         })
 
-        describe("validateModelName", () => {
-            it("throws an error if no table name is specified", () => {
-                const emptyTable = "";
-                assert.throws(() => {
-                    validateModelName(emptyTable)}, noTableError);
-            });
-            it("throws an error if a non-existent table is specified", () => {
-                const nonExistentTable = "Banana";
-                assert.throws(() => {
-                    validateModelName(nonExistentTable)}, nonExistentTableError);
-            })
-        })
     })
 })

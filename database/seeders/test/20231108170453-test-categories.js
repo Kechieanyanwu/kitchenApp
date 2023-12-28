@@ -37,7 +37,7 @@ module.exports = {
             date_updated: "2023-11-08T14:14:01.390Z",
           },
           {
-            category_name: "Desserts",
+            category_name: "Delete Item Test",
             date_created: "2023-11-08T14:14:01.390Z",
             date_updated: "2023-11-08T14:14:01.390Z",
           }

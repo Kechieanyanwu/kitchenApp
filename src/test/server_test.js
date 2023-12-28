@@ -82,7 +82,6 @@ describe("KitchenApp testing", function () {
                     });
                     it("sends JSON response with correct schema", async () => {
                         const response = await request(server).get(endpoint.path);
-                        console.log(response.body);//test
                         assert.jsonSchema(response.body, endpoint.schema);
                     });
                 });
@@ -192,7 +191,7 @@ describe("KitchenApp testing", function () {
                         description: "responds with 201 to a valid request body",
                         requestBody: { "category_name": "Post Category Test" },
                         expectedStatus: 201,
-                        expectedResponse: {"id": 4, "category_name": "Post Category Test"}
+                        expectedResponse: {"id": 6, "category_name": "Post Category Test"}
                     },
                     {
                         requestType: "Bad",
@@ -223,7 +222,7 @@ describe("KitchenApp testing", function () {
                         },
                         expectedStatus: 201,
                         expectedResponse: {
-                            "id": 4,
+                            "id": 6,
                             "item_name": "Post Checklist Test",
                             "quantity": 2,
                             "category_id": 3,
@@ -259,7 +258,7 @@ describe("KitchenApp testing", function () {
                         },
                         expectedStatus: 201,
                         expectedResponse: {
-                            "id": 4,
+                            "id": 6,
                             "item_name": "Post Inventory Test",
                             "quantity": 20,
                             "category_id": 3,
@@ -454,7 +453,7 @@ describe("KitchenApp testing", function () {
                     };
 
                     const assertIncludedItem = {
-                        "id": 5,
+                        "id": 7,
                         "item_name": "Update Checklist Item Test",
                         "quantity": 13,
                         "category_id": 1,
@@ -480,10 +479,7 @@ describe("KitchenApp testing", function () {
             })
         })
         describe("Delete Item Endpoint Testing", ()=> {
-            // ---- I AM WORKING HERE ----
             describe("Categories", () => {
-                            // for category, will need to decide what a deleted category should do. Maybe delete all entries 
-                // for a first implementation? So, on delete, cascade
                 it("successfully deletes an existing item", async () => {
                     const itemID = 4;
                     const assertDeletedItem = {
@@ -500,6 +496,7 @@ describe("KitchenApp testing", function () {
                     assert.notDeepNestedInclude(response, assertDeletedItem); //double check this
                 })
             })
+            //not manually asserting that a deleted category deletes all checklist and inventory entries as that lies with SQL. 
 
             describe("Checklist", () => {
                 it("successfully deletes an existing item", async () => {
