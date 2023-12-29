@@ -4,7 +4,6 @@ const assert = chai.assert;
 const expect = chai.expect;
 const request = require("supertest");
 const {app, server} = require("../server"); 
-const { after } = require('node:test');
 
 
 // Model Imports 
@@ -36,23 +35,9 @@ chai.use(require('chai-as-promised')); //extends chai to handle promises
 
 // Beginning of tests
 describe("KitchenApp testing", function () {
-    // 3. How can I close a server quicker after tests are complete?
-    // after(() => {
-    //     server.close()
-    // }); //this takes TOO LONG to close. Why? 
-
-    // describe("Server testing", () => {
-    //     describe("loading express", () => {
-    //         it("responds to /", async function testslash() {
-    //             const response = await request(server)
-    //             .get("/");
-    //             assert.equal(response.status, 200);
-    //             assert.equal(response.body, "Hello World");
-    //         });
-
-    //     });
-    // });
-
+    after(() => {
+        server.close()
+    }); //this takes TOO LONG to close. Why? 
 
     describe("Endpoint testing", () => {
         describe("GET Endpoint testing", () => { 
@@ -178,8 +163,6 @@ describe("KitchenApp testing", function () {
             })
         })
         
-        //to come back to this after get specific item. Do i need to send a get request when updating? So the form is populated?     
-        //to update endpoint tests now that I have created the controller functions 
         describe("POST endpoint testing", () => {
             const endpoints = [
                 {

@@ -1,7 +1,8 @@
 // Test framework Imports
 const chai = require('chai');
 const assert = chai.assert;
-const { after, before } = require('node:test'); //still working out how to automatically close server after tests
+const {app, server} = require("../server"); 
+
 
 // Model Imports 
 const { categoriesSchema } = require('../models/model');
@@ -36,8 +37,12 @@ I also need a code review in case there is something I am not considering.
 describe("Controller Function tests", function () { //why isnt this showing up on terminal?
     describe("General Controller functions", async () => { //why isnt this showing up on terminal?
 
-        // general transaction for all tests in this section
         t = await sequelize.transaction(); //this helps keep these tests separate from server tests
+        
+        after( async () => { //test
+            console.log("You have reached here"); //test
+            await t.commit();
+        })
 
         describe("GetAllItems", async () => {
             it("returns all items from the database", async () => {
@@ -130,5 +135,7 @@ describe("Controller Function tests", function () { //why isnt this showing up o
             })
         })
 
+
     })
+
 })

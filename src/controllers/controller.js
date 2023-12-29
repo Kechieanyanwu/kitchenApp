@@ -78,93 +78,74 @@ const addNewItem = async(modelName, newItem, t) => {
 const updateItem = async(modelName, itemID, desiredUpdate, t) => { 
 
     // t===null? t = await sequelize.transaction(): t; //test
-
+    let item;
     try {
-        // Any other way of checking for nonexistence if I just go straight to using the model to update, instead of finding first? 
-        const item = await modelName.findByPk(itemID, 
-            { transaction: t,
-            plain: true }) //do I need plain: true everywhere? 
-        //check that the itemID exists
-        if (item === null) {
-                throw nonExistentItemError;
-        }
-        //update with new details
-        await item.update(desiredUpdate, { transaction: t });
-
-        // remove these columns from result
-        delete item.dataValues.date_created;
-        delete item.dataValues.date_updated;
-
-        //return updated item 
-        return item.dataValues;
+        item = await validateID(itemID, modelName, t)
     } catch (err) {
         throw err;
     }
+
+    await item.update(desiredUpdate, { transaction: t });
+
+    // remove these columns from result
+    delete item.dataValues.date_created;
+    delete item.dataValues.date_updated;
+
+    //return updated item 
+    return item.dataValues;
+
 }
 
 const deleteItem = async (modelName, itemID, t) => {
     // t===null? t = await sequelize.transaction(): t; //test
 
+    let item;
     try {
-        //can refactor this to become an existence checker
-        const item = await modelName.findByPk(itemID, 
-            { attributes: {exclude: ["date_created", "date_updated"]},
-            transaction: t,
-            plain: true }) //do I need plain: true everywhere? 
-        
-            //check that the itemID exists
-        if (item === null) {
-            throw nonExistentItemError;
-        } else {
-            await item.destroy({ transaction: t });
-            const items = await modelName.findAll(
-                { raw: true , 
-                attributes: {exclude: ["date_created", "date_updated"]},
-                transaction: t }); 
-                return items; 
-        }
+        item = await validateID(itemID, modelName, t)
     } catch (err) {
         throw err;
     }
+
+    await item.destroy({ transaction: t });
+
+    const items = await modelName.findAll(
+        {
+            raw: true,
+            attributes: { exclude: ["date_created", "date_updated"] },
+            transaction: t
+        });
+    return items; 
 }
 
 const moveCheckedItem = async (itemID, t) => {
     //will I need to create a transaction here since multiple things are happening? 
-    //assert the item exists 
+    
+    let item;
     try {
-        const item = await Checklist.findByPk(itemID, 
-            { attributes: {exclude: ["date_created", "date_updated"]},
-            transaction: t,
-            plain: true }) //do I need plain: true everywhere? 
-
-        if (item === null) {
-            throw nonExistentItemError;
-        } else { 
-            newItem = item.get({ transaction: t });
-
-            //remove unnecessary values
-            delete newItem.id;
-            delete newItem.purchased;
-            
-            //add to inventory table
-            await Inventory.create(newItem, { transaction: t });
-
-
-            await Checklist.destroy({ where: { id: itemID }, transaction: t })
-            
-            const updatedChecklist = await Checklist.findAll(
-                { attributes: { exclude: ["date_created", "date_updated"] }, 
-                transaction: t });
-
-            return updatedChecklist; //returns an updated checklist to be refreshed on the page
-
-        }
+        item = await validateID(itemID, Checklist, t)
     } catch (err) {
         throw err;
     }
+
+    newItem = item.get({ transaction: t });
+
+    //remove unnecessary values
+    delete newItem.id;
+    delete newItem.purchased;
+    
+    //add to inventory table
+    await Inventory.create(newItem, { transaction: t });
+
+    await Checklist.destroy({ where: { id: itemID }, transaction: t })
+    
+    const updatedChecklist = await Checklist.findAll(
+        { attributes: { exclude: ["date_created", "date_updated"] }, 
+        transaction: t });
+
+    return updatedChecklist; //returns an updated checklist to be refreshed on the page
 }
 
-const validateNewGroceryItem = (req, res, next) => { //include validateCategoryID soon
+const validateNewGroceryItem = (req, res, next) => {
     if (JSON.stringify(req.body) == "{}") {
         const err = new Error("Empty Body");
         err.status = 400;
@@ -176,7 +157,7 @@ const validateNewGroceryItem = (req, res, next) => { //include validateCategoryI
             req.quantity = req.body.quantity;
             req.category_id = req.body.category_id;
             if (typeof req.item_name === "string" && typeof req.quantity === "number" && typeof req.category_id === "number") {
-                //to add validation that the category ID exists. 20/12/23 Not adding as this will not be on the client side as an input, but a dropdown
+                //not adding validation that the category ID as this will not be on the client side as an input, but a dropdown
                 next();
             } else {
                 const err = new Error("Item name must be a string, quantity and category ID must be a number");
@@ -219,6 +200,15 @@ const validateNewCategory = (req, res, next) => {
     }
 };
 
+const validateID = async (itemID, modelName, t) => {
+    const item = await modelName.findByPk(itemID, 
+        { transaction: t }) //do I need plain: true everywhere? 
+    //check that the itemID exists
+    if (item === null) {
+        throw nonExistentItemError;
+    }
+    return item;
+}
 
 module.exports = { 
     getAllItems,
