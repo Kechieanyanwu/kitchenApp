@@ -1,3 +1,4 @@
 node_modules/
 database/config/config.js/
 meta/utilities.js/
+.env
