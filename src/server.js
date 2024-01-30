@@ -1,6 +1,7 @@
+require("dotenv").config();
 const express = require('express');
 const app = express();
-const PORT = process.env.PORT || 4002
+const PORT = process.env.PORT
 const categoriesRouter = require('./routes/categoriesRouter') 
 const checklistRouter = require('./routes/checklistRouter')
 const inventoryRouter = require('./routes/inventoryRouter') 
