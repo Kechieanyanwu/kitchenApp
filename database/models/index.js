@@ -7,9 +7,9 @@ const config = require(__dirname + '/../config/config.js')[env];
 const db = {};
 
 let sequelize;
-if (config.use_env_variable) {
+if (config.use_env_variable) { //for when we deploy to Heroku in the future
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
+} else { 
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
 

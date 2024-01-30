@@ -1,9 +1,8 @@
 // Test framework Imports
 const chai = require('chai');
 const assert = chai.assert;
-const expect = chai.expect;
 const request = require("supertest");
-const {app, server} = require("../server"); 
+const { server } = require("../server"); 
 
 
 // Model Imports 
@@ -13,19 +12,10 @@ const { categoriesSchema,
 
 // Controller Imports
 const { getAllItems,
-        noTableError,
-        nonExistentTableError, 
-        addNewItem,
-        validateModelName,
-        getItem,
-        nonExistentItemError,
-        updateItem,
-        deleteItem} = require('../controllers/controller');
+    nonExistentItemError,
+} = require('../controllers/controller');
 
 // Sequelize Imports
-const { Checklist } = require('../../database/models/checklist');
-const { Category } = require('../../database/models/category');
-const { sequelize, Sequelize } = require('../../database/models');
 const { Inventory } = require('../../database/models/inventory');
 
 // Usage binding

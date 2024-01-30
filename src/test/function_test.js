@@ -23,24 +23,14 @@ const { sequelize, Sequelize } = require('../../database/models');
 chai.use(require('chai-json-schema-ajv')); //for validating JSON schema
 chai.use(require('chai-as-promised')); //extends chai to handle promises 
 
-/*
-Wondering how to keep these two tests running separately, as it currently runs together and feels too coupled.
-
-All my functions here with transactions seem to not persist in the database, but they run the queries and assert correctly.
-If I take out transactions, I see the changes from these functions in my test db.
-Summary - I NEED to thoroughly understand what they're doing for me, and if I need them 
-in production. 
-I also need a code review in case there is something I am not considering.
-*/
 
 // Beginning of tests
-describe("Controller Function tests", function () { //why isnt this showing up on terminal?
-    describe("General Controller functions", async () => { //why isnt this showing up on terminal?
+describe("Controller Function tests", function () { 
+    describe("General Controller functions", async () => { 
 
-        t = await sequelize.transaction(); //this helps keep these tests separate from server tests
+        t = await sequelize.transaction(); 
         
-        after( async () => { //test
-            console.log("You have reached here"); //test
+        after( async () => { 
             await t.commit();
         })
 
@@ -52,7 +42,7 @@ describe("Controller Function tests", function () { //why isnt this showing up o
         });
 
         describe("Get Item", async () => {
-            it("returns the requested item specified by ID", async () => { //to update this for other tables? 
+            it("returns the requested item specified by ID", async () => {
                 const requestedID = 2;
                 const modelName = Category;
                 requestedItem =           
@@ -74,12 +64,12 @@ describe("Controller Function tests", function () { //why isnt this showing up o
             })
         })
 
-        describe("addNewItem", async () => { // this test feels too coupled to Category. Future update could be to change this
+        describe("addNewItem", async () => { 
             it("returns the newly added item", async () => {
-                const mockAddedItem = { id: 7, category_name: "addNewItem test category"}; // this feels too coupled? How to assert without specifying the ID number? 
+                const mockAddedItem = { id: 7, category_name: "addNewItem test category"};
 
                 //create dummy data
-                const mockRequestBody = { "category_name": "addNewItem test category" } //should I take out this string quotes?
+                const mockRequestBody = { "category_name": "addNewItem test category" }
 
                 //send to database using function
                 const newItem = await addNewItem(Category, mockRequestBody, t);
@@ -119,7 +109,7 @@ describe("Controller Function tests", function () { //why isnt this showing up o
 
         describe("Delete Item", () => { 
             it("Successfully deletes a specified item by ID", async () => {
-                const itemID = 5; //this is the newly added item from the addItem test. Does this make it too coupled? 
+                const itemID = 5; 
                 const modelName = Category;
                 const assertDeletedItem = { id: 5, category_name: "Delete Item Test"}; 
                 
