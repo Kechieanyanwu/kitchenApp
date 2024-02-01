@@ -1,8 +1,9 @@
 const crypto = require('crypto');
+// to use bcrypt possibly
 
 // TODO
-function validPassword(password, hash, salt) {}
-function genPassword(password) {}
+function comparePassword(password, hashedPassword, salt) {}
+function hashPassword(password) {}
 
-module.exports.validPassword = validPassword;
+module.exports.validPassword = validPassword; //rename
 module.exports.genPassword = genPassword;

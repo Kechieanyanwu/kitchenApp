@@ -31,13 +31,13 @@ app.use("/categories", categoriesRouter);
 app.use("/checklist", checklistRouter);
 app.use("/inventory", inventoryRouter);
 
-app.get("/", (req, res) => {
+app.get("/", (req, res) => { // dummy frontend
     // res.status(200).json("Hello World");
     res.send('<h1>Home</h1><p>Please <a href="/register">register</a></p>');
 });
 
 // When you visit http://localhost:PORT/login, you will see "Login Page"
-app.get('/login', (req, res, next) => {
+app.get('/login', (req, res, next) => { // dummy frontend
    
     const form = '<h1>Login Page</h1><form method="POST" action="/login">\
     Enter Username:<br><input type="text" name="username">\
@@ -49,7 +49,7 @@ app.get('/login', (req, res, next) => {
 });
 
 // When you visit http://localhost:PORT/register, you will see "Register Page"
-app.get('/register', (req, res, next) => {
+app.get('/register', (req, res, next) => { // dummy frontend
 
     const form = '<h1>Register Page</h1><form method="post" action="register">\
                     Enter Username:<br><input type="text" name="username">\
@@ -88,7 +88,7 @@ app.get('/logout', (req, res, next) => {
 });
 
 app.get('/login-success', (req, res, next) => {
-    res.send('<p>You successfully logged in. --> <a href="/protected-route">Go to protected route</a></p>');
+    res.send('<p>You successfully logged in. --> <a href="/protected-route">Go to protected route</a></p>'); // actual implementation would be to go to your home page
 });
 
 app.get('/login-failure', (req, res, next) => {
