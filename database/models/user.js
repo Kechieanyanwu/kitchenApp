@@ -15,7 +15,7 @@ User.init(
   {
     username: DataTypes.STRING,
     email: DataTypes.STRING,
-    hashedpassword: DataTypes.STRING,
+    hashed_password: DataTypes.STRING,
     salt: DataTypes.STRING
   },
   {

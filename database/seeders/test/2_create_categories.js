@@ -14,57 +14,51 @@ module.exports = {
     */
     return queryInterface.sequelize.transaction(async (t) => {
       await queryInterface.bulkInsert(
-        "Checklists",
+        "Categories",
         [
           {
-            item_name: "Turkey Bacon",
-            quantity: 5,
-            category_id: 1,
+            category_name: "Butcher",
+            date_created: "2023-11-08T14:14:01.390Z",
+            date_updated: "2023-11-08T14:14:01.390Z",
+            user_id: 1,
+          },
+          {
+            category_name: "Condiments",
+            user_id: 1,
             date_created: "2023-11-08T14:14:01.390Z",
             date_updated: "2023-11-08T14:14:01.390Z",
           },
           {
-            item_name: "Cinnamon Powder",
-            quantity: 2,
-            category_id: 2,
+            category_name: "Cleaning",
+            user_id: 1,
             date_created: "2023-11-08T14:14:01.390Z",
             date_updated: "2023-11-08T14:14:01.390Z",
           },
           {
-            item_name: "Dishwashing tabs",
-            quantity: 10,
-            category_id: 3,
+            category_name: "Bakery",
+            user_id: 1,
             date_created: "2023-11-08T14:14:01.390Z",
             date_updated: "2023-11-08T14:14:01.390Z",
           },
           {
-            item_name: "Coriander Seeds",
-            quantity: 2,
-            category_id: 2,
+            category_name: "Delete Item Test",
+            user_id: 1,
             date_created: "2023-11-08T14:14:01.390Z",
             date_updated: "2023-11-08T14:14:01.390Z",
-          },
-          {
-            item_name: "Curry Powder",
-            quantity: 2,
-            category_id: 2,
-            date_created: "2023-11-08T14:14:01.390Z",
-            date_updated: "2023-11-08T14:14:01.390Z",
-          },
+          }
         ]);
       })
-  },
-
-  async down (queryInterface, Sequelize) {
-    /**
-     * Add commands to revert seed here.
-     *
-     * Example:
-     * await queryInterface.bulkDelete('People', null, {});
-     */
-    return queryInterface.sequelize.transaction(async (t) => {
-      await queryInterface.bulkDelete("Checklists", null, {})
-    })
-  }
-};
-
+    },
+  
+    async down (queryInterface, Sequelize) {
+      /**
+       * Add commands to revert seed here.
+       *
+       * Example:
+       * await queryInterface.bulkDelete('People', null, {});
+       */
+      return queryInterface.sequelize.transaction(async (t) => {
+        await queryInterface.bulkDelete("Categories", null, {})
+      })
+    }
+  };

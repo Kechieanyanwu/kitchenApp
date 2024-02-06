@@ -15,6 +15,15 @@ class Category extends Model {
 Category.init(
   {
     category_name: DataTypes.STRING,
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      onDelete: "CASCADE",
+      references: {
+        model: "Users",
+        key: "id",
+      },
+    },
   },
   {
     sequelize: db.sequelize,

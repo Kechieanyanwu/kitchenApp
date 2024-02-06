@@ -2,34 +2,25 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Checklists', {
+    await queryInterface.createTable('Categories', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      item_name: {
-        allowNull: false,
-        type: Sequelize.STRING,
-        unique: true
+      category_name: {
+        type: Sequelize.STRING
       },
-      quantity: {
-        allowNull: false,
-        type: Sequelize.INTEGER
-      },
-      category_id: {
+      // adding in user.id
+      user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         onDelete: "CASCADE",
         references: {
-          model: "Categories",
+          model: "Users",
           key: "id"
         }
-      },
-      purchased: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false
       },
       date_created: {
         allowNull: false,
@@ -42,6 +33,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Checklists');
+    await queryInterface.dropTable('Categories');
   }
 };
