@@ -10,10 +10,14 @@ function comparePassword(plaintextPassword, hashedPassword) {
 
 
 function hashPassword(plaintextPassword) {
-    bcrypt.hash(plaintextPassword, saltRounds, function (err, hash) {
-        //return hash? Or store hash in db?
-    })
+    bcrypt.genSalt(saltRounds, function(err, salt) {
+        bcrypt.hash(plaintextPassword, salt, function(err, hash) {
+            // Store hash and salt in user DB.
+        });
+    });
 }
 
-module.exports.comparePassword = comparePassword; //rename
-module.exports.hashPassword = hashPassword;
+module.exports = {
+    comparePassword,
+    hashPassword,
+}
