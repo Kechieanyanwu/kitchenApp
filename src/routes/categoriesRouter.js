@@ -39,6 +39,20 @@ categoriesRouter.get("/:itemID", async (req, res, next) => {
 
 
 //add new category
+
+// categoriesRouter.post("/", jsonParser, validateNewCategory, async (req, res, next) => {
+//     let addedCategory;
+//     const newCategory = { category_name: req.category_name, user_id: req.userID }; //included req.userID - will need to work on this 
+
+//     try {
+//         addedCategory = await addNewItem(Category, newCategory);
+//     } catch (err) {
+//         err.status = 400;
+//         next(err);
+//     }
+//     res.status(201).send(addedCategory); 
+// })
+
 categoriesRouter.post("/", jsonParser, validateNewCategory, async (req, res, next) => {
     let addedCategory;
     const newCategory = { category_name: req.category_name }

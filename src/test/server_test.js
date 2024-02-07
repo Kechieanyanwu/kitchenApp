@@ -73,7 +73,7 @@ describe("KitchenApp testing", function () {
                         requestType: "Good",
                         description: "responds with 200 and the correct item to a valid request",
                         itemID: 3,
-                        expectedResponse: { id: 3, category_name: "Cleaning" },
+                        expectedResponse: { id: 3, category_name: "Cleaning", user_id: 1 },
                         expectedStatus: 200,
                     },
                     {
@@ -94,7 +94,7 @@ describe("KitchenApp testing", function () {
                         requestType: "Good",
                         description: "responds with 200 and the correct item to a valid request",
                         itemID: 3,
-                        expectedResponse: { id: 3, item_name: "Dettol Wipes", quantity: 3, category_id: 3 },
+                        expectedResponse: { id: 3, item_name: "Dettol Wipes", quantity: 3, category_id: 3, user_id: 1 },
                         expectedStatus: 200,
                     },
                     {
@@ -115,7 +115,7 @@ describe("KitchenApp testing", function () {
                         requestType: "Good",
                         description: "responds with 200 and the correct item to a valid request",
                         itemID: 3,
-                        expectedResponse: { id: 3, item_name: "Dishwashing tabs", quantity: 10, purchased: false, category_id: 3 },
+                        expectedResponse: { id: 3, item_name: "Dishwashing tabs", quantity: 10, purchased: false, category_id: 3, user_id: 1 },
                         expectedStatus: 200,
                     },
                     {

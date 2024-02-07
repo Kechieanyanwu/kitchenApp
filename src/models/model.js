@@ -6,8 +6,9 @@ const categoriesSchema = {
         properties: {
             id: {type: "number"},
             category_name: {type: "string"},
+            user_id: {type: "number"},
     },
-    required: ["id", "category_name"],
+    required: ["id", "category_name", "user_id"],
   },
 };
 
@@ -21,9 +22,10 @@ const checklistSchema = {
             item_name: {type: "string"},
             quantity: {type: "number"},
             category_id: {type: "number"},
+            user_id: {type: "number"},
             purchased: {type: "boolean"},
         },
-        required: ["id", "item_name", "quantity", "category_id", "purchased"],
+        required: ["id", "item_name", "quantity", "category_id", "purchased", "user_id"],
     }
 }
 
@@ -36,8 +38,9 @@ const inventorySchema = {
             item_name: { type: "string" },
             quantity: { type: "integer" },
             category_id: { type: "integer" },
+            user_id: {type: "number"},
         },
-        required: ["id", "item_name", "quantity", "category_id"],
+        required: ["id", "item_name", "quantity", "category_id", "user_id"],
     },
 };
 
