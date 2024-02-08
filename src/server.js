@@ -11,21 +11,21 @@ const categoriesRouter = require('./routes/categoriesRouter');
 const checklistRouter = require('./routes/checklistRouter');
 const inventoryRouter = require('./routes/inventoryRouter') ;
 
-const sessionStore = new SequelizeStore({
-    db: sequelize,
-})
+// const sessionStore = new SequelizeStore({
+//     db: sequelize,
+// })
 
-app.use(session({
-    secret: 'apple-banana',
-    store: sessionStore,
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        maxAge: 1000 * 60 * 60 * 24
-     }
-}));
+// app.use(session({
+//     secret: 'apple-banana',
+//     store: sessionStore,
+//     resave: false,
+//     saveUninitialized: true,
+//     cookie: {
+//         maxAge: 1000 * 60 * 60 * 24
+//      }
+// }));
 
-sessionStore.sync();
+// sessionStore.sync();
 
 app.use("/categories", categoriesRouter);
 app.use("/checklist", checklistRouter);

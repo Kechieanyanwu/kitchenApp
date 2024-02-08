@@ -55,7 +55,7 @@ categoriesRouter.get("/:itemID", async (req, res, next) => {
 
 categoriesRouter.post("/", jsonParser, validateNewCategory, async (req, res, next) => {
     let addedCategory;
-    const newCategory = { category_name: req.category_name }
+    const newCategory = { category_name: req.category_name, user_id: req.user_id }
 
     try {
         addedCategory = await addNewItem(Category, newCategory);

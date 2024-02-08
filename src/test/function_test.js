@@ -90,7 +90,7 @@ describe("Controller Function tests", function () {
                 const update = { category_name: "Update Category" }
                 const modelName = Category;
 
-                const desiredUpdate = { id: 1, category_name: "Update Category" }
+                const desiredUpdate = { id: 1, category_name: "Update Category", user_id: 1 }
                 
                 //update existing item
                 const actualUpdate = await updateItem(modelName, itemID, update, t);
