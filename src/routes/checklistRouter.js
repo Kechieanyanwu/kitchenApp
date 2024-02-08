@@ -1,12 +1,13 @@
 const express = require('express');
 const checklistRouter = express.Router(); //creating a router instance 
 const { getAllItems,
-        validateNewGroceryItem, 
+        // validateNewGroceryItem, 
         getItem,
         addNewItem,
         updateItem,
         deleteItem,
         moveCheckedItem} = require('../controllers/controller');
+const { validateNewGroceryItem } = require("../../utilities/model");
 const { tableNames } = require('../models/model');
 const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json(); //used only in specific routes

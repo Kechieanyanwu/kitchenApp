@@ -1,3 +1,5 @@
+// to go through tests and check for presence of user_id
+
 // Test framework Imports
 const chai = require('chai');
 const assert = chai.assert;

@@ -44,9 +44,24 @@ const inventorySchema = {
     },
 };
 
+const userSchema = { //kinda like a DTO
+    type: "array",
+    items: {
+        type: "object",
+        properties: {
+            id: { type: "number" },
+            username: { type: "string" },
+            email: { type: "string" },
+            hashed_password: { type: "string" },
+            salt: { type: "string" },
+        },
+        required: ["id", "username", "email", "hashed_password", "salt"],
+    },
+};
 
 module.exports = {
     categoriesSchema,
     checklistSchema,
     inventorySchema,
+    userSchema,
 };
