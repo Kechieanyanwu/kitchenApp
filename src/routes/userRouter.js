@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json(); //used only in specific routes
 const urlEncodedParser = bodyParser.urlencoded(); //used only in specific routes
 
-
+// body-parser deprecated undefined extended: provide extended option src/routes/userRouter.js:5:37
 
 // user register
 userRouter.put("/register", jsonParser, async (req, res, next) => {

@@ -2,11 +2,11 @@ const express = require('express');
 const categoriesRouter = express.Router(); //creating a router instance
 
 const { getAllItems,
-        validateNewCategory, 
         addNewItem,
         getItem,
         updateItem,
         deleteItem} = require('../controllers/controller');
+const { validateNewCategory } = require("../../utilities/model");
 const { tableNames } = require('../models/model');
 const bodyParser = require("body-parser");
 const { Category } = require("../../database/models/category"); //test

@@ -1,3 +1,8 @@
+// Errors
+const nonExistentItemError = new Error("Nonexistent item")
+const incompleteItemError = new Error("Item must have an item name, user ID, quantity and category ID")
+const incompleteCategoryError = new Error("Request must only contain a category name and user ID")
+
 const validateModelName = (modelName) => {
     if (modelName === "" || modelName === undefined) { //throw error if no table name is specified
         throw noTableError;
@@ -10,8 +15,8 @@ const validateModelName = (modelName) => {
     }
 }
 
-
 const validateNewGroceryItem = (req, res, next) => {
+    console.log("you are in validate new grocery item")
     if (JSON.stringify(req.body) == "{}") {
         const err = new Error("Empty Body");
         err.status = 400;
@@ -33,12 +38,15 @@ const validateNewGroceryItem = (req, res, next) => {
         }
     } else {
         // const err = new Error("Item must have an item name, user ID, quantity and category ID");
+        console.log("incomplete item error"); //test
         const err = incompleteItemError;
         err.status = 400; 
 
+        console.log("about to send to next"); //test
         next(err);
     }
 };
+
 
 const validateNewCategory = (req, res, next) => {
     if (JSON.stringify(req.body) == "{}") {

@@ -1,11 +1,11 @@
 const express = require('express');
 const inventoryRouter = express.Router(); //creating a router instance
 const { getAllItems,
-        validateNewGroceryItem, 
         getItem,
         addNewItem,
         updateItem,
         deleteItem} = require('../controllers/controller');
+const { validateNewGroceryItem } = require("../../utilities/model");
 const { tableNames } = require('../models/model');
 const bodyParser = require("body-parser");
 const { Inventory } = require('../../database/models/inventory');

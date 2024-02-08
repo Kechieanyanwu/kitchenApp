@@ -270,6 +270,8 @@ describe("KitchenApp testing", function () {
                         const { description, requestBody, expectedStatus, expectedResponse, requestType, expectedError } = testCase
                         it(description, async() => {
                             const response = await request(server).post(endpoint.route).send(requestBody);
+                            // console.log(endpoint.name); //test
+                            // console.log(response); //test
                             assert.equal(response.status, expectedStatus);
 
                             if(requestType == "Good") {
