@@ -34,7 +34,27 @@ describe("KitchenApp testing", function () {
     }); //this takes TOO LONG to close. Why? 
 
     describe("User Accounts Endpoint Testing", () => {
+        describe("Register User", () => {
+            it("Adds a new user to the database", async () => {
+                // set up
+                const newUser = {
+                    email: "serverTest@gmail.com",
+                    userName: "Server Test",
+                    password: "johnnytest"
+                };
+                const expectedResponse = "User succesfully created";
+                const expectedStatus = 201;
 
+
+                // execution
+                const response = await request(server).post("/user/register").send(newUser);
+
+                console.log(JSON.stringify(response));
+                // verification
+                assert.equal(response.body, expectedResponse);
+                assert.equal(response.status, expectedStatus);
+            })
+        })
     });
     
     describe("Endpoint testing", () => {
