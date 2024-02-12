@@ -1,12 +1,11 @@
 const express = require('express');
 const inventoryRouter = express.Router(); //creating a router instance
 const { getAllItems,
-        validateNewGroceryItem, 
         getItem,
         addNewItem,
         updateItem,
         deleteItem} = require('../controllers/controller');
-const { tableNames } = require('../models/model');
+const { validateNewGroceryItem } = require("../../utilities/model");
 const bodyParser = require("body-parser");
 const { Inventory } = require('../../database/models/inventory');
 const jsonParser = bodyParser.json(); //used only in specific routes
@@ -39,7 +38,9 @@ inventoryRouter.get("/:itemID", async (req, res, next) => {
 //add new inventory item
 inventoryRouter.post("/", jsonParser, validateNewGroceryItem, async (req, res, next) => {
     let addedItem;
-    const newItem = {item_name: req.item_name, quantity: req.quantity, category_id: req.category_id};
+    // const newItem = {item_name: req.item_name, quantity: req.quantity, category_id: req.category_id};
+
+    const newItem = {item_name: req.item_name, quantity: req.quantity, category_id: req.category_id, user_id: req.user_id};
 
     try {
         addedItem = await addNewItem(Inventory, newItem);

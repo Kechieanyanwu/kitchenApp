@@ -1,3 +1,5 @@
+// to go through tests and check for presence of user_id
+
 // Test framework Imports
 const chai = require('chai');
 const assert = chai.assert;
@@ -13,6 +15,8 @@ const { categoriesSchema,
 // Controller Imports
 const { getAllItems,
     nonExistentItemError,
+    incompleteItemError,
+    incompleteCategoryError,
 } = require('../controllers/controller');
 
 // Sequelize Imports
@@ -29,6 +33,10 @@ describe("KitchenApp testing", function () {
         server.close()
     }); //this takes TOO LONG to close. Why? 
 
+    describe("User Accounts Endpoint Testing", () => {
+
+    });
+    
     describe("Endpoint testing", () => {
         describe("GET Endpoint testing", () => { 
             const endpoints = [
@@ -73,7 +81,7 @@ describe("KitchenApp testing", function () {
                         requestType: "Good",
                         description: "responds with 200 and the correct item to a valid request",
                         itemID: 3,
-                        expectedResponse: { id: 3, category_name: "Cleaning" },
+                        expectedResponse: { id: 3, category_name: "Cleaning", user_id: 1 },
                         expectedStatus: 200,
                     },
                     {
@@ -94,7 +102,7 @@ describe("KitchenApp testing", function () {
                         requestType: "Good",
                         description: "responds with 200 and the correct item to a valid request",
                         itemID: 3,
-                        expectedResponse: { id: 3, item_name: "Dettol Wipes", quantity: 3, category_id: 3 },
+                        expectedResponse: { id: 3, item_name: "Dettol Wipes", quantity: 3, category_id: 3, user_id: 1 },
                         expectedStatus: 200,
                     },
                     {
@@ -115,7 +123,7 @@ describe("KitchenApp testing", function () {
                         requestType: "Good",
                         description: "responds with 200 and the correct item to a valid request",
                         itemID: 3,
-                        expectedResponse: { id: 3, item_name: "Dishwashing tabs", quantity: 10, purchased: false, category_id: 3 },
+                        expectedResponse: { id: 3, item_name: "Dishwashing tabs", quantity: 10, purchased: false, category_id: 3, user_id: 1 },
                         expectedStatus: 200,
                     },
                     {
@@ -162,9 +170,9 @@ describe("KitchenApp testing", function () {
                     {
                         requestType: "Good",
                         description: "responds with 201 to a valid request body",
-                        requestBody: { "category_name": "Post Category Test" },
+                        requestBody: { "category_name": "Post Category Test", "user_id": 1 },
                         expectedStatus: 201,
-                        expectedResponse: {"id": 6, "category_name": "Post Category Test"}
+                        expectedResponse: {"id": 6, "category_name": "Post Category Test", "user_id": 1,}
                     },
                     {
                         requestType: "Bad",
@@ -178,7 +186,7 @@ describe("KitchenApp testing", function () {
                         description: "rejects a request body with an incorrect schema",
                         requestBody: { "inventory": "Dairy" },
                         expectedStatus: 400,
-                        expectedError: "Request must only contain a category name"
+                        expectedError: incompleteCategoryError.message
                     }
                     ]
                 },
@@ -192,6 +200,7 @@ describe("KitchenApp testing", function () {
                             "item_name": "Post Checklist Test",
                             "quantity": 2,
                             "category_id": 3,
+                            "user_id": 1,
                         },
                         expectedStatus: 201,
                         expectedResponse: {
@@ -199,7 +208,8 @@ describe("KitchenApp testing", function () {
                             "item_name": "Post Checklist Test",
                             "quantity": 2,
                             "category_id": 3,
-                            "purchased": false
+                            "purchased": false,
+                            "user_id": 1,
                         },
                     },
                     {
@@ -214,7 +224,8 @@ describe("KitchenApp testing", function () {
                         description: "rejects a request body with an incorrect schema",
                         requestBody: { "inventory": "Dairy" },
                         expectedStatus: 400,
-                        expectedError: "Item must have an item name, quantity and category ID"
+                        // expectedError: "Item must have an item name, user ID, quantity and category ID" //extract into variable
+                        expectedError: incompleteItemError.message
                     },
                     ]
                 },
@@ -228,6 +239,7 @@ describe("KitchenApp testing", function () {
                             "item_name": "Post Inventory Test",
                             "quantity": 20,
                             "category_id": 3,
+                            "user_id": 1,
                         },
                         expectedStatus: 201,
                         expectedResponse: {
@@ -235,6 +247,7 @@ describe("KitchenApp testing", function () {
                             "item_name": "Post Inventory Test",
                             "quantity": 20,
                             "category_id": 3,
+                            "user_id": 1,
                         },
                     },
                     {
@@ -249,7 +262,7 @@ describe("KitchenApp testing", function () {
                         description: "rejects a request body with an incorrect schema",
                         requestBody: { "inventory": "Dairy" },
                         expectedStatus: 400,
-                        expectedError: "Item must have an item name, quantity and category ID"
+                        expectedError: incompleteItemError.message
                     },
                     ]
                 },
@@ -261,7 +274,8 @@ describe("KitchenApp testing", function () {
                         const { description, requestBody, expectedStatus, expectedResponse, requestType, expectedError } = testCase
                         it(description, async() => {
                             const response = await request(server).post(endpoint.route).send(requestBody);
-                            
+                            // console.log(endpoint.name); //test
+                            // console.log(response); //test
                             assert.equal(response.status, expectedStatus);
 
                             if(requestType == "Good") {
@@ -291,7 +305,7 @@ describe("KitchenApp testing", function () {
                     const requestBody = { category_name: "Update Category Test" };
                     const itemID = 1;
 
-                    const expectedResponse = { id: 1, category_name: "Update Category Test" };
+                    const expectedResponse = { id: 1, category_name: "Update Category Test", "user_id": 1 };
                     const expectedStatus = 200;
 
                     //make update
@@ -333,6 +347,7 @@ describe("KitchenApp testing", function () {
                         "item_name": "Update Inventory Item Test",
                         "quantity": 25,
                         "category_id": 2,
+                        "user_id": 1
                     };
                     const expectedStatus = 200;
 
@@ -378,7 +393,8 @@ describe("KitchenApp testing", function () {
                         "item_name": "Update Checklist Item Test",
                         "quantity": 13,
                         "category_id": 1,
-                        "purchased": false
+                        "purchased": false,
+                        "user_id": 1
                     };
                     const expectedStatus = 200;
 
@@ -430,6 +446,7 @@ describe("KitchenApp testing", function () {
                         "item_name": "Update Checklist Item Test",
                         "quantity": 13,
                         "category_id": 1,
+                        "user_id": 1
                     };
 
                     const expectedStatus = 200;

@@ -1,13 +1,12 @@
 const express = require('express');
 const checklistRouter = express.Router(); //creating a router instance 
 const { getAllItems,
-        validateNewGroceryItem, 
         getItem,
         addNewItem,
         updateItem,
         deleteItem,
         moveCheckedItem} = require('../controllers/controller');
-const { tableNames } = require('../models/model');
+const { validateNewGroceryItem } = require("../../utilities/model");
 const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json(); //used only in specific routes
 
@@ -41,12 +40,15 @@ checklistRouter.get("/:itemID", async (req, res, next) => {
 
 //add new checklist item
 checklistRouter.post("/", jsonParser, validateNewGroceryItem, async (req, res, next) => {
+    console.log("post entry"); //test
     let addedItem;
-    const newItem = {item_name: req.item_name, quantity: req.quantity, category_id: req.category_id};
-
+    // const newItem = {item_name: req.item_name, quantity: req.quantity, category_id: req.category_id};
+    const newItem = {item_name: req.item_name, quantity: req.quantity, category_id: req.category_id, user_id: req.user_id};
     try {
+        console.log("trying added item"); //test
         addedItem = await addNewItem(Checklist, newItem);
     } catch (err) {
+        console.log("error checklist post"); //test
         err.status = 400;
         next(err);
     }

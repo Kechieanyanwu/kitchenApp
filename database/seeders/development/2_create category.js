@@ -20,16 +20,19 @@ module.exports = {
           category_name: "Dairy",
           date_created: "2023-11-08T14:14:01.390Z",
           date_updated: "2023-11-08T14:14:01.390Z",
+          user_id: 1,
         },
         {
           category_name: "Fruit",
           date_created: "2023-11-08T14:14:01.390Z",
           date_updated: "2023-11-08T14:14:01.390Z",
+          user_id: 1,
         },
         {
           category_name: "Bakery",
           date_created: "2023-11-08T14:14:01.390Z",
           date_updated: "2023-11-08T14:14:01.390Z",
+          user_id: 1,
         }
       ]);
     })

@@ -14,26 +14,45 @@ module.exports = {
     */
     return queryInterface.sequelize.transaction(async (t) => {
       await queryInterface.bulkInsert(
-        "Checklists",
+        "Inventories",
         [
           {
-            item_name: "Milk",
-            quantity: 10,
+            item_name: "Bacon",
+            quantity: 3,
             category_id: 1,
+            user_id: 1,
             date_created: "2023-11-08T14:14:01.390Z",
             date_updated: "2023-11-08T14:14:01.390Z",
           },
           {
-            item_name: "Apples",
-            quantity: 5,
+            item_name: "Coriander Powder",
+            quantity: 1,
             category_id: 2,
+            user_id: 1,
             date_created: "2023-11-08T14:14:01.390Z",
             date_updated: "2023-11-08T14:14:01.390Z",
           },
           {
-            item_name: "Pita Bread",
-            quantity: 100,
+            item_name: "Dettol Wipes",
+            quantity: 3,
             category_id: 3,
+            user_id: 1,
+            date_created: "2023-11-08T14:14:01.390Z",
+            date_updated: "2023-11-08T14:14:01.390Z",
+          },
+          {
+            item_name: "Lysol Wipes",
+            quantity: 2,
+            category_id: 3,
+            user_id: 1,
+            date_created: "2023-11-08T14:14:01.390Z",
+            date_updated: "2023-11-08T14:14:01.390Z",
+          },
+          {
+            item_name: "Baby Wipes",
+            quantity: 3,
+            category_id: 3,
+            user_id: 1,
             date_created: "2023-11-08T14:14:01.390Z",
             date_updated: "2023-11-08T14:14:01.390Z",
           }
@@ -49,7 +68,7 @@ module.exports = {
      * await queryInterface.bulkDelete('People', null, {});
      */
     return queryInterface.sequelize.transaction(async (t) => {
-      await queryInterface.bulkDelete("Checklists", null, {})
+      await queryInterface.bulkDelete("Inventories", null, {})
     })
   }
 };

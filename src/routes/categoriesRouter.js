@@ -2,14 +2,13 @@ const express = require('express');
 const categoriesRouter = express.Router(); //creating a router instance
 
 const { getAllItems,
-        validateNewCategory, 
         addNewItem,
         getItem,
         updateItem,
         deleteItem} = require('../controllers/controller');
-const { tableNames } = require('../models/model');
+const { validateNewCategory } = require("../../utilities/model");
 const bodyParser = require("body-parser");
-const { Category } = require("../../database/models/category"); //test
+const { Category } = require("../../database/models/category");
 
 const jsonParser = bodyParser.json(); //used only in specific routes
 
@@ -39,9 +38,23 @@ categoriesRouter.get("/:itemID", async (req, res, next) => {
 
 
 //add new category
+
+// categoriesRouter.post("/", jsonParser, validateNewCategory, async (req, res, next) => {
+//     let addedCategory;
+//     const newCategory = { category_name: req.category_name, user_id: req.userID }; //included req.userID - will need to work on this 
+
+//     try {
+//         addedCategory = await addNewItem(Category, newCategory);
+//     } catch (err) {
+//         err.status = 400;
+//         next(err);
+//     }
+//     res.status(201).send(addedCategory); 
+// })
+
 categoriesRouter.post("/", jsonParser, validateNewCategory, async (req, res, next) => {
     let addedCategory;
-    const newCategory = { category_name: req.category_name }
+    const newCategory = { category_name: req.category_name, user_id: req.user_id }
 
     try {
         addedCategory = await addNewItem(Category, newCategory);
