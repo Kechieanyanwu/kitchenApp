@@ -6,7 +6,6 @@ const { getAllItems,
         updateItem,
         deleteItem} = require('../controllers/controller');
 const { validateNewGroceryItem } = require("../../utilities/model");
-const { tableNames } = require('../models/model');
 const bodyParser = require("body-parser");
 const { Inventory } = require('../../database/models/inventory');
 const jsonParser = bodyParser.json(); //used only in specific routes

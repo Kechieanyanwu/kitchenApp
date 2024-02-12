@@ -7,9 +7,8 @@ const { getAllItems,
         updateItem,
         deleteItem} = require('../controllers/controller');
 const { validateNewCategory } = require("../../utilities/model");
-const { tableNames } = require('../models/model');
 const bodyParser = require("body-parser");
-const { Category } = require("../../database/models/category"); //test
+const { Category } = require("../../database/models/category");
 
 const jsonParser = bodyParser.json(); //used only in specific routes
 

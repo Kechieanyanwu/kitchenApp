@@ -33,6 +33,10 @@ describe("KitchenApp testing", function () {
         server.close()
     }); //this takes TOO LONG to close. Why? 
 
+    describe("User Accounts Endpoint Testing", () => {
+
+    });
+    
     describe("Endpoint testing", () => {
         describe("GET Endpoint testing", () => { 
             const endpoints = [
