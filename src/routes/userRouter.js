@@ -9,7 +9,7 @@ const urlEncodedParser = bodyParser.urlencoded( { extended: false } ); //used on
 
 // user register
 userRouter.post("/register", jsonParser, async (req, res, next) => {
-    console.log("you are here")
+    res.status(201).send("User succesfully created")
     // user sends an email, username and password
     // object is verified that it is an email, username exists, and password is strong enough
         // will use weak strong identifiers on the frontend 

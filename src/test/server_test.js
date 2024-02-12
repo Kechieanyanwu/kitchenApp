@@ -51,7 +51,8 @@ describe("KitchenApp testing", function () {
 
                 console.log(JSON.stringify(response));
                 // verification
-                assert.equal(response.body, expectedResponse);
+                // assert.equal(response.body, expectedResponse);
+                assert.equal(response.text, expectedResponse);
                 assert.equal(response.status, expectedStatus);
             })
         })
