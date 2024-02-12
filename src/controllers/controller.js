@@ -2,6 +2,7 @@
 const { sequelize } = require("../../database/models"); // might eventually call this when creating transaction variable
 const { Checklist } = require("../../database/models/checklist");
 const { Inventory } = require("../../database/models/inventory");
+const { User } = require("../../database/models/user");
 
 // Errors
 const nonExistentItemError = new Error("Nonexistent item")
@@ -76,6 +77,11 @@ const getItem = async (modelName, itemID, t) => {
 // }
 
 //working here
+const addNewUser = async (User, userObject, t) => {
+    //could create a new option for users
+}
+
+
 const addNewItem = async(modelName, newItem, t) => { //update to include userID
     try {
         const addedItem = await modelName.create(newItem,

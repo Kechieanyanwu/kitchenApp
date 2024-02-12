@@ -196,6 +196,12 @@ describe("Controller Function tests", function () {
             })
         })
 
+        describe("Add New User", () => {
+            it("Successfully adds a new user with a valid email", async () => {
+                //working here
+            })
+        })
+
 
     })
 

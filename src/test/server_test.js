@@ -39,7 +39,7 @@ describe("KitchenApp testing", function () {
                 // set up
                 const newUser = {
                     email: "serverTest@gmail.com",
-                    userName: "Server Test",
+                    username: "Server Test",
                     password: "johnnytest"
                 };
                 const expectedResponse = "User succesfully created";

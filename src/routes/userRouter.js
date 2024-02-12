@@ -2,14 +2,41 @@ const express = require('express');
 const userRouter = express.Router();
 const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json(); //used only in specific routes
-const emailValidator = require("email-validator");
 const urlEncodedParser = bodyParser.urlencoded( { extended: false } ); //used only in specific routes
-
-// body-parser deprecated undefined extended: provide extended option src/routes/userRouter.js:5:37
+const { validateNewUser } = require("../../utilities/model");
+const { hashPassword }  = require("../../utilities/password");
+const { addNewItem } = require('../controllers/controller');
 
 // user register
-userRouter.post("/register", jsonParser, async (req, res, next) => {
+userRouter.post("/register", jsonParser, validateNewUser, async (req, res, next) => {
+    console.log(req.email);
+    console.log(req.username);
+    console.log(req.password);
+    const {hash, salt} = await hashPassword(req.password);
+
+    console.log("hash", hash); //test
+    console.log("salt", salt); //test
+    // res.status(201).send("User succesfully created")
+    const userObject = {
+        username: req.username,
+        email: req.email,
+        hashed_password: hash,
+        salt: salt
+    }
+
+    //amend to use a new function, add new user
+    // try {
+    //     await addNewItem(User, userObject); //feels like a wasted variable, taking out the assignment
+    // } catch (err) {
+    //     next(err);
+    // }
+
     res.status(201).send("User succesfully created")
+
+
+
+
+    
     // user sends an email, username and password
     // object is verified that it is an email, username exists, and password is strong enough
         // will use weak strong identifiers on the frontend 
@@ -19,21 +46,6 @@ userRouter.post("/register", jsonParser, async (req, res, next) => {
 
 // // user login / authentication
 // // user delete 
-
-
-// const validateNewUser = (req, res, next) => {
-//     //validate email
-//     if (emailValidator.validate(req.body.email)) {
-//         req.email = req.body.email
-//     } else {
-//         const err = new Error("Invalid Email");
-//         err.status = 400;
-//         next(err);
-//     };
-//     req.username = req.body.username;
-//     req.password = req.body.password;
-//     next();
-// }
 
 
 

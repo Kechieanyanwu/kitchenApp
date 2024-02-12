@@ -2,6 +2,7 @@
 const nonExistentItemError = new Error("Nonexistent item")
 const incompleteItemError = new Error("Item must have an item name, user ID, quantity and category ID")
 const incompleteCategoryError = new Error("Request must only contain a category name and user ID")
+const emailValidator = require("email-validator");
 
 const validateModelName = (modelName) => {
     if (modelName === "" || modelName === undefined) { //throw error if no table name is specified
@@ -72,7 +73,6 @@ const validateNewCategory = (req, res, next) => {
 };
 
 
-
 const validateID = async (itemID, modelName, t) => {
     const item = await modelName.findByPk(itemID, 
         { transaction: t }) 
@@ -83,9 +83,26 @@ const validateID = async (itemID, modelName, t) => {
     return item;
 }
 
+const validateNewUser = (req, res, next) => {
+    //validate email
+    if (emailValidator.validate(req.body.email)) {
+        req.email = req.body.email
+    } else {
+        const err = new Error("Invalid Email");
+        err.status = 400;
+        next(err);
+    };
+    req.username = req.body.username;
+    req.password = req.body.password;
+    next();
+}
+
+
+
 module.exports = {
     validateModelName,
     validateNewCategory,
     validateNewGroceryItem,
     validateID,
+    validateNewUser,
 }
