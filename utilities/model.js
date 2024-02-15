@@ -2,6 +2,8 @@
 const nonExistentItemError = new Error("Nonexistent item")
 const incompleteItemError = new Error("Item must have an item name, user ID, quantity and category ID")
 const incompleteCategoryError = new Error("Request must only contain a category name and user ID")
+const incompleteUserError = new Error("A user must have an email, a username, and a password");
+// const emptyBodyError = to update everywhere!
 const emailValidator = require("email-validator");
 
 const validateModelName = (modelName) => {
@@ -84,6 +86,19 @@ const validateID = async (itemID, modelName, t) => {
 }
 
 const validateNewUser = (req, res, next) => {
+    if (JSON.stringify(req.body) == "{}") {
+        console.log("empty body"); //test
+        const err = new Error("Empty Body");
+        err.status = 400;
+        next(err);
+    } else {
+        if (!req.body.username || !req.body.password || !req.body.email) {
+            console.log("incomplete user"); //test
+            const err = incompleteUserError;
+            err.status = 400;
+            next(err);
+        }
+    }
     //validate email
     if (emailValidator.validate(req.body.email)) {
         req.email = req.body.email
@@ -98,11 +113,12 @@ const validateNewUser = (req, res, next) => {
 }
 
 
-
 module.exports = {
     validateModelName,
     validateNewCategory,
     validateNewGroceryItem,
     validateID,
     validateNewUser,
+    incompleteUserError,
+    nonExistentItemError
 }

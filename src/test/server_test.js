@@ -14,10 +14,12 @@ const { categoriesSchema,
 
 // Controller Imports
 const { getAllItems,
-    nonExistentItemError,
     incompleteItemError,
     incompleteCategoryError,
 } = require('../controllers/controller');
+
+const { incompleteUserError,
+    nonExistentItemError, } = require("../../utilities/model");
 
 // Sequelize Imports
 const { Inventory } = require('../../database/models/inventory');
@@ -246,7 +248,6 @@ describe("KitchenApp testing", function () {
                         description: "rejects a request body with an incorrect schema",
                         requestBody: { "inventory": "Dairy" },
                         expectedStatus: 400,
-                        // expectedError: "Item must have an item name, user ID, quantity and category ID" //extract into variable
                         expectedError: incompleteItemError.message
                     },
                     ]
@@ -309,21 +310,20 @@ describe("KitchenApp testing", function () {
                             username: "Server Test",
                         },
                     },
-                    // {
-                    //     requestType: "Bad", //uh-oh, is this code smell? Let's finish and get back to it
-                    //     description: "rejects an empty request body",  
-                    //     requestBody: undefined,
-                    //     expectedStatus: 400,
-                    //     expectedError: "Empty Body"
-                    // }, 
-                    // {
-                    //     requestType: "Bad", //to update
-                    //     description: "rejects a request body with an incorrect schema",
-                    //     requestBody: { "inventory": "Dairy" },
-                    //     expectedStatus: 400,
-                    //     // expectedError: "Item must have an item name, user ID, quantity and category ID" //extract into variable
-                    //     expectedError: incompleteItemError.message
-                    // },
+                    {
+                        requestType: "Bad", //uh-oh, is this code smell? Let's finish and get back to it
+                        description: "rejects an empty request body",  
+                        requestBody: undefined,
+                        expectedStatus: 400,
+                        expectedError: "Empty Body"
+                    }, 
+                    {
+                        requestType: "Bad", //to update
+                        description: "rejects a request body with an incorrect schema",
+                        requestBody: { "email": "Dairy" },
+                        expectedStatus: 400,
+                        expectedError: incompleteUserError.message
+                    },
                     ]
                 }
             ];

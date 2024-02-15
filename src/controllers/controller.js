@@ -4,7 +4,7 @@ const { Checklist } = require("../../database/models/checklist");
 const { Inventory } = require("../../database/models/inventory");
 const { User } = require("../../database/models/user");
 
-// Errors
+// Errors TO TAKE OUT AS I"M MOVIN TO THE MODEL UTILITIES FILE ? AN ERRORS FILE?
 const nonExistentItemError = new Error("Nonexistent item")
 const incompleteItemError = new Error("Item must have an item name, user ID, quantity and category ID")
 const incompleteCategoryError = new Error("Request must only contain a category name and user ID")
@@ -95,7 +95,7 @@ const addNewItem = async(modelName, newItem, t) => { //update to include userID
             delete addedItem.dataValues.hashed_password;
             delete addedItem.dataValues.salt;
         }
-        
+
         // return new item
         return addedItem.dataValues
 
