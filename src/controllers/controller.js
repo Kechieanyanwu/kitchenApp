@@ -91,6 +91,11 @@ const addNewItem = async(modelName, newItem, t) => { //update to include userID
         delete addedItem.dataValues.date_created;
         delete addedItem.dataValues.date_updated;
 
+        if (modelName.name == "User") {
+            delete addedItem.dataValues.hashed_password;
+            delete addedItem.dataValues.salt;
+        }
+        
         // return new item
         return addedItem.dataValues
 

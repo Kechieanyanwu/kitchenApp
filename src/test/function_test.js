@@ -195,14 +195,6 @@ describe("Controller Function tests", function () {
                 await assert.isRejected(deleteItem(modelName, itemID, t), nonExistentItemError); 
             })
         })
-
-        describe("Add New User", () => {
-            it("Successfully adds a new user with a valid email", async () => {
-                //working here
-            })
-        })
-
-
     })
 
 })

@@ -6,12 +6,13 @@ const urlEncodedParser = bodyParser.urlencoded( { extended: false } ); //used on
 const { validateNewUser } = require("../../utilities/model");
 const { hashPassword }  = require("../../utilities/password");
 const { addNewItem } = require('../controllers/controller');
+const { User } = require('../../database/models/user');
 
 // user register
 userRouter.post("/register", jsonParser, validateNewUser, async (req, res, next) => {
-    console.log(req.email);
-    console.log(req.username);
-    console.log(req.password);
+    console.log(req.email); //test
+    console.log(req.username);//test
+    console.log(req.password);//test
     const {hash, salt} = await hashPassword(req.password);
 
     console.log("hash", hash); //test
@@ -23,15 +24,14 @@ userRouter.post("/register", jsonParser, validateNewUser, async (req, res, next)
         hashed_password: hash,
         salt: salt
     }
+    let addedUser
+    try {        
+        addedUser = await addNewItem(User, userObject)
+    } catch (err) {
+        next(err);
+    }
 
-    //amend to use a new function, add new user
-    // try {
-    //     await addNewItem(User, userObject); //feels like a wasted variable, taking out the assignment
-    // } catch (err) {
-    //     next(err);
-    // }
-
-    res.status(201).send("User succesfully created")
+    res.status(201).send(addedUser);
 
 
 

@@ -33,30 +33,30 @@ describe("KitchenApp testing", function () {
         server.close()
     }); //this takes TOO LONG to close. Why? 
 
-    describe("User Accounts Endpoint Testing", () => {
-        describe("Register User", () => {
-            it("Adds a new user to the database", async () => {
-                // set up
-                const newUser = {
-                    email: "serverTest@gmail.com",
-                    username: "Server Test",
-                    password: "johnnytest"
-                };
-                const expectedResponse = "User succesfully created";
-                const expectedStatus = 201;
+    // describe("User Accounts Endpoint Testing", () => {
+    //     describe("Register User", () => {
+    //         it("Adds a new user to the database", async () => {
+    //             // set up
+    //             const newUser = {
+    //                 email: "serverTest@gmail.com",
+    //                 username: "Server Test",
+    //                 password: "johnnytest"
+    //             };
+    //             const expectedResponse = "User succesfully created";
+    //             const expectedStatus = 201;
 
 
-                // execution
-                const response = await request(server).post("/user/register").send(newUser);
+    //             // execution
+    //             const response = await request(server).post("/user/register").send(newUser);
 
-                console.log(JSON.stringify(response));
-                // verification
-                // assert.equal(response.body, expectedResponse);
-                assert.equal(response.text, expectedResponse);
-                assert.equal(response.status, expectedStatus);
-            })
-        })
-    });
+    //             console.log(JSON.stringify(response));
+    //             // verification
+    //             // assert.equal(response.body, expectedResponse);
+    //             assert.equal(response.text, expectedResponse);
+    //             assert.equal(response.status, expectedStatus);
+    //         })
+    //     })
+    // });
     
     describe("Endpoint testing", () => {
         describe("GET Endpoint testing", () => { 
@@ -216,6 +216,7 @@ describe("KitchenApp testing", function () {
                     route: "/checklist",
                     testCases: [
                     {
+                        requestType: "Good",
                         description: "responds with 201 to a valid request body",  
                         requestBody: {
                             "item_name": "Post Checklist Test",
@@ -255,6 +256,7 @@ describe("KitchenApp testing", function () {
                     route: "/inventory",
                     testCases: [
                     {
+                        requestType: "Good",
                         description: "responds with 201 to a valid request body",  
                         requestBody: {
                             "item_name": "Post Inventory Test",
@@ -287,6 +289,43 @@ describe("KitchenApp testing", function () {
                     },
                     ]
                 },
+                // working here to update to User
+                {
+                    name: "User",
+                    route: "/user/register",
+                    testCases: [
+                    {
+                        requestType: "Good",
+                        description: "responds with 201 to a valid request body",  
+                        requestBody: {
+                            email: "serverTest@gmail.com",
+                            username: "Server Test",
+                            password: "johnnytest"
+                        },
+                        expectedStatus: 201,
+                        expectedResponse: {
+                            id: 2,
+                            email: "serverTest@gmail.com",
+                            username: "Server Test",
+                        },
+                    },
+                    // {
+                    //     requestType: "Bad", //uh-oh, is this code smell? Let's finish and get back to it
+                    //     description: "rejects an empty request body",  
+                    //     requestBody: undefined,
+                    //     expectedStatus: 400,
+                    //     expectedError: "Empty Body"
+                    // }, 
+                    // {
+                    //     requestType: "Bad", //to update
+                    //     description: "rejects a request body with an incorrect schema",
+                    //     requestBody: { "inventory": "Dairy" },
+                    //     expectedStatus: 400,
+                    //     // expectedError: "Item must have an item name, user ID, quantity and category ID" //extract into variable
+                    //     expectedError: incompleteItemError.message
+                    // },
+                    ]
+                }
             ];
             
             endpoints.forEach((endpoint) => {
@@ -300,6 +339,9 @@ describe("KitchenApp testing", function () {
                             assert.equal(response.status, expectedStatus);
 
                             if(requestType == "Good") {
+                                console.log(endpoint.name); //test
+                                console.log(response.body); //test
+                                console.log(expectedResponse); //test
                                 assert.deepEqual(response.body, expectedResponse);
                             }
 
