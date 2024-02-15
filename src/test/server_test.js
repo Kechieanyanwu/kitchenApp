@@ -13,13 +13,12 @@ const { categoriesSchema,
         inventorySchema } = require('../models/model');
 
 // Controller Imports
-const { getAllItems,
-    incompleteItemError,
-    incompleteCategoryError,
-} = require('../controllers/controller');
+const { getAllItems } = require('../controllers/controller');
 
 const { incompleteUserError,
-    nonExistentItemError, } = require("../../utilities/model");
+    nonExistentItemError,
+    incompleteItemError,
+    incompleteCategoryError } = require("../../utilities/errors");
 
 // Sequelize Imports
 const { Inventory } = require('../../database/models/inventory');

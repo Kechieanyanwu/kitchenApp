@@ -1,13 +1,15 @@
-// Errors
-const nonExistentItemError = new Error("Nonexistent item")
-const incompleteItemError = new Error("Item must have an item name, user ID, quantity and category ID")
-const incompleteCategoryError = new Error("Request must only contain a category name and user ID")
-const incompleteUserError = new Error("A user must have an email, a username, and a password");
-// const emptyBodyError = to update everywhere!
+const {
+        nonExistentItemError,
+        incompleteItemError,
+        incompleteCategoryError,
+        incompleteUserError,
+        emptyBodyError
+            } = require("./errors");
+
 const emailValidator = require("email-validator");
 
-const validateModelName = (modelName) => {
-    if (modelName === "" || modelName === undefined) { //throw error if no table name is specified
+const validateModelName = (modelName) => { //is this being used? 
+    if (modelName === "" || modelName === undefined) {
         throw noTableError;
     } else {
         if (tableNames.hasOwnProperty(modelName)) { //validate that table name exists 
@@ -20,7 +22,7 @@ const validateModelName = (modelName) => {
 
 const validateNewGroceryItem = (req, res, next) => {
     if (JSON.stringify(req.body) == "{}") {
-        const err = new Error("Empty Body");
+        const err = emptyBodyError;
         err.status = 400;
         next(err);
     } 
@@ -39,7 +41,6 @@ const validateNewGroceryItem = (req, res, next) => {
             next(err);
         }
     } else {
-        // const err = new Error("Item must have an item name, user ID, quantity and category ID");
         const err = incompleteItemError;
         err.status = 400; 
         next(err);
@@ -49,7 +50,7 @@ const validateNewGroceryItem = (req, res, next) => {
 
 const validateNewCategory = (req, res, next) => {
     if (JSON.stringify(req.body) == "{}") {
-        const err = new Error("Empty Body");
+        const err = emptyBodyError;
         err.status = 400;
         next(err);
     }
@@ -88,7 +89,7 @@ const validateID = async (itemID, modelName, t) => {
 const validateNewUser = (req, res, next) => {
     if (JSON.stringify(req.body) == "{}") {
         console.log("empty body"); //test
-        const err = new Error("Empty Body");
+        const err = emptyBodyError;
         err.status = 400;
         next(err);
     } else {
