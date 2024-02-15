@@ -77,13 +77,11 @@ const validateID = async (itemID, modelName, t) => {
 
 const validateNewUser = (req, res, next) => {
     if (JSON.stringify(req.body) == "{}") {
-        console.log("empty body"); //test
         const err = emptyBodyError;
         err.status = 400;
         next(err);
     } else {
         if (!req.body.username || !req.body.password || !req.body.email) {
-            console.log("incomplete user"); //test
             const err = incompleteUserError;
             err.status = 400;
             next(err);

@@ -33,32 +33,7 @@ describe("KitchenApp testing", function () {
     after(() => {
         server.close()
     }); //this takes TOO LONG to close. Why? 
-
-    // describe("User Accounts Endpoint Testing", () => {
-    //     describe("Register User", () => {
-    //         it("Adds a new user to the database", async () => {
-    //             // set up
-    //             const newUser = {
-    //                 email: "serverTest@gmail.com",
-    //                 username: "Server Test",
-    //                 password: "johnnytest"
-    //             };
-    //             const expectedResponse = "User succesfully created";
-    //             const expectedStatus = 201;
-
-
-    //             // execution
-    //             const response = await request(server).post("/user/register").send(newUser);
-
-    //             console.log(JSON.stringify(response));
-    //             // verification
-    //             // assert.equal(response.body, expectedResponse);
-    //             assert.equal(response.text, expectedResponse);
-    //             assert.equal(response.status, expectedStatus);
-    //         })
-    //     })
-    // });
-    
+ 
     describe("Endpoint testing", () => {
         describe("GET Endpoint testing", () => { 
             const endpoints = [
@@ -355,12 +330,6 @@ describe("KitchenApp testing", function () {
             });
 
         describe("Update Item endpoint testing", () => {
-            /*
-            Creating separate tests first as checklist has the additional check of whether it has been purchased, and whether
-            an item updated to be purchased has been deleted from the checklist, and appears in the inventory
-            Seems that the first two tests are common among all. Will finalise Checklist item when purchased and see how to refactor
-            Should there be an assertion for whether the change to the category name is shown on the items? 
-            */
             describe("Category", ()=> {
                 it("correctly returns an updated category", async () => {
                     //update item 1
