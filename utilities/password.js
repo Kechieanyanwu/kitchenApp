@@ -9,12 +9,12 @@ function comparePassword(plaintextPassword, hashedPassword) {
 }
 
 
-function hashPassword(plaintextPassword) {
-    bcrypt.genSalt(saltRounds, function(err, salt) {
-        bcrypt.hash(plaintextPassword, salt, function(err, hash) {
-            // Store hash and salt in user DB.
-        });
-    });
+async function hashPassword(plaintextPassword) {
+    console.log("in hash pwd"); //test
+    const salt = await bcrypt.genSalt(saltRounds);
+    const hash = await bcrypt.hash(plaintextPassword, salt);
+
+    return {hash, salt}; 
 }
 
 module.exports = {

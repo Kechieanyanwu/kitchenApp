@@ -1,38 +1,37 @@
 const express = require('express');
 const userRouter = express.Router();
 const bodyParser = require("body-parser");
-const jsonParser = bodyParser.json(); //used only in specific routes
-const emailValidator = require("email-validator");
-const urlEncodedParser = bodyParser.urlencoded(); //used only in specific routes
+const jsonParser = bodyParser.json();
+const urlEncodedParser = bodyParser.urlencoded( { extended: false } ); //used only in specific routes
+const { validateNewUser } = require("../../utilities/model");
+const { hashPassword }  = require("../../utilities/password");
+const { addNewItem } = require('../controllers/controller');
+const { User } = require('../../database/models/user');
 
-// // body-parser deprecated undefined extended: provide extended option src/routes/userRouter.js:5:37
+// user register
+userRouter.post("/register", jsonParser, validateNewUser, async (req, res, next) => {
 
-// // user register
-// userRouter.put("/register", jsonParser, async (req, res, next) => {
-//     // user sends an email, username and password
-//     // object is verified that it is an email, username exists, and password is strong enough
-//         // will use weak strong identifiers on the frontend 
-//     //password is hashed
-//     //new object is sent to db using addNewItem
-// })
+    const {hash, salt} = await hashPassword(req.password);
+
+    const userObject = {
+        username: req.username,
+        email: req.email,
+        hashed_password: hash,
+        salt: salt
+    }
+    let addedUser
+    try {        
+        addedUser = await addNewItem(User, userObject)
+    } catch (err) {
+        next(err);
+    }
+
+    res.status(201).send(addedUser);
+
+})
 
 // // user login / authentication
 // // user delete 
-
-
-// const validateNewUser = (req, res, next) => {
-//     //validate email
-//     if (emailValidator.validate(req.body.email)) {
-//         req.email = req.body.email
-//     } else {
-//         const err = new Error("Invalid Email");
-//         err.status = 400;
-//         next(err);
-//     };
-//     req.username = req.body.username;
-//     req.password = req.body.password;
-//     next();
-// }
 
 
 

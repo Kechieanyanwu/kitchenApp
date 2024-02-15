@@ -195,8 +195,6 @@ describe("Controller Function tests", function () {
                 await assert.isRejected(deleteItem(modelName, itemID, t), nonExistentItemError); 
             })
         })
-
-
     })
 
 })
