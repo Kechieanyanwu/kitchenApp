@@ -8,17 +8,6 @@ const {
 
 const emailValidator = require("email-validator");
 
-const validateModelName = (modelName) => { //is this being used? 
-    if (modelName === "" || modelName === undefined) {
-        throw noTableError;
-    } else {
-        if (tableNames.hasOwnProperty(modelName)) { //validate that table name exists 
-            return;
-        } else {
-            throw nonExistentTableError;
-        }
-    }
-}
 
 const validateNewGroceryItem = (req, res, next) => {
     if (JSON.stringify(req.body) == "{}") {
@@ -115,7 +104,6 @@ const validateNewUser = (req, res, next) => {
 
 
 module.exports = {
-    validateModelName,
     validateNewCategory,
     validateNewGroceryItem,
     validateID,
