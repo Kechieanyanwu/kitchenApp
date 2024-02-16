@@ -5,7 +5,7 @@ const jsonParser = bodyParser.json();
 const urlEncodedParser = bodyParser.urlencoded( { extended: false } ); //used only in specific routes
 const { validateNewUser } = require("../../utilities/model");
 const { hashPassword }  = require("../../utilities/password");
-const { addNewItem } = require('../controllers/controller');
+const { addNewItem, deleteItem } = require('../controllers/controller');
 const { User } = require('../../database/models/user');
 
 // user register
@@ -25,13 +25,25 @@ userRouter.post("/register", jsonParser, validateNewUser, async (req, res, next)
     } catch (err) {
         next(err);
     }
-
+    
     res.status(201).send(addedUser);
 
 })
 
 // // user login / authentication
-// // user delete 
+
+// user delete 
+userRouter.delete("/:itemID", jsonParser, async (req, res, next) => {
+    const itemID = req.params.itemID;
+    let updatedUsers;
+
+    try {
+        updatedUsers = await deleteItem(User, itemID);
+    } catch (err) {
+        next(err);
+    }
+    res.status(200).send(updatedUsers)
+})
 
 
 

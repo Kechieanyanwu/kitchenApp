@@ -125,13 +125,17 @@ const deleteItem = async (modelName, itemID, t) => {
 
     await item.destroy({ transaction: t });
 
-    const items = await modelName.findAll(
-        {
-            raw: true,
-            attributes: { exclude: ["date_created", "date_updated"] },
-            transaction: t
-        });
-    return items; 
+    if (modelName.name != "User") { // not returning an array of users for privacy sake
+        const items = await modelName.findAll(
+            {
+                raw: true,
+                attributes: { exclude: ["date_created", "date_updated"] },
+                transaction: t
+            });
+        return items; 
+    } else {
+        return
+    }
 }
 
 const moveCheckedItem = async (itemID, t) => {

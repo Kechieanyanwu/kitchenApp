@@ -499,7 +499,7 @@ describe("KitchenApp testing", function () {
                  })
             })
         })
-        describe("Delete Item Endpoint Testing", ()=> {
+        describe("Delete Item Endpoint Testing", ()=> { // this can be refactored into a table driven test. 
             describe("Categories", () => {
                 it("successfully deletes an existing item", async () => {
                     const itemID = 4;
@@ -521,7 +521,6 @@ describe("KitchenApp testing", function () {
 
             describe("Checklist", () => {
                 it("successfully deletes an existing item", async () => {
-                    // --- WORKING HERE ----
                     const itemID = 4;
                     const assertDeletedItem = {
                         "id": 4,
@@ -544,7 +543,6 @@ describe("KitchenApp testing", function () {
 
             describe("Inventory", () => {
                 it("successfully deletes an existing item", async () => {
-                    // --- WORKING HERE ----
                     const itemID = 1;
                     const assertDeletedItem = {
                         "id": 1,
@@ -561,6 +559,20 @@ describe("KitchenApp testing", function () {
     
                     //assert that the item has been deleted from the returned array
                     assert.notDeepNestedInclude(response, assertDeletedItem);
+                })
+            })
+            
+            describe("User", () => {
+                it("successfully deletes an existing item", async () => {
+
+                    const itemID = 2;
+                    const expectedStatus = 200;
+    
+                    const response = await request(server).delete("/user/" + itemID);
+    
+                    //for this I want to just receive a confirmation, not an array of users
+                    assert.equal(response.status, expectedStatus);
+
                 })
             })
 
