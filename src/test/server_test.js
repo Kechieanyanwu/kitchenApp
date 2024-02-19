@@ -2,6 +2,7 @@
 
 // Test framework Imports
 const chai = require('chai');
+const chaiHttp = require("chai-http"); //included
 const assert = chai.assert;
 const request = require("supertest");
 const { server } = require("../server"); 
@@ -26,6 +27,7 @@ const { Inventory } = require('../../database/models/inventory');
 // Usage binding
 chai.use(require('chai-json-schema-ajv')); //for validating JSON schema
 chai.use(require('chai-as-promised')); //extends chai to handle promises 
+chai.use(chaiHttp); //for handling http responses
 
 
 // Beginning of tests
@@ -57,7 +59,8 @@ describe("KitchenApp testing", function () {
             for (const endpoint of endpoints) {
                 describe(`${endpoint.name}`, () => {
                     it("sends a 200 code on a good request" , async () => {
-                        const response = await request(server).get(endpoint.path);
+                        // const response = await request(server).get(endpoint.path); //notice that I have both supertest and chai. Can I just use chai?
+                        const response = await chai.request(server).get(endpoint.path); 
                         assert.equal(response.status, 200);
                     });
                     it("sends JSON response with correct schema", async () => {
