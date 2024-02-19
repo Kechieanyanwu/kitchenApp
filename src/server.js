@@ -16,17 +16,20 @@ const sessionStore = new SequelizeStore({
     db: sequelize,
 })
 
+sessionStore.sync( {force: false} ); 
+
 app.use(session({
     secret: 'apple-banana',
     store: sessionStore,
     resave: false,
     saveUninitialized: true,
+    // saveUninitialized: false,
     cookie: {
         maxAge: 1000 * 60 * 60 * 24
      }
 }));
 
-sessionStore.sync();
+
 
 app.use("/categories", categoriesRouter);
 app.use("/checklist", checklistRouter);

@@ -17,11 +17,15 @@ const { Inventory } = require('../../database/models/inventory');
 //get all checklist items
 checklistRouter.get("/", async (req, res, next) => {
     let checklistArray
+    console.log("IN CHECKLIST GET ALL"); //test
     try {
+        console.log("ABOUT TO GET ALL ITEMS"); //test
         checklistArray = await getAllItems(Checklist);
+        console.log("GOT EM");  //test
     } catch (err) {
         next(err) //validate that all errs have message and status 
     }
+    console.log("sending checklist array", checklistArray); //test
     res.status(200).json(checklistArray)
 });
 

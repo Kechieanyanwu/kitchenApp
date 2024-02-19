@@ -32,8 +32,12 @@ chai.use(chaiHttp); //for handling http responses
 
 // Beginning of tests
 describe("KitchenApp testing", function () {
+    console.log("creating an agent"); //test
+    let agent = chai.request.agent(server);
+
     after(() => {
-        server.close()
+        agent.close(); //testing for use of agent
+        // server.close()
     }); //this takes TOO LONG to close. Why? 
  
     describe("Endpoint testing", () => {
@@ -60,9 +64,13 @@ describe("KitchenApp testing", function () {
                 describe(`${endpoint.name}`, () => {
                     it("sends a 200 code on a good request" , async () => {
                         // const response = await request(server).get(endpoint.path); //notice that I have both supertest and chai. Can I just use chai?
-                        const response = await chai.request(server).get(endpoint.path); 
+                        // const response = await chai.request(server).get(endpoint.path); //commenting out to try agent
+                        const response = await agent.get(endpoint.path); 
+                        console.log(response.body);//test
+                        console.log(endpoint.name); //test
                         assert.jsonSchema(response.body, endpoint.schema);
                         assert.equal(response.status, 200);
+                    
                     });
                     // it("sends JSON response with correct schema", async () => { //combined into one test
                     //     const response = await request(server).get(endpoint.path);
@@ -143,7 +151,8 @@ describe("KitchenApp testing", function () {
                     endpoint.testCases.forEach((testCase) => {
                         const { description, itemID, expectedStatus, expectedResponse, expectedError, requestType } = testCase
                         it(description, async() => { //could probably refactor this so we have two separate table-driven tests for A and B. Possibly later 
-                            const response = await chai.request(server).get(endpoint.route + itemID); 
+                            const response = await agent.get(endpoint.route + itemID); 
+                            // const response = await chai.request(server).get(endpoint.route + itemID); 
                             // const response = await request(server).get(endpoint.route + itemID);
                             
                             //asserts status code is correct
@@ -312,7 +321,8 @@ describe("KitchenApp testing", function () {
                     endpoint.testCases.forEach((testCase) => {
                         const { description, requestBody, expectedStatus, expectedResponse, requestType, expectedError } = testCase
                         it(description, async() => {
-                            const response = await chai.request(server).post(endpoint.route).send(requestBody); 
+                            const response = await agent.post(endpoint.route).send(requestBody); 
+                            // const response = await chai.request(server).post(endpoint.route).send(requestBody); 
                             // const response = await request(server).post(endpoint.route).send(requestBody);
 
                             assert.equal(response.status, expectedStatus);
@@ -342,7 +352,8 @@ describe("KitchenApp testing", function () {
                     const expectedStatus = 200;
 
                     //make update
-                    const response = await chai.request(server).put("/categories/" + itemID).send(requestBody); 
+                    const response = await agent.put("/categories/" + itemID).send(requestBody); 
+                    // const response = await chai.request(server).put("/categories/" + itemID).send(requestBody); 
                     // const response = await request(server).put("/categories/" + itemID).send(requestBody)
 
                     //assert that the expectedResponse went through
@@ -358,7 +369,8 @@ describe("KitchenApp testing", function () {
                     const expectedStatus = 400;
 
                     //make update
-                    const response = await chai.request(server).put("/categories/" + itemID).send(requestBody); 
+                    const response = await agent.put("/categories/" + itemID).send(requestBody); 
+                    // const response = await chai.request(server).put("/categories/" + itemID).send(requestBody); 
                     // const response = await request(server).put("/categories/" + itemID).send(requestBody)
 
                     //assert that the request failed with the right error and status code
@@ -387,7 +399,8 @@ describe("KitchenApp testing", function () {
                     const expectedStatus = 200;
 
                     //make update
-                    const response = await chai.request(server).put("/inventory/" + itemID).send(requestBody)
+                    const response = await agent.put("/inventory/" + itemID).send(requestBody)
+                    // const response = await chai.request(server).put("/inventory/" + itemID).send(requestBody)
                     // const response = await request(server).put("/inventory/" + itemID).send(requestBody)
 
                     //assert that the expectedResponse went through
@@ -407,7 +420,8 @@ describe("KitchenApp testing", function () {
                     const expectedStatus = 400;
 
                     //make update
-                    const response = await chai.request(server).put("/inventory/" + itemID).send(requestBody)
+                    const response = await agent.put("/inventory/" + itemID).send(requestBody)
+                    // const response = await chai.request(server).put("/inventory/" + itemID).send(requestBody)
                     // const response = await request(server).put("/inventory/" + itemID).send(requestBody)
 
                     //assert that the request failed with the right error and status code
@@ -436,7 +450,8 @@ describe("KitchenApp testing", function () {
                     const expectedStatus = 200;
 
                     //make update
-                    const response = await chai.request(server).put("/checklist/" + itemID).send(requestBody)
+                    const response = await agent.put("/checklist/" + itemID).send(requestBody)
+                    // const response = await chai.request(server).put("/checklist/" + itemID).send(requestBody)
                     // const response = await request(server).put("/checklist/" + itemID).send(requestBody)
 
                     //assert that the expectedResponse went through
@@ -456,7 +471,7 @@ describe("KitchenApp testing", function () {
                     const expectedStatus = 400;
 
                     //make update
-                    const response = await chai.request(server).put("/checklist/" + itemID).send(requestBody)
+                    const response = await agent.put("/checklist/" + itemID).send(requestBody)
                     // const response = await request(server).put("/checklist/" + itemID).send(requestBody)
 
                     //assert that the request failed with the right error and status code
@@ -491,7 +506,8 @@ describe("KitchenApp testing", function () {
                     const expectedStatus = 200;
 
                     //make update
-                    const response = await chai.request(server).put("/checklist/" + itemID).send(requestBody)
+                    const response = await agent.put("/checklist/" + itemID).send(requestBody)
+                    // const response = await chai.request(server).put("/checklist/" + itemID).send(requestBody)
                     // const response = await request(server).put("/checklist/" + itemID).send(requestBody)
 
                     //assert that the item was added successfully and the response wasn't an updated item
@@ -518,7 +534,8 @@ describe("KitchenApp testing", function () {
                     };
                     const expectedStatus = 200;
     
-                    const response = await chai.request(server).delete("/categories/" + itemID);
+                    const response = await agent.delete("/categories/" + itemID);
+                    // const response = await chai.request(server).delete("/categories/" + itemID);
                     // const response = await request(server).delete("/categories/" + itemID);
     
                     assert.equal(response.status, expectedStatus);
@@ -542,7 +559,8 @@ describe("KitchenApp testing", function () {
                     
                     const expectedStatus = 200;
     
-                    const response = await chai.request(server).delete("/checklist/" + itemID);
+                    const response = await agent.delete("/checklist/" + itemID);
+                    // const response = await chai.request(server).delete("/checklist/" + itemID);
                     // const response = await request(server).delete("/checklist/" + itemID);
     
                     assert.equal(response.status, expectedStatus);
@@ -564,7 +582,8 @@ describe("KitchenApp testing", function () {
                     
                     const expectedStatus = 200;
     
-                    const response = await chai.request(server).delete("/inventory/" + itemID);
+                    const response = await agent.delete("/inventory/" + itemID);
+                    // const response = await chai.request(server).delete("/inventory/" + itemID);
                     // const response = await request(server).delete("/inventory/" + itemID);
     
                     assert.equal(response.status, expectedStatus);
@@ -580,11 +599,14 @@ describe("KitchenApp testing", function () {
                     const itemID = 2;
                     const expectedStatus = 200;
     
-                    const response = await chai.request(server).delete("/user/" + itemID);
+                    const response = await agent.delete("/user/" + itemID);
+                    // const response = await chai.request(server).delete("/user/" + itemID);
                     // const response = await request(server).delete("/user/" + itemID);
     
                     //for this I want to just receive a confirmation, not an array of users
                     assert.equal(response.status, expectedStatus);
+
+                    
 
                 })
             })
