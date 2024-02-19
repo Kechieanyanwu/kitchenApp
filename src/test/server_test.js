@@ -163,7 +163,7 @@ describe("KitchenApp testing", function () {
                 {
                 name: "Categories",
                 route: "/categories",
-                testCases: [
+                testCases: [ //test if I can take out user_id
                     {
                         requestType: "Good",
                         description: "responds with 201 to a valid request body",
@@ -308,14 +308,10 @@ describe("KitchenApp testing", function () {
                         const { description, requestBody, expectedStatus, expectedResponse, requestType, expectedError } = testCase
                         it(description, async() => {
                             const response = await request(server).post(endpoint.route).send(requestBody);
-                            // console.log(endpoint.name); //test
-                            // console.log(response); //test
+
                             assert.equal(response.status, expectedStatus);
 
                             if(requestType == "Good") {
-                                console.log(endpoint.name); //test
-                                console.log(response.body); //test
-                                console.log(expectedResponse); //test
                                 assert.deepEqual(response.body, expectedResponse);
                             }
 
@@ -561,7 +557,7 @@ describe("KitchenApp testing", function () {
                     assert.notDeepNestedInclude(response, assertDeletedItem);
                 })
             })
-            
+
             describe("User", () => {
                 it("successfully deletes an existing item", async () => {
 

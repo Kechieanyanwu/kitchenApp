@@ -12,21 +12,21 @@ const checklistRouter = require('./routes/checklistRouter');
 const inventoryRouter = require('./routes/inventoryRouter') ;
 const userRouter = require('./routes/userRouter');
 
-// const sessionStore = new SequelizeStore({
-//     db: sequelize,
-// })
+const sessionStore = new SequelizeStore({
+    db: sequelize,
+})
 
-// app.use(session({
-//     secret: 'apple-banana',
-//     store: sessionStore,
-//     resave: false,
-//     saveUninitialized: true,
-//     cookie: {
-//         maxAge: 1000 * 60 * 60 * 24
-//      }
-// }));
+app.use(session({
+    secret: 'apple-banana',
+    store: sessionStore,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24
+     }
+}));
 
-// sessionStore.sync();
+sessionStore.sync();
 
 app.use("/categories", categoriesRouter);
 app.use("/checklist", checklistRouter);
@@ -62,7 +62,7 @@ app.get('/register', (req, res, next) => { // dummy frontend
     
 });
 // todo
-app.post("/login", (req, res, next) => {})
+app.post("/login", (req, res, next) => {}) //take email and pwd
 
 // todo
 app.post("/register", (req, res, next) => {})

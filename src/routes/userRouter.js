@@ -11,6 +11,7 @@ const { User } = require('../../database/models/user');
 // user register
 userRouter.post("/register", jsonParser, validateNewUser, async (req, res, next) => {
 
+    console.log("IN HERE")
     const {hash, salt} = await hashPassword(req.password);
 
     const userObject = {
