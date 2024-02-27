@@ -32,6 +32,7 @@ userRouter.post("/register", jsonParser, validateNewUser, async (req, res, next)
 })
 
 // // user login / authentication
+//user will login and we will save userID to req.session? 
 
 // user delete 
 userRouter.delete("/:itemID", jsonParser, async (req, res, next) => {

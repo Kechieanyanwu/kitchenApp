@@ -36,7 +36,20 @@ app.use("/checklist", checklistRouter);
 app.use("/inventory", inventoryRouter);
 app.use("/user", userRouter);
 
-app.get("/", (req, res) => { // dummy frontend
+
+// todo
+app.post("/login", (req, res, next) => {}) //take email and pwd
+
+// todo
+app.post("/register", (req, res, next) => {})
+
+
+
+/*
+-----------------dummy frontend---------------------
+*/
+
+app.get("/", (req, res) => { // 
     // res.status(200).json("Hello World");
     res.send('<h1>Home</h1><p>Please <a href="/register">register</a></p>');
 });
@@ -64,11 +77,7 @@ app.get('/register', (req, res, next) => { // dummy frontend
     res.send(form);
     
 });
-// todo
-app.post("/login", (req, res, next) => {}) //take email and pwd
 
-// todo
-app.post("/register", (req, res, next) => {})
 
 /**
  * Lookup how to authenticate users on routes with Local Strategy
@@ -100,6 +109,10 @@ app.get('/login-failure', (req, res, next) => {
     res.send('You entered the wrong password.');
 });
 
+
+/*
+-----------------End of dummy frontend---------------------
+*/
 
 
 
