@@ -10,7 +10,7 @@ const { sequelize } = require('../database/models')
 
 const categoriesRouter = require('./routes/categoriesRouter'); 
 const checklistRouter = require('./routes/checklistRouter');
-const inventoryRouter = require('./routes/inventoryRouter') ;
+const inventoryRouter = require('./routes/inventoryRouter') ; 
 const userRouter = require('./routes/userRouter');
 
 const sessionStore = new SequelizeStore({
@@ -20,7 +20,7 @@ const sessionStore = new SequelizeStore({
 sessionStore.sync( {force: false} ); 
 
 app.use(session({
-    secret: 'apple-banana',
+    secret: process.env.SECRET,
     store: sessionStore,
     resave: false,
     // saveUninitialized: true,

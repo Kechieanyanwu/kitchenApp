@@ -1,14 +1,18 @@
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
-// TODO
-function comparePassword(plaintextPassword, hashedPassword) {
-    bcrypt.compare(plaintextPassword, hashedPassword, function (err, result) {
-        //check if result is true or false, do things based on it
-    })
+
+async function comparePassword(plaintextPassword, hashedPassword) {
+    let result
+    try {
+        result = await bcrypt.compare(plaintextPassword, hashedPassword)
+    } catch (err) {
+        throw err;
+    }
+    return result 
 }
 
-
+// TODO
 async function hashPassword(plaintextPassword) {
     console.log("in hash pwd"); //test
     const salt = await bcrypt.genSalt(saltRounds);

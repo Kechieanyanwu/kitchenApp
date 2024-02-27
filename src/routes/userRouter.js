@@ -7,7 +7,7 @@ const { validateNewUser } = require("../../utilities/model");
 const { hashPassword }  = require("../../utilities/password");
 const { addNewItem, deleteItem } = require('../controllers/controller');
 const { User } = require('../../database/models/user');
-const passport = require('passport')
+const passport = require('passport');
 
 
 // user register

@@ -3,22 +3,39 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const { sequelize } = require('../database/models');
-const { User } = require("../database/models/user")
+const { User } = require("../database/models/user");
+const { comparePassword } = require("../utilities/password");
 
 const customFields = {
     usernameField: "email",
     passwordField: "password"
 }
 
-const verifyCallback = (username, password, done) => {
+const verifyCallback = async (username, password, done) => {
+    let user;
+    let passwordIsEqual;
 
-    //find the specified user based on email
-        //if no user, return done(null, false)
-        //if any db error, return done(err) --- GENERAL CATCH
-    //get the hashedPassword for this user
-        //use comparePassword to compare the provided and hashed pwd
-            //if password matched, return done(null, user)
-            // else return done(null, false)
+    try {
+        user = await User.findOne({ where: { username: username }})
+    } catch (err) {
+        done(err); //how is this handled? Check documentation 
+    }
+
+    if (user == null) {
+        return done(null, false)
+    }
+
+    try {
+        passwordIsEqual = await comparePassword(passport, user.hashed_password)
+    } catch (err) {
+        done(err)
+    }
+
+    if (passwordIsEqual) {
+        return done(null, user)
+    }
+
+    return done(null, false)
 
 }
 
