@@ -23,19 +23,22 @@ const verifyCallback = async (username, password, done) => {
 
     if (!user) {
         return done(null, false)
-    }
-
-    try {
-        passwordIsEqual = await comparePassword(password, user.hashed_password)
-    } catch (err) {
-        done(err)
-    }
-
-    if (passwordIsEqual) {
-        return done(null, user)
     } else {
-        return done(null, false)
+
+        try {
+            passwordIsEqual = await comparePassword(password, user.hashed_password)
+        } catch (err) {
+            done(err)
+        }
+    
+        console.log(passwordIsEqual); //test
+        if (passwordIsEqual) {
+            return done(null, user)
+        } else {
+            return done(null, false)
+        }
     }
+
 }
 
 
@@ -48,10 +51,11 @@ passport.serializeUser((user, done) => {
 })
 
 passport.deserializeUser( async (userID, done) => {
+    let user;
     try {
-        await User.findByPk(userID);
+        user = await User.findByPk(userID);
     } catch (err) {
         done(err)
     }
      done(null, user);
-})
+}) 

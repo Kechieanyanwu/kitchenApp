@@ -30,6 +30,13 @@ app.use(session({
      }
 }));
 
+// require('./config/passport');
+
+
+// userRouter.use(passport.initialize());
+// userRouter.use(passport.session());
+
+//might need to move all session stuff here
 
 app.use("/categories", categoriesRouter);
 app.use("/checklist", checklistRouter);

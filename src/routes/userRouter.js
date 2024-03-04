@@ -9,7 +9,11 @@ const { addNewItem, deleteItem } = require('../controllers/controller');
 const { User } = require('../../database/models/user');
 const passport = require('passport');
 
-require('./config/passport');
+require('../../config/passport');
+
+
+userRouter.use(passport.initialize());
+userRouter.use(passport.session());
 
 // user register
 userRouter.post("/register", jsonParser, validateNewUser, async (req, res, next) => {
@@ -37,16 +41,12 @@ userRouter.post("/register", jsonParser, validateNewUser, async (req, res, next)
 // // user login / authentication
 //user will login and we will save userID to req.session? 
 userRouter.post("/login", jsonParser, passport.authenticate("local"), async (req, res, next) => {
-    // res.session.userID = 1
-    // res.status(200).send();
-
-        // to add a check for whether the email already exists so you can't have a duplicate user 
-            // or you could simply redirect to a signup page
-    // user posts their email and password
-    // local strategy is used to authenticate 
-        // if authenticated, attach the userID to the req session
-        // if not, send an unauthorised response and incorrect email / password 
-            //401 unauthorized http 
+    //will improve logic while building frontend 
+    if (req.user) {
+        res.status(200).send("<h1>Authenticated!</h1>");
+    } else {
+        res.status(401).send("<h1>Unauthorized</h1>");
+    }
 })
 
 // user delete 
