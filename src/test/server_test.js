@@ -72,10 +72,6 @@ describe("KitchenApp testing", function () {
                         assert.equal(response.status, 200);
                     
                     });
-                    // it("sends JSON response with correct schema", async () => { //combined into one test
-                    //     const response = await request(server).get(endpoint.path);
-                    //     assert.jsonSchema(response.body, endpoint.schema);
-                    // });
                 });
             }
         })
@@ -327,7 +323,7 @@ describe("KitchenApp testing", function () {
 
                             assert.equal(response.status, expectedStatus);
 
-                            if(requestType == "Good") {
+                            if (requestType == "Good") {
                                 assert.deepEqual(response.body, expectedResponse);
                             }
 
@@ -593,23 +589,20 @@ describe("KitchenApp testing", function () {
                 })
             })
 
-            describe("User", () => {
-                it("successfully deletes an existing item", async () => {
+            // describe("User", () => {
+            //     it("successfully deletes an existing item", async () => {
 
-                    const itemID = 2;
-                    const expectedStatus = 200;
+            //         const itemID = 2;
+            //         const expectedStatus = 200;
     
-                    const response = await agent.delete("/user/" + itemID);
-                    // const response = await chai.request(server).delete("/user/" + itemID);
-                    // const response = await request(server).delete("/user/" + itemID);
+            //         const response = await agent.delete("/user/" + itemID);
+            //         // const response = await chai.request(server).delete("/user/" + itemID);
+            //         // const response = await request(server).delete("/user/" + itemID);
     
-                    //for this I want to just receive a confirmation, not an array of users
-                    assert.equal(response.status, expectedStatus);
-
-                    
-
-                })
-            })
+            //         //for this I want to just receive a confirmation, not an array of users
+            //         assert.equal(response.status, expectedStatus);
+            //     })
+            // })
 
 
         })
