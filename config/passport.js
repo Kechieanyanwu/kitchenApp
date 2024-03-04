@@ -21,7 +21,7 @@ const verifyCallback = async (username, password, done) => {
         done(err); //how is this handled? Check documentation 
     }
 
-    if (user == null) {
+    if (!user) {
         return done(null, false)
     }
 
@@ -33,10 +33,9 @@ const verifyCallback = async (username, password, done) => {
 
     if (passwordIsEqual) {
         return done(null, user)
+    } else {
+        return done(null, false)
     }
-
-    return done(null, false)
-
 }
 
 
