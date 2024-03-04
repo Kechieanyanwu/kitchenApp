@@ -13,7 +13,7 @@ const passport = require('passport');
 // user register
 userRouter.post("/register", jsonParser, validateNewUser, async (req, res, next) => {
 
-    console.log("IN HERE")
+    // to add a check for whether the email already exists so you can't have a duplicate user 
     const {hash, salt} = await hashPassword(req.password);
 
     const userObject = {
@@ -35,6 +35,14 @@ userRouter.post("/register", jsonParser, validateNewUser, async (req, res, next)
 
 // // user login / authentication
 //user will login and we will save userID to req.session? 
+userRouter.post("/login", jsonParser, async (req, res, next) => {
+        // to add a check for whether the email already exists so you can't have a duplicate user 
+            // or you could simply redirect to a signup page
+    // user posts their email and password
+    // local strategy is used to authenticate 
+        // if authenticated, attach the userID to the req session
+        // if not, send an unauthorised response and incorrect email / password 
+})
 
 // user delete 
 userRouter.delete("/:itemID", jsonParser, async (req, res, next) => {

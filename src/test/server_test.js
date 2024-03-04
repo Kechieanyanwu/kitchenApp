@@ -41,6 +41,10 @@ describe("KitchenApp testing", function () {
     }); //this takes TOO LONG to close. Why? 
  
     describe("Endpoint testing", () => {
+        describe("Login testing", () => {
+
+        })
+        
         describe("GET Endpoint testing", () => { 
             const endpoints = [
                 {
@@ -589,22 +593,20 @@ describe("KitchenApp testing", function () {
                 })
             })
 
-            // describe("User", () => {
-            //     it("successfully deletes an existing item", async () => {
+            describe("User", () => {
+                it("successfully deletes an existing item", async () => {
 
-            //         const itemID = 2;
-            //         const expectedStatus = 200;
+                    const itemID = 2;
+                    const expectedStatus = 200;
     
-            //         const response = await agent.delete("/user/" + itemID);
-            //         // const response = await chai.request(server).delete("/user/" + itemID);
-            //         // const response = await request(server).delete("/user/" + itemID);
+                    const response = await agent.delete("/user/" + itemID);
+                    // const response = await chai.request(server).delete("/user/" + itemID);
+                    // const response = await request(server).delete("/user/" + itemID);
     
-            //         //for this I want to just receive a confirmation, not an array of users
-            //         assert.equal(response.status, expectedStatus);
-            //     })
-            // })
-
-
+                    //for this I want to just receive a confirmation, not an array of users
+                    assert.equal(response.status, expectedStatus);
+                })
+            })
         })
 
     })
