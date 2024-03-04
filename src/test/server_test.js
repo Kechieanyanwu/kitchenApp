@@ -42,9 +42,28 @@ describe("KitchenApp testing", function () {
  
     describe("Endpoint testing", () => {
         describe("Login testing", () => {
+            it("attaches an authenticated userID to the session", async () => {
+                //setup
+                // const userDetails = {
+                //     email: "seeddummyemail@pivotech.io",
+                //     password: "johnnytest"
+                // }
 
+                // const userID = 1;
+                // // const userIDCookie = {userID: 1};
+                
+                // //login
+                // const response = await agent.post("/user/login").send(userDetails);
+
+                // //assert that it includes a cookie with the userID
+                // console.log(response.body); //test
+                
+                // // assert.deepNestedInclude(response.body, userIDCookie)
+                // assert.equal(response.session, userID)
+                // assert.equal(response.status, 200)
+            })
         })
-        
+
         describe("GET Endpoint testing", () => { 
             const endpoints = [
                 {

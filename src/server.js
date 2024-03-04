@@ -36,6 +36,10 @@ app.use("/checklist", checklistRouter);
 app.use("/inventory", inventoryRouter);
 app.use("/user", userRouter);
 
+app.get("/", (req, res, next) => {
+    res.status(200).send("<h1>Hello World</h1>");
+})
+
 
 
 

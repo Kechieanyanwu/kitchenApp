@@ -36,6 +36,9 @@ userRouter.post("/register", jsonParser, validateNewUser, async (req, res, next)
 // // user login / authentication
 //user will login and we will save userID to req.session? 
 userRouter.post("/login", jsonParser, async (req, res, next) => {
+    // res.session.userID = 1
+    // res.status(200).send();
+
         // to add a check for whether the email already exists so you can't have a duplicate user 
             // or you could simply redirect to a signup page
     // user posts their email and password

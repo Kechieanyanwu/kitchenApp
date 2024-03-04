@@ -16,7 +16,7 @@ const verifyCallback = async (username, password, done) => {
     let passwordIsEqual;
 
     try {
-        user = await User.findOne({ where: { username: username }})
+        user = await User.findOne({ where: { email: username }})
     } catch (err) {
         done(err); //how is this handled? Check documentation 
     }
@@ -26,7 +26,7 @@ const verifyCallback = async (username, password, done) => {
     }
 
     try {
-        passwordIsEqual = await comparePassword(passport, user.hashed_password)
+        passwordIsEqual = await comparePassword(password, user.hashed_password)
     } catch (err) {
         done(err)
     }
