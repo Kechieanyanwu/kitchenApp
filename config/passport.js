@@ -41,5 +41,17 @@ const verifyCallback = async (username, password, done) => {
 
 const strategy = new LocalStrategy(customFields, verifyCallback);
 
+passport.use(strategy);
 
-//using olyve, should have a validate function 
+passport.serializeUser((user, done) => {
+    done(null, user.id);
+})
+
+passport.deserializeUser( async (userID, done) => {
+    try {
+        await User.findByPk(userID);
+    } catch (err) {
+        done(err)
+    }
+     done(null, user);
+})

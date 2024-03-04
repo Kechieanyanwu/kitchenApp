@@ -9,6 +9,7 @@ const { addNewItem, deleteItem } = require('../controllers/controller');
 const { User } = require('../../database/models/user');
 const passport = require('passport');
 
+require('./config/passport');
 
 // user register
 userRouter.post("/register", jsonParser, validateNewUser, async (req, res, next) => {
@@ -35,7 +36,7 @@ userRouter.post("/register", jsonParser, validateNewUser, async (req, res, next)
 
 // // user login / authentication
 //user will login and we will save userID to req.session? 
-userRouter.post("/login", jsonParser, async (req, res, next) => {
+userRouter.post("/login", jsonParser, passport.authenticate("local"), async (req, res, next) => {
     // res.session.userID = 1
     // res.status(200).send();
 
@@ -45,6 +46,7 @@ userRouter.post("/login", jsonParser, async (req, res, next) => {
     // local strategy is used to authenticate 
         // if authenticated, attach the userID to the req session
         // if not, send an unauthorised response and incorrect email / password 
+            //401 unauthorized http 
 })
 
 // user delete 
