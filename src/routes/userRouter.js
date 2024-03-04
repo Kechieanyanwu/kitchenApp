@@ -7,13 +7,18 @@ const { validateNewUser } = require("../../utilities/model");
 const { hashPassword }  = require("../../utilities/password");
 const { addNewItem, deleteItem } = require('../controllers/controller');
 const { User } = require('../../database/models/user');
-const passport = require('passport')
+const passport = require('passport');
 
+require('../../config/passport');
+
+
+userRouter.use(passport.initialize());
+userRouter.use(passport.session());
 
 // user register
 userRouter.post("/register", jsonParser, validateNewUser, async (req, res, next) => {
 
-    console.log("IN HERE")
+    // to add a check for whether the email already exists so you can't have a duplicate user 
     const {hash, salt} = await hashPassword(req.password);
 
     const userObject = {
@@ -35,6 +40,14 @@ userRouter.post("/register", jsonParser, validateNewUser, async (req, res, next)
 
 // // user login / authentication
 //user will login and we will save userID to req.session? 
+userRouter.post("/login", jsonParser, passport.authenticate("local"), async (req, res, next) => {
+    //will improve logic while building frontend 
+    if (req.user) {
+        res.status(200).send("<h1>Authenticated!</h1>");
+    } else {
+        res.status(401).send("<h1>Unauthorized</h1>");
+    }
+})
 
 // user delete 
 userRouter.delete("/:itemID", jsonParser, async (req, res, next) => {

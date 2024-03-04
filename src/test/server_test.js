@@ -41,6 +41,29 @@ describe("KitchenApp testing", function () {
     }); //this takes TOO LONG to close. Why? 
  
     describe("Endpoint testing", () => {
+        describe("Login testing", () => {
+            it("attaches an authenticated userID to the session", async () => {
+                //setup
+                // const userDetails = {
+                //     email: "seeddummyemail@pivotech.io",
+                //     password: "johnnytest"
+                // }
+
+                // const userID = 1;
+                // // const userIDCookie = {userID: 1};
+                
+                // //login
+                // const response = await agent.post("/user/login").send(userDetails);
+
+                // //assert that it includes a cookie with the userID
+                // console.log(response.body); //test
+                
+                // // assert.deepNestedInclude(response.body, userIDCookie)
+                // assert.equal(response.session, userID)
+                // assert.equal(response.status, 200)
+            })
+        })
+
         describe("GET Endpoint testing", () => { 
             const endpoints = [
                 {
@@ -72,10 +95,6 @@ describe("KitchenApp testing", function () {
                         assert.equal(response.status, 200);
                     
                     });
-                    // it("sends JSON response with correct schema", async () => { //combined into one test
-                    //     const response = await request(server).get(endpoint.path);
-                    //     assert.jsonSchema(response.body, endpoint.schema);
-                    // });
                 });
             }
         })
@@ -327,7 +346,7 @@ describe("KitchenApp testing", function () {
 
                             assert.equal(response.status, expectedStatus);
 
-                            if(requestType == "Good") {
+                            if (requestType == "Good") {
                                 assert.deepEqual(response.body, expectedResponse);
                             }
 
@@ -605,13 +624,8 @@ describe("KitchenApp testing", function () {
     
                     //for this I want to just receive a confirmation, not an array of users
                     assert.equal(response.status, expectedStatus);
-
-                    
-
                 })
             })
-
-
         })
 
     })
