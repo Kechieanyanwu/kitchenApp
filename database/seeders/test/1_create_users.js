@@ -19,8 +19,8 @@ module.exports = {
           {
             username: "Test Seed Dummy",
             email: "seeddummyemail@pivotech.io",
-            hashed_password: "seeddummy",
-            salt: "dummysalt",
+            hashed_password: "$2b$10$PkR.KEgVHCwbcorgSraSIeEEZoGQCrPbjdyr5DxAWIBNXELLjMLxG",
+            salt: "$2b$10$PkR.KEgVHCwbcorgSraSIe",
             date_created: "2023-11-08T14:14:01.390Z",
             date_updated: "2023-11-08T14:14:01.390Z",
           }
