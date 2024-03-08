@@ -1,16 +1,33 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
 import logo from './logo.svg';
 import './App.css';
+import { Checklist } from './pages/Checklist';
+import { Login } from './pages/Login';
 
 function App() {
-  // by default its a GET
-  const checklist = fetch("http://localhost:4002/checklist/" )
-  console.log(checklist)
-  return (
-    //fetch data and console log it 
-   <div>
 
-   </div> 
+
+
+  return (
+
+    //fetch data and console log it 
+    <Router>
+      <Switch>
+        <Route path='/checklist'>
+          <Checklist />
+        </Route>
+        <Route path="/">
+          <Login />
+        </Route>
+        {/* <Route></Route> */}
+      </Switch>
+    </Router>
   );
 }
 
