@@ -39,10 +39,9 @@ userRouter.post("/register", jsonParser, validateNewUser, async (req, res, next)
 })
 
 // // user login / authentication
-//user will login and we will save use rID to req.session? 
+//user will login and we will save userID to req.session? 
 userRouter.post("/login", jsonParser, passport.authenticate("local"), async (req, res, next) => {
     //will improve logic while building frontend 
-    
     if (req.user) {
         res.status(200).send("<h1>Authenticated!</h1>");
     } else {
