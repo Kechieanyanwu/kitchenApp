@@ -12,8 +12,8 @@ const passport = require('passport');
 require('../../config/passport');
 
 
-userRouter.use(passport.initialize());
-userRouter.use(passport.session());
+userRouter.use(passport.initialize()); //to know how this is working
+userRouter.use(passport.session()); //to know how this is working
 
 // user register
 userRouter.post("/register", jsonParser, validateNewUser, async (req, res, next) => {
@@ -42,6 +42,8 @@ userRouter.post("/register", jsonParser, validateNewUser, async (req, res, next)
 //user will login and we will save userID to req.session? 
 userRouter.post("/login", jsonParser, passport.authenticate("local"), async (req, res, next) => {
     //will improve logic while building frontend 
+    // can improve logic to redirect to the home page which will have the checklist, inventory etc
+        //failure redirects to this same page, maybe with a failure bubble
     if (req.user) {
         res.status(200).send("<h1>Authenticated!</h1>");
     } else {
