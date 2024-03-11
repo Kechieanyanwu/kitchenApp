@@ -2,18 +2,19 @@ const express = require('express');
 const userRouter = express.Router();
 const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json();
-const urlEncodedParser = bodyParser.urlencoded( { extended: false } ); //used only in specific routes
 const { validateNewUser } = require("../../utilities/model");
 const { hashPassword }  = require("../../utilities/password");
 const { addNewItem, deleteItem } = require('../controllers/controller');
 const { User } = require('../../database/models/user');
-const passport = require('passport');
+// const passport = require('passport');
 
-require('../../config/passport');
+// require('../../config/passport');
 
 
-userRouter.use(passport.initialize()); //to know how this is working
-userRouter.use(passport.session()); //to know how this is working
+// userRouter.use(passport.initialize()); //to know how this is working
+// userRouter.use(passport.session()); //to know how this is working
+
+
 
 // user register
 userRouter.post("/register", jsonParser, validateNewUser, async (req, res, next) => {
@@ -40,16 +41,16 @@ userRouter.post("/register", jsonParser, validateNewUser, async (req, res, next)
 
 // // user login / authentication
 //user will login and we will save userID to req.session? 
-userRouter.post("/login", jsonParser, passport.authenticate("local"), async (req, res, next) => {
-    //will improve logic while building frontend 
-    // can improve logic to redirect to the home page which will have the checklist, inventory etc
-        //failure redirects to this same page, maybe with a failure bubble
-    if (req.user) {
-        res.status(200).send("<h1>Authenticated!</h1>");
-    } else {
-        res.status(401).send("<h1>Unauthorized</h1>");
-    }
-})
+// userRouter.post("/login", jsonParser, passport.authenticate("local"), async (req, res, next) => {
+//     //will improve logic while building frontend 
+//     // can improve logic to redirect to the home page which will have the checklist, inventory etc
+//         //failure redirects to this same page, maybe with a failure bubble
+//     if (req.user) {
+//         res.status(200).send("<h1>Authenticated!</h1>");
+//     } else {
+//         res.status(401).send("<h1>Unauthorized</h1>");
+//     }
+// })
 
 // user delete 
 userRouter.delete("/:itemID", jsonParser, async (req, res, next) => {
