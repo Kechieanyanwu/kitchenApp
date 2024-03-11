@@ -40,19 +40,18 @@ app.use(session({
 app.use(passport.initialize()); //to know how this is working
 app.use(passport.session()); //to know how this is working
 
+
+app.use((req, res, next) => {
+    console.log(req.session);
+    console.log(req.user);
+    next();
+})
+
+
 app.use("/categories", categoriesRouter);
 app.use("/checklist", checklistRouter);
 app.use("/inventory", inventoryRouter);
 app.use("/user", userRouter);
-
-
-
-// app.use((req, res, next) => {
-//     console.log(req.session);
-//     console.log(req.user);
-//     next();
-// })
-
 
 app.get("/", (req, res, next) => {
     res.status(200).send("<h1>Hello World</h1>");
