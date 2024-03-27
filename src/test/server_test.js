@@ -470,7 +470,6 @@ describe("KitchenApp testing", function () {
 
                     //make update
                     const response = await agent.put("/checklist/" + itemID).send(requestBody)
-                    // const response = await request(server).put("/checklist/" + itemID).send(requestBody)
 
                     //assert that the request failed with the right error and status code
                     assert.equal(response.status, expectedStatus)
@@ -505,8 +504,6 @@ describe("KitchenApp testing", function () {
 
                     //make update
                     const response = await agent.put("/checklist/" + itemID).send(requestBody)
-                    // const response = await chai.request(server).put("/checklist/" + itemID).send(requestBody)
-                    // const response = await request(server).put("/checklist/" + itemID).send(requestBody)
 
                     //assert that the item was added successfully and the response wasn't an updated item
                     assert.equal(response.status, expectedStatus)
@@ -533,8 +530,6 @@ describe("KitchenApp testing", function () {
                     const expectedStatus = 200;
     
                     const response = await agent.delete("/categories/" + itemID);
-                    // const response = await chai.request(server).delete("/categories/" + itemID);
-                    // const response = await request(server).delete("/categories/" + itemID);
     
                     assert.equal(response.status, expectedStatus);
     
@@ -542,7 +537,6 @@ describe("KitchenApp testing", function () {
                     assert.notDeepNestedInclude(response, assertDeletedItem); //double check this
                 })
             })
-            //not manually asserting that a deleted category deletes all checklist and inventory entries as that lies with SQL. 
 
             describe("Checklist", () => {
                 it("successfully deletes an existing item", async () => {
@@ -558,12 +552,9 @@ describe("KitchenApp testing", function () {
                     const expectedStatus = 200;
     
                     const response = await agent.delete("/checklist/" + itemID);
-                    // const response = await chai.request(server).delete("/checklist/" + itemID);
-                    // const response = await request(server).delete("/checklist/" + itemID);
     
                     assert.equal(response.status, expectedStatus);
     
-                    //assert that the item has been deleted from the returned array
                     assert.notDeepNestedInclude(response, assertDeletedItem);
                 })
             })
@@ -581,27 +572,20 @@ describe("KitchenApp testing", function () {
                     const expectedStatus = 200;
     
                     const response = await agent.delete("/inventory/" + itemID);
-                    // const response = await chai.request(server).delete("/inventory/" + itemID);
-                    // const response = await request(server).delete("/inventory/" + itemID);
-    
+
                     assert.equal(response.status, expectedStatus);
     
-                    //assert that the item has been deleted from the returned array
                     assert.notDeepNestedInclude(response, assertDeletedItem);
                 })
             })
 
             describe("User", () => {
                 it("successfully deletes an existing item", async () => {
-
                     const itemID = 2;
                     const expectedStatus = 200;
     
                     const response = await agent.delete("/user/" + itemID);
-                    // const response = await chai.request(server).delete("/user/" + itemID);
-                    // const response = await request(server).delete("/user/" + itemID);
     
-                    //for this I want to just receive a confirmation, not an array of users
                     assert.equal(response.status, expectedStatus);
                 })
             })
