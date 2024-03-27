@@ -18,7 +18,7 @@ const { Inventory } = require('../../database/models/inventory');
 checklistRouter.get("/", async (req, res, next) => {
     let checklistArray;
     try {
-        checklistArray = await getAllItems(Checklist);
+        checklistArray = await getAllItems(Checklist); //based on ID
     } catch (err) {
         next(err) //validate that all errs have message and status 
     }

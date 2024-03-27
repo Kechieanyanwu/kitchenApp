@@ -30,8 +30,6 @@ const verifyCallback = async (username, password, done) => {
         } catch (err) {
             done(err)
         }
-    
-        console.log(passwordIsEqual); //test
         if (passwordIsEqual) {
             return done(null, user)
         } else {
