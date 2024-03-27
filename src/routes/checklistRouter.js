@@ -16,16 +16,12 @@ const { Inventory } = require('../../database/models/inventory');
 
 //get all checklist items
 checklistRouter.get("/", async (req, res, next) => {
-    let checklistArray
-    console.log("IN CHECKLIST GET ALL"); //test
+    let checklistArray;
     try {
-        console.log("ABOUT TO GET ALL ITEMS"); //test
         checklistArray = await getAllItems(Checklist);
-        console.log("GOT EM");  //test
     } catch (err) {
         next(err) //validate that all errs have message and status 
     }
-    console.log("sending checklist array", checklistArray); //test
     res.status(200).json(checklistArray)
 });
 
@@ -34,7 +30,7 @@ checklistRouter.get("/:itemID", async (req, res, next) => {
     const itemID = req.params.itemID;
     let item; 
     try {
-        item = await getItem(Checklist, itemID) //testing sending no transaction T
+        item = await getItem(Checklist, itemID)
     } catch (err) {
         err.status = 400;
         next(err);
@@ -44,15 +40,11 @@ checklistRouter.get("/:itemID", async (req, res, next) => {
 
 //add new checklist item
 checklistRouter.post("/", jsonParser, validateNewGroceryItem, async (req, res, next) => {
-    console.log("post entry"); //test
     let addedItem;
-    // const newItem = {item_name: req.item_name, quantity: req.quantity, category_id: req.category_id};
     const newItem = {item_name: req.item_name, quantity: req.quantity, category_id: req.category_id, user_id: req.user_id};
     try {
-        console.log("trying added item"); //test
         addedItem = await addNewItem(Checklist, newItem);
     } catch (err) {
-        console.log("error checklist post"); //test
         err.status = 400;
         next(err);
     }
@@ -86,7 +78,6 @@ checklistRouter.put("/:itemID", jsonParser, async (req, res, next) => {
 })
 
 checklistRouter.delete("/:itemID", jsonParser, async (req, res, next) => {
-    // --- WORKING HERE ----
 
     const itemID = req.params.itemID;
     let updatedChecklist;
