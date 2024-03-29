@@ -7,29 +7,35 @@ import {
 } from "react-router-dom";
 import logo from './logo.svg';
 import './App.css';
-import { Checklist } from './pages/Checklist';
+import Checklist from './pages/Checklist';
 import { Login } from './pages/Login';
+import NavBar from './components/NavBar';
 
 function App() {
 
-
-
   return (
+    <>
+      <Checklist />
+      < NavBar />
+    </>
+  )
 
-    //fetch data and console log it 
-    //test
-    <Router>
-      <Switch>
-        <Route path='/checklist'>
-          <Checklist />
-        </Route>
-        <Route path="/">
-          <Login />
-        </Route>
-        {/* <Route></Route> */}
-      </Switch>
-    </Router>
-  );
+  // return (
+
+  //   //fetch data and console log it 
+  //   //test
+  //   <Router>
+  //     <Switch>
+  //       <Route path='/checklist'>
+  //         <Checklist />
+  //       </Route>
+  //       <Route path="/">
+  //         <Login />
+  //       </Route>
+  //       {/* <Route></Route> */}
+  //     </Switch>
+  //   </Router>
+  // );
 }
 
 export default App;
