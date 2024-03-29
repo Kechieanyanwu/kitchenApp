@@ -61,6 +61,9 @@ app.get("/", (req, res, next) => {
 
 app.post("/login", jsonParser, passport.authenticate("local"), async (req, res, next) => {
     if (req.user) {
+        //to add header 
+        console.log(req.user);
+        // console.log(res);
         res.status(200).send("<h1>Authenticated!</h1>");
     } else {
         res.status(401).send("<h1>Unauthorized</h1>");
