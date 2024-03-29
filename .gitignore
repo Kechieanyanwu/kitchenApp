@@ -1,6 +1,0 @@
-node_modules/
-database/config/config.js/
-utilities/utilities.js/
-.env
-.vscode/
-frontend/node_modules/
