@@ -19,3 +19,9 @@ export interface TableHeaderProps {
   title: string;
   subtitle: string;
 }
+
+export interface ItemCardProps {
+  itemName: string;
+  subtitle: string;
+  itemNumber: number;
+}

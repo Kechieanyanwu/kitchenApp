@@ -1,27 +1,13 @@
-function HomeHeader() {
+import HomeHeader from "../components/HomeHeader";
+import Col from 'react-bootstrap/Col';
+import { ItemCardProps } from "../utils/interfaces";
+function ItemCard({ itemName, subtitle, itemNumber }: ItemCardProps) {
     return (
-        <div className="checklist-header">
-            <table>
-                <tbody>
-                    <tr>
-                        <BackButton />
-                        <td>{title}</td>
-                    </tr>
-                    <tr>
-                        <td colSpan={2}>{subtitle}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <>
+            <h1>Checklist</h1>
+        </>
     )
-    // return (
-    //     <>
-    //         <h1>Welcome!</h1>
-    //         <p>Adding anything to the list today?</p>
-    //     </>
-    // )
 }
-
 
 function Home() {
     return (
