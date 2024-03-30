@@ -1,16 +1,20 @@
+import { useState } from 'react';
+// import Button from 'react-bootstrap/button';
+import BackButton from '../components/BackButton';
+import AddItemButton from '../components/AddItemButton';
+import Form from 'react-bootstrap/Form';
+import { ChecklistObject } from '../utils/interfaces';
+import TableHeader from '../components/TableHeader';
 
-function BackButton() {
+
+function CheckedButton(handleCheck: any) {
+  //will add onClick, run the function 
+  // onCheck, I want it to send to the backend that it has been purchased
   return (
-    <div className="back-button">
-      <td><button>{"<-"}</button></td>
-    </div>
+    <td><Form.Check aria-label='option 1' onChange={handleCheck} /></td>
   )
 }
 
-function CheckedButton() {
-  //will add onClick, run the function 
-  return <td><input type="checkbox"></input></td>
-}
 
 function ChecklistHeader() {
   return (
@@ -30,38 +34,36 @@ function ChecklistHeader() {
   )
 }
 
-function AddItemButton() {
-  return (
-    <div className="add-item-button">
-      <button>+ Add Item</button>
-    </div>
-  )
-}
 
-const checklistItems: Array<ChecklistObject> = [
-  { id: 1, item_name: "Dishwashing tabs", quantity: 10, purchased: false, category_id: 3, user_id: 1 },
-  { id: 2, item_name: "Water bottle", quantity: 13, purchased: false, category_id: 3, user_id: 1 },
-  { id: 3, item_name: "Ipad", quantity: 1, purchased: false, category_id: 3, user_id: 1 },
-  { id: 4, item_name: "Deloitte", quantity: 3, purchased: false, category_id: 3, user_id: 1 },
-  { id: 5, item_name: "Detergent", quantity: 30, purchased: false, category_id: 3, user_id: 1 }]
+function ChecklistTable() { //on first render, do I get this passed as a prop? 
 
+  //will run function to get checklist items, then will set the state
+  const checklistItems: Array<ChecklistObject> = [
+    { id: 1, item_name: "Dishwashing tabs", quantity: 10, purchased: false, category_id: 3, user_id: 1 },
+    { id: 2, item_name: "Water bottle", quantity: 13, purchased: false, category_id: 3, user_id: 1 },
+    { id: 3, item_name: "Ipad", quantity: 1, purchased: false, category_id: 3, user_id: 1 },
+    { id: 4, item_name: "Deloitte", quantity: 3, purchased: false, category_id: 3, user_id: 1 },
+    { id: 5, item_name: "Detergent", quantity: 30, purchased: false, category_id: 3, user_id: 1 }]
 
-function generateChecklist(items: Array<ChecklistObject>) {
-  return items.map((item) => {
+  const [items, setItems] = useState(checklistItems)
+
+  const checkItem = () => {
+    //checks off an item in the backend
+    // then will call setItems with the updated checklist 
+    // do I want to just send to the backend, and just remove the item from the array on the frontend? 
+    // like just delete it from the array, instead of waiting for data from the backend 
+  }
+
+  const tableItems = items.map((item) => {
     return (
       <tr className="checklist-item" key={item.id}>
         <td>{item.item_name}</td>
         <td>{item.quantity}</td>
         <td>{item.category_id}</td>
-        <CheckedButton />
+        <CheckedButton handleCheck={checkItem} />
       </tr>
     )
   })
-}
-
-function ChecklistTable(props: ChecklistTableProps) {
-
-  const tableItems = generateChecklist(props.items);
 
   return (
     <table>
@@ -83,25 +85,15 @@ function ChecklistTable(props: ChecklistTableProps) {
 export default function Checklist() {
   return (
     <>
-      <ChecklistHeader />
-      <ChecklistTable items={checklistItems} />
+      {/* <ChecklistHeader /> */}
+      <TableHeader title={"Checklist"} subtitle={"Create a Checklist so you don't miss a thing!"} />
+      <ChecklistTable />
       <AddItemButton />
     </>
   )
 }
 
-interface ChecklistObject {
-  id: number;
-  item_name: string;
-  quantity: number;
-  purchased: boolean;
-  category_id: number;
-  user_id: number;
-}
 
-interface ChecklistTableProps { //to update this as I add things in 
-  items: ChecklistObject[];
-}
 
 // export const Checklist = () => {
 //   //checklist will do the fetching and return the laoding state
