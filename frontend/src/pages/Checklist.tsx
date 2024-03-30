@@ -1,7 +1,10 @@
-import React from "react";
 
 function BackButton() {
-  return <td><button>{"<-"}</button></td>
+  return (
+    <div className="back-button">
+      <td><button>{"<-"}</button></td>
+    </div>
+  )
 }
 
 function CheckedButton() {
@@ -11,37 +14,42 @@ function CheckedButton() {
 
 function ChecklistHeader() {
   return (
-    <table>
-      <tbody>
-        <tr>
-          <BackButton />
-          <td>Checklist</td>
-        </tr>
-        <tr>
-          <td colSpan={2}>Create a Checklist so you don't miss a thing!</td>
-        </tr>
-      </tbody>
-    </table>
+    <div className="checklist-header">
+      <table>
+        <tbody>
+          <tr>
+            <BackButton />
+            <td>Checklist</td>
+          </tr>
+          <tr>
+            <td colSpan={2}>Create a Checklist so you don't miss a thing!</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   )
 }
 
 function AddItemButton() {
-  return <button>+ Add Item</button>
+  return (
+    <div className="add-item-button">
+      <button>+ Add Item</button>
+    </div>
+  )
 }
 
-function ChecklistTable() {
-  const items = [
-    { id: 1, item_name: "Dishwashing tabs", quantity: 10, purchased: false, category_id: 3, user_id: 1 },
-    { id: 2, item_name: "Water bottle", quantity: 13, purchased: false, category_id: 3, user_id: 1 },
-    { id: 3, item_name: "Ipad", quantity: 1, purchased: false, category_id: 3, user_id: 1 },
-    { id: 4, item_name: "Deloitte", quantity: 3, purchased: false, category_id: 3, user_id: 1 },
-    { id: 5, item_name: "Detergent", quantity: 30, purchased: false, category_id: 3, user_id: 1 }]
-  //get an array of checklist items from backend
-  //map to a product row 
+const checklistItems: Array<ChecklistObject> = [
+  { id: 1, item_name: "Dishwashing tabs", quantity: 10, purchased: false, category_id: 3, user_id: 1 },
+  { id: 2, item_name: "Water bottle", quantity: 13, purchased: false, category_id: 3, user_id: 1 },
+  { id: 3, item_name: "Ipad", quantity: 1, purchased: false, category_id: 3, user_id: 1 },
+  { id: 4, item_name: "Deloitte", quantity: 3, purchased: false, category_id: 3, user_id: 1 },
+  { id: 5, item_name: "Detergent", quantity: 30, purchased: false, category_id: 3, user_id: 1 }]
 
-  const tableItems = items.map((item) => {
+
+function generateChecklist(items: Array<ChecklistObject>) {
+  return items.map((item) => {
     return (
-      <tr key={item.id}>
+      <tr className="checklist-item" key={item.id}>
         <td>{item.item_name}</td>
         <td>{item.quantity}</td>
         <td>{item.category_id}</td>
@@ -49,6 +57,12 @@ function ChecklistTable() {
       </tr>
     )
   })
+}
+
+function ChecklistTable(props: ChecklistTableProps) {
+
+  const tableItems = generateChecklist(props.items);
+
   return (
     <table>
       <thead>
@@ -70,13 +84,24 @@ export default function Checklist() {
   return (
     <>
       <ChecklistHeader />
-      <ChecklistTable />
+      <ChecklistTable items={checklistItems} />
       <AddItemButton />
     </>
   )
 }
 
+interface ChecklistObject {
+  id: number;
+  item_name: string;
+  quantity: number;
+  purchased: boolean;
+  category_id: number;
+  user_id: number;
+}
 
+interface ChecklistTableProps { //to update this as I add things in 
+  items: ChecklistObject[];
+}
 
 // export const Checklist = () => {
 //   //checklist will do the fetching and return the laoding state
