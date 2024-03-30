@@ -1,26 +1,7 @@
-import BackButton from '../components/BackButton';
 import AddItemButton from '../components/AddItemButton';
-import { useState } from 'react';
 import { InventoryObject } from '../utils/interfaces';
+import TableHeader from '../components/TableHeader';
 
-
-function InventoryHeader() {
-    return (
-        <div className="inventory-header">
-            <table>
-                <tbody>
-                    <tr>
-                        <BackButton />
-                        <td>Inventory</td>
-                    </tr>
-                    <tr>
-                        <td colSpan={2}>Manage your Inventory!</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    )
-}
 
 function InventoryTable() { //on first render, do I get this passed as a prop? 
 
@@ -32,16 +13,8 @@ function InventoryTable() { //on first render, do I get this passed as a prop?
         { id: 4, item_name: "Deloitte", quantity: 3, category_id: 3, user_id: 1 },
         { id: 5, item_name: "Detergent", quantity: 30, category_id: 3, user_id: 1 }]
 
-    const [items, setItems] = useState(inventoryItems)
 
-    const checkItem = () => {
-        //checks off an item in the backend
-        // then will call setItems with the updated checklist 
-        // do I want to just send to the backend, and just remove the item from the array on the frontend? 
-        // like just delete it from the array, instead of waiting for data from the backend 
-    }
-
-    const tableItems = items.map((item) => {
+    const tableItems = inventoryItems.map((item) => {
         return (
             <tr className="inventory-item" key={item.id}>
                 <td>{item.item_name}</td>
@@ -58,7 +31,6 @@ function InventoryTable() { //on first render, do I get this passed as a prop?
                     <th>Item</th>
                     <th>Quantity</th>
                     <th>Category</th>
-                    <th>Checked?</th>
                 </tr>
             </thead>
             <tbody>
@@ -71,7 +43,7 @@ function InventoryTable() { //on first render, do I get this passed as a prop?
 export default function Inventory() {
     return (
         <>
-            <InventoryHeader />
+            <TableHeader title={"Inventory"} subtitle={"Manage your Inventory!"} />
             <InventoryTable />
             <AddItemButton />
         </>

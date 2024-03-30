@@ -1,6 +1,4 @@
 import { useState } from 'react';
-// import Button from 'react-bootstrap/button';
-import BackButton from '../components/BackButton';
 import AddItemButton from '../components/AddItemButton';
 import Form from 'react-bootstrap/Form';
 import { ChecklistObject } from '../utils/interfaces';
@@ -12,25 +10,6 @@ function CheckedButton(handleCheck: any) {
   // onCheck, I want it to send to the backend that it has been purchased
   return (
     <td><Form.Check aria-label='option 1' onChange={handleCheck} /></td>
-  )
-}
-
-
-function ChecklistHeader() {
-  return (
-    <div className="checklist-header">
-      <table>
-        <tbody>
-          <tr>
-            <BackButton />
-            <td>Checklist</td>
-          </tr>
-          <tr>
-            <td colSpan={2}>Create a Checklist so you don't miss a thing!</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
   )
 }
 
@@ -61,6 +40,7 @@ function ChecklistTable() { //on first render, do I get this passed as a prop?
         <td>{item.quantity}</td>
         <td>{item.category_id}</td>
         <CheckedButton handleCheck={checkItem} />
+        {/* could either do checkItem or just pass a setter */}
       </tr>
     )
   })
