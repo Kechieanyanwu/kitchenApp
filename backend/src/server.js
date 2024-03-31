@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 require("dotenv").config();
 const express = require('express');
 const app = express();
@@ -6,11 +7,11 @@ const cors = require('cors');
 app.use(cors());
 
 app.use(express.json()); 
-app.use(express.urlencoded({extended: true })); // parses URL-encoded bodies for the wip login form 
+app.use(express.urlencoded({extended: true })); 
 
 const session = require('express-session');
-const SequelizeStore = require('connect-session-sequelize')(session.Store)
-const { sequelize } = require('../database/models')
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
+const { sequelize } = require('../database/models');
 
 const categoriesRouter = require('./routes/categoriesRouter'); 
 const checklistRouter = require('./routes/checklistRouter');
@@ -22,7 +23,7 @@ require('../config/passport');
 
 const sessionStore = new SequelizeStore({
     db: sequelize,
-})
+});
 
 sessionStore.sync( {force: false} ); 
 
@@ -52,11 +53,11 @@ app.use("/checklist", checklistRouter);
 app.use("/inventory", inventoryRouter);
 app.use("/user", userRouter);
 
-app.get("/", (req, res, next) => {
+app.get("/", (req, res) => {
     res.status(200).send("<h1>Hello World</h1>");
 })
 
-app.get("/login", async (req, res, next) => {
+app.get("/login", async (req, res) => {
     res.status(200).send(
         `<form action="/login" method="post">
             <label for="email">Email:</label><br>    
@@ -69,7 +70,7 @@ app.get("/login", async (req, res, next) => {
     )
 })
 
-app.post("/login", passport.authenticate("local"), async (req, res, next) => {
+app.post("/login", passport.authenticate("local"), async (req, res) => {
     if (req.user) {
         //to add header 
         console.log(req.user);
