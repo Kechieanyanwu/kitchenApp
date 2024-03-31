@@ -5,8 +5,8 @@ const PORT = process.env.PORT;
 const cors = require('cors');
 app.use(cors());
 
-const bodyParser = require("body-parser");
-const jsonParser = bodyParser.json();
+app.use(express.json()); 
+app.use(express.urlencoded({extended: true })); // parses URL-encoded bodies for the wip login form 
 
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store)
@@ -30,7 +30,6 @@ app.use(session({
     secret: process.env.SECRET,
     store: sessionStore,
     resave: false,
-    // saveUninitialized: true,
     saveUninitialized: false,
     cookie: {
         maxAge: 1000 * 60 * 60 * 24
@@ -57,9 +56,20 @@ app.get("/", (req, res, next) => {
     res.status(200).send("<h1>Hello World</h1>");
 })
 
+app.get("/login", async (req, res, next) => {
+    res.status(200).send(
+        `<form action="/login" method="post">
+            <label for="email">Email:</label><br>    
+            <input type="email" id="email" name="email"></input><br>
+            <label for="password">Password:</label><br>    
+            <input type="password" id="password" name="password"></input><br>
+            <input type="submit" value="Submit"></input>
+        </form>`      
+    
+    )
+})
 
-
-app.post("/login", jsonParser, passport.authenticate("local"), async (req, res, next) => {
+app.post("/login", passport.authenticate("local"), async (req, res, next) => {
     if (req.user) {
         //to add header 
         console.log(req.user);

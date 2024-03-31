@@ -12,6 +12,8 @@ const customFields = {
 }
 
 const verifyCallback = async (username, password, done) => {
+    console.log("username", username); //test
+    console.log("password", password); //test
     let user;
     let passwordIsEqual;
 
