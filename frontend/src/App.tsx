@@ -25,16 +25,4 @@ function App() {
 
 }
 
-
-// function App() {
-
-//   return (
-//     <>
-//       <Checklist />
-//       <NavBar />
-//     </>
-//   )
-
-// }
-
 export default App;
