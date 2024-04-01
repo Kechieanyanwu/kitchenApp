@@ -1,8 +1,5 @@
-// TO-DO verify the verify callback for the passport-local strategy
-
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
-const { sequelize } = require('../database/models');
 const { User } = require("../database/models/user");
 const { comparePassword } = require("../utilities/password");
 
@@ -12,15 +9,13 @@ const customFields = {
 }
 
 const verifyCallback = async (username, password, done) => {
-    console.log("username", username); //test
-    console.log("password", password); //test
     let user;
     let passwordIsEqual;
 
     try {
         user = await User.findOne({ where: { email: username }})
     } catch (err) {
-        done(err); //how is this handled? Check documentation 
+        done(err);
     }
 
     if (!user) {
@@ -44,7 +39,6 @@ const verifyCallback = async (username, password, done) => {
 
 const strategy = new LocalStrategy(customFields, verifyCallback);
 
-passport.use(strategy);
 
 passport.serializeUser((user, done) => {
     done(null, user.id);
@@ -59,3 +53,5 @@ passport.deserializeUser( async (userID, done) => {
     }
      done(null, user);
 }) 
+
+passport.use(strategy);

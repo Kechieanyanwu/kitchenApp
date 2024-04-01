@@ -18,6 +18,8 @@ const checklistRouter = require('./routes/checklistRouter');
 const inventoryRouter = require('./routes/inventoryRouter') ; 
 const userRouter = require('./routes/userRouter');
 
+const isAuth = require('../utilities/authMiddleware');
+
 const passport = require('passport');
 require('../config/passport');
 
@@ -37,8 +39,8 @@ app.use(session({
      }
 }));
 
-app.use(passport.initialize()); //to know how this is working
-app.use(passport.session()); //to know how this is working
+app.use(passport.initialize()); //on reach http request, runs to get userID and populate the user object
+app.use(passport.session()); //on reach http request, runs to get userID and populate the user object
 
 
 app.use((req, res, next) => {
@@ -53,9 +55,20 @@ app.use("/checklist", checklistRouter);
 app.use("/inventory", inventoryRouter);
 app.use("/user", userRouter);
 
-app.get("/", (req, res) => {
-    res.status(200).send("<h1>Hello World</h1>");
-})
+app.get('/protected-route', isAuth, (req, res) => {
+    res.send(`
+            <h1>You made it to the route.</h1><br>
+            <a href="/logout">Logout</a>`);
+});
+
+app.get('/login-success', (req, res) => {
+    res.send('<p>You successfully logged in. --> <a href="/protected-route">Go to protected route</a></p>');
+});
+
+app.get('/login-failure', (req, res) => {
+    res.send('You entered the wrong password.');
+});
+
 
 app.get("/login", async (req, res) => {
     res.status(200).send(
@@ -70,17 +83,16 @@ app.get("/login", async (req, res) => {
     )
 })
 
-app.post("/login", passport.authenticate("local"), async (req, res) => {
-    if (req.user) {
-        //to add header 
-        console.log(req.user);
-        // console.log(res);
-        res.status(200).send("<h1>Authenticated!</h1>");
-    } else {
-        res.status(401).send("<h1>Unauthorized</h1>");
-    }
+app.get("/", (req, res) => {
+    res.status(200).send("<h1>Hello World</h1>");
 })
 
+app.get('/logout', (req, res) => {
+    req.logout(()=>console.log("logged out"));
+    res.redirect('/protected-route');
+});
+
+app.post("/login", passport.authenticate("local", { failureRedirect: '/login-failure', successRedirect: 'login-success' }))
 
 const server = app.listen(PORT, () => { 
     console.log(`Kitchen App is listening on port ${PORT}`)

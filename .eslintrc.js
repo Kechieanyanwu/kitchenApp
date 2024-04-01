@@ -22,5 +22,8 @@ module.exports = {
         "ecmaVersion": "latest"
     },
     "rules": {
-    }
+    },
+    "plugins": [
+        "chai-friendly"
+    ]
 }
