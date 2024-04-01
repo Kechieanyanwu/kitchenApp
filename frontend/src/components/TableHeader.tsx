@@ -1,4 +1,5 @@
 import BackButton from "./BackButton";
+import PropTypes from 'prop-types';
 import { TableHeaderProps } from "../utils/interfaces";
 
 export default function TableHeader({ title, subtitle }: TableHeaderProps) {
@@ -17,4 +18,9 @@ export default function TableHeader({ title, subtitle }: TableHeaderProps) {
       </table>
     </div>
   )
+}
+
+TableHeader.propTypes = {
+  title: PropTypes.string,
+  subtitle: PropTypes.string,
 }
