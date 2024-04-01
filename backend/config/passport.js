@@ -33,7 +33,6 @@ const verifyCallback = async (username, password, done) => {
             return done(null, false)
         }
     }
-
 }
 
 

@@ -39,8 +39,8 @@ app.use(session({
      }
 }));
 
-app.use(passport.initialize()); //on reach http request, runs to get userID and populate the user object
-app.use(passport.session()); //on reach http request, runs to get userID and populate the user object
+app.use(passport.initialize());
+app.use(passport.session());
 
 
 app.use((req, res, next) => {
