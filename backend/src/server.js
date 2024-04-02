@@ -18,7 +18,7 @@ const checklistRouter = require('./routes/checklistRouter');
 const inventoryRouter = require('./routes/inventoryRouter') ; 
 const userRouter = require('./routes/userRouter');
 
-const isAuth = require('../utilities/authMiddleware');
+const isAuth = require('../utilities/auth/authMiddleware');
 
 const passport = require('passport');
 require('../config/passport');
