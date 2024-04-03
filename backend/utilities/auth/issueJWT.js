@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const privateKey = fs.readFileSync(__dirname + '../../pemfiles' + "/id_rsa_priv.pem")
 
 const issueToken = (user) => {
-    const _id = user.id;
+    const id = user.id;
     
     const expiresIn = "1d";
     const options = {
@@ -13,7 +13,7 @@ const issueToken = (user) => {
     }
 
     const payload = {
-        sub: _id,
+        sub: id,
         iat: Date.now()
     }
 
