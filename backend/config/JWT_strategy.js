@@ -5,6 +5,8 @@ const jwtStrategy = require('passport-jwt').Strategy;
 const extractJWT = require('passport-jwt').ExtractJwt;
 
 const publicKey = fs.readFileSync(__dirname + '../pemfiles' + "/id_rsa_pub.pem")
+const privateKey = fs.readFileSync(__dirname + '../pemfiles' + "/id_rsa_priv.pem")
+
 const options = {
     secretOrKey: publicKey,
     jwtFromRequest: {},
