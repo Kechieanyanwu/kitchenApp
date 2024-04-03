@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
-// to include fs
+const fs = require('fs');
 
-const privateKey = fs.readFileSync(__dirname + '../../pemfiles' + "/id_rsa_priv.pem")
+const privateKey = fs.readFileSync(__dirname + '/../../pemfiles' + "/id_rsa_priv.pem")
 
 const issueToken = (user) => {
     const id = user.id;
