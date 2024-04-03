@@ -18,9 +18,10 @@ const checklistRouter = require('./routes/checklistRouter');
 const inventoryRouter = require('./routes/inventoryRouter') ; 
 const userRouter = require('./routes/userRouter');
 
-const isAuth = require('../utilities/authMiddleware');
+const isAuth = require('../utilities/auth/authMiddleware');
 
 const passport = require('passport');
+const issueToken = require("../utilities/auth/issueJWT");
 require('../config/passport');
 
 const sessionStore = new SequelizeStore({
@@ -92,7 +93,18 @@ app.get('/logout', (req, res) => {
     res.redirect('/protected-route');
 });
 
-app.post("/login", passport.authenticate("local", { failureRedirect: '/login-failure', successRedirect: 'login-success' }))
+// app.post("/login", passport.authenticate("local", { failureRedirect: '/login-failure', successRedirect: 'login-success' }), (req, res) => {
+app.post("/login", passport.authenticate("local"), (req, res) => {
+    //if we get here, there is req.user, so no need to check but can write a test to assert
+
+    const tokenObject = issueToken(req.user);
+    res.status(200).json({
+        success: true, 
+        token: tokenObject.token, 
+        expiresIn: tokenObject.expires
+    });
+    res.redirect('/login-success'); //will it get here?
+})
 
 const server = app.listen(PORT, () => { 
     console.log(`Kitchen App is listening on port ${PORT}`)
