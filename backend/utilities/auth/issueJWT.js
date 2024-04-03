@@ -1,8 +1,7 @@
 const jwt = require('jsonwebtoken');
+// to include fs
 
 const privateKey = fs.readFileSync(__dirname + '../../pemfiles' + "/id_rsa_priv.pem")
-
-
 
 const issueToken = (user) => {
     const _id = user.id;
@@ -17,7 +16,7 @@ const issueToken = (user) => {
         sub: _id,
         iat: Date.now()
     }
-    
+
     const signedToken = jwt.sign(payload, privateKey, options);
 
     return {
@@ -26,3 +25,4 @@ const issueToken = (user) => {
     }
 }
 
+module.exports = issueToken;
