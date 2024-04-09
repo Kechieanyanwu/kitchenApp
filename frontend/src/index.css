@@ -5,6 +5,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  padding: 30px 20px 10px;
+  background: linear-gradient(to right, rgba(103,93,90,0.6), rgba(103,93,90,0.8), rgba(103,93,90,1));
 }
 
 code {
@@ -12,9 +14,33 @@ code {
     monospace;
 }
 
-.checklist-header{
+/* HomeHeader */
+.checklist-header {
   font-family: Arial, sans-serif;
-  font-size: 2em;
-  padding: 10px;
-  border: 1px solid hsla(0, 0%, 50%, 0.8)
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.checklist-header .text {
+  width: 80%;
+}
+
+.checklist-header .text h3 {
+  font-size: 24px;
+  margin: 0px;
+  font-weight: 500;
+}
+
+.checklist-header .text h5 {
+  font-size: 14px;
+  margin: 15px 0 0; /* Top: 15px; Rest: 0px */
+  font-weight: 500;
+}
+
+/* Automatically 20% as .text is 80% */
+.checklist-header .notification
+{
+  padding: 5px 0 0;
 }

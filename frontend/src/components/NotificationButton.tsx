@@ -1,8 +1,11 @@
-import Button from 'react-bootstrap/button';
 import { Bell } from "react-bootstrap-icons";
 
 export default function NotificationButton() {
+    const doSomething = () => {
+        alert("Show notifications");
+    }
+
     return (
-        <td><Button><Bell /></Button></td>
+        <span onClick={() => doSomething()}><Bell /></span>
     )
 }
