@@ -44,3 +44,65 @@ code {
 {
   padding: 5px 0 0;
 }
+
+/****************
+*
+* CARD
+*
+*****************/
+
+.home-card:nth-of-type(1) {
+  background-color: #393333;
+}
+
+.home-card:nth-of-type(2) {
+  background-color: #ffffff;
+}
+
+.home-card {
+  padding: 20px;
+  margin-bottom: 20px;
+  color: #ffffff;
+  border-radius: 15px;
+}
+
+.home-card .card-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.home-card .card-title {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.home-card .card-subtitle {
+  font-size: 12px;
+}
+
+.home-card .card-text {
+  color: #adadad;
+  margin: 15px 0 0;
+}
+
+.home-card .card-number {
+  font-size: 25px;
+  margin: 0;
+  font-weight: 700;
+}
+
+.home-card .card-row .card-button {
+  align-content: center;
+}
+
+.home-card .card-row .card-button button {
+  border-radius: 50%;
+  width: 40px;
+  border: none;
+  height: 40px;
+  color: #ffffff;
+}
+
+.home-card .card-row .card-button.dark button {
+  background: linear-gradient(135deg, #ffffff, #706b6b, #4d4848, #706b6b);
+}
