@@ -106,3 +106,40 @@ code {
 .home-card .card-row .card-button.dark button {
   background: linear-gradient(135deg, #ffffff, #706b6b, #4d4848, #706b6b);
 }
+
+/****************
+*
+* FOOTER BUTTONS
+*
+*****************/
+
+.footer-buttons {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background-color: #fff;
+  width: 100%;
+}
+
+.footer-buttons nav {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 10px 0;
+}
+
+.footer-button {
+  font-size: 12px;
+  color: #888888;
+}
+
+.footer-button.active {
+  font-weight: 700;
+  color: #000000;
+}
+
+.footer-button svg {
+  display: block;
+  margin: 0 auto;
+  font-size: 14px;
+  font-weight: 700;
+}

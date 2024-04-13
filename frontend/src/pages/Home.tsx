@@ -47,7 +47,9 @@ function Home() {
         <>
             <HomeHeader />
             <CardColumn />
-            <NavBar />
+            <div className="footer-buttons">
+                <NavBar />
+            </div>
         </>
     )
 }
