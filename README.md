@@ -1,3 +1,10 @@
+IMPORTANT UPDATE:
+This monorepo has been split into two separate repos for the frontend and backend. 
+Frontend: https://github.com/Kechieanyanwu/kitchenApp-frontend
+Backend: https://github.com/Kechieanyanwu/kitchenApp-backend
+
+
+------------
 Welcome to KitchenApp, my WIP personal project to help me manage items in my kitchen inventory and stop buying duplicate items. As this is currently WIP, I have not included instructions for running on your machine. 
 
 KitchenApp is designed to facilitate the management of items typically found in a kitchen, such as groceries and other household supplies. Here's an overview of what the application will do:
