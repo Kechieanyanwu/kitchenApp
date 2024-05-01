@@ -2,6 +2,7 @@
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import { House, ListCheck, List } from "react-bootstrap-icons";
 
 function NavExample() {
 
@@ -9,13 +10,41 @@ function NavExample() {
 
 
 export default function NavBar() {
+    const doSomething = () => { };
     return (
         <nav>
             {/* Navigation links */}
-            <button>Home</button>
-            <button>Checklist</button>
-            <button>Inventory</button>
-            <button>Settings</button>
+            <div
+                className='footer-button active'
+                onClick={() => doSomething()}
+            >
+                <House></House>
+                <div>Home</div>
+            </div>
+
+            <div
+                className='footer-button'
+                onClick={() => doSomething()}
+            >
+                <ListCheck></ListCheck>
+                <div>Checklist</div>
+            </div>
+
+            <div
+                className='footer-button'
+                onClick={() => doSomething()}
+            >
+                <List></List>
+                <div>Inventory</div>
+            </div>
+
+            <div
+                className='footer-button'
+                onClick={() => doSomething()}
+            >
+                <House></House>
+                <div>Settings</div>
+            </div>
         </nav>
     );
 };

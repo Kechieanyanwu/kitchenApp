@@ -7,14 +7,20 @@ import { ItemCardProps } from "../utils/interfaces";
 import NavBar from "../components/NavBar";
 function ItemCard({ itemName, subtitle, itemNumber }: ItemCardProps) {
     return (
-        <Card style={{ width: '18rem' }} className="mb-2">
+        <Card className="home-card">
             <Card.Body>
                 <Row>
-                    <Card.Title>{itemName}</Card.Title>
-                    <Card.Subtitle className="mb-2 text-muted">{subtitle}</Card.Subtitle>
-                    <Button variant="secondary">+</Button>
-                    <Card.Text> Number of Items </Card.Text>
-                    <p>{itemNumber}</p>
+                    <div className="card-row">
+                        <div>
+                            <Card.Title>{itemName}</Card.Title>
+                            <Card.Subtitle className="mb-2 text-muted">{subtitle}</Card.Subtitle>
+                            <Card.Text> Number of Items </Card.Text>
+                            <p className="card-number">{itemNumber}</p>
+                        </div>
+                        <div className="card-button dark">
+                            <Button variant="secondary">+</Button>
+                        </div>
+                    </div>
                 </Row>
             </Card.Body>
         </Card>
@@ -24,6 +30,8 @@ function ItemCard({ itemName, subtitle, itemNumber }: ItemCardProps) {
 function CardColumn() {
     return (
         <>
+            {/* Props can be further extended to add text and background colour, and button actions */}
+            {/* For adding customisable styling, you can choose to use predefined classes or allow individual values to be passed */}
             <Row>
                 <ItemCard itemName="Checklist" subtitle="Add items so you don't forget anything!" itemNumber={0} />
             </Row>
@@ -39,7 +47,9 @@ function Home() {
         <>
             <HomeHeader />
             <CardColumn />
-            <NavBar />
+            <div className="footer-buttons">
+                <NavBar />
+            </div>
         </>
     )
 }
